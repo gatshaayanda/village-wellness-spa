@@ -27,7 +27,7 @@ export default function EnquiryModal({
   }, [open, busy, onClose]);
 
   if (!open) return null;
-  const heading = kind === "PRODUCT" ? "Ask about product availability" : kind === "TREATMENT" ? "Ask about this treatment" : "Send Tripple S an enquiry";
+  const heading = kind === "PRODUCT" ? "Ask about product availability" : kind === "TREATMENT" ? "Ask about this treatment" : "Send Village Wellness Spa an enquiry";
   const intro = kind === "PRODUCT"
     ? "Tell us how to reach you. The team will check current availability and follow up during clinic operating hours."
     : kind === "TREATMENT"
@@ -57,7 +57,7 @@ export default function EnquiryModal({
       setReference(String(result.reference || result.id || "").slice(0, 8).toUpperCase());
       setSubmitted(true);
     } catch (err) {
-      console.error("[Tripple S] enquiry submission failed", err);
+      console.error("[Village Wellness Spa] enquiry submission failed", err);
       setError(err instanceof Error ? err.message : "Your enquiry could not be sent. Please try again.");
     } finally { setBusy(false); }
   }
@@ -67,16 +67,16 @@ export default function EnquiryModal({
       <section className="enquiryDialog" role="dialog" aria-modal="true" aria-labelledby="enquiry-title" aria-describedby="enquiry-description">
         <button className="enquiryClose" type="button" aria-label="Close enquiry" onClick={onClose} disabled={busy}>×</button>
         <span className="enquirySpark" aria-hidden="true">✦</span>
-        <span className="kicker">TRIPPLE S · CLIENT CARE</span>
+        <span className="kicker">VILLAGE WELLNESS SPA · CLIENT CARE</span>
         <h2 id="enquiry-title">{submitted ? "Your enquiry is with the team." : heading}</h2>
         <p id="enquiry-description">{submitted ? "Thank you. Keep this reference for your records. This is an enquiry receipt, not an appointment confirmation." : intro}</p>
         {itemName && <div className="enquiryItem"><strong>{itemName}</strong>{itemPrice && <span>{itemPrice}</span>}</div>}
         {submitted ? (
-          <div className="enquirySuccess" role="status"><span>✓</span><strong>Enquiry received</strong>{reference && <small>Reference #{reference}</small>}<button className="button buttonPrimary" type="button" onClick={onClose}>Back to Tripple S</button></div>
+          <div className="enquirySuccess" role="status"><span>✓</span><strong>Enquiry received</strong>{reference && <small>Reference #{reference}</small>}<button className="button buttonPrimary" type="button" onClick={onClose}>Back to Village Wellness Spa</button></div>
         ) : (
           <form className="enquiryForm" onSubmit={submit}>
             <label>Your name<input name="name" autoComplete="name" required maxLength={120} placeholder="Full name" /></label>
-            <label>WhatsApp / mobile<input name="phone" type="tel" autoComplete="tel" required maxLength={40} placeholder="+267 …" /></label>
+            <label>WhatsApp / mobile<input name="phone" type="tel" autoComplete="tel" required maxLength={40} placeholder="Best contact number" /></label>
             <label>Email <span>(optional)</span><input name="email" type="email" autoComplete="email" maxLength={200} placeholder="you@example.com" /></label>
             <label>Your question <span>(optional)</span><textarea name="message" maxLength={1000} placeholder={kind === "PRODUCT" ? "Ask about current availability or product details." : "What would you like the team to know?"} /></label>
             <div className="enquiryHoneypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
