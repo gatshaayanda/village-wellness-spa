@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: "Village Wellness Spa | Medical Aesthetics & Wellness",
     template: "%s | Village Wellness Spa",
   },
-  description: "Village Wellness Spa — medical aesthetics, skin health, IV wellness and body contouring in Mississauga.",
+  description: "Village Wellness Spa — IV wellness, facials, advanced skin treatments, massage, nails and body care in Mississauga, Ontario.",
   applicationName: "Village Wellness Spa",
   generator: "Next.js",
   keywords: ["Village Wellness Spa", "medical aesthetics", "skin health", "IV wellness", "body contouring", "Mississauga"],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Village Wellness Spa",
     title: "Village Wellness Spa | Medical Aesthetics & Wellness",
-    description: "Where beauty meets medical excellence.",
+    description: "Personal care. A little more room to feel like you.",
   },
   twitter: {
     card: "summary",
