@@ -28,9 +28,9 @@ export async function POST(request:NextRequest){
     const link=new URL("/account",process.env.NEXT_PUBLIC_BASE_URL||"https://tripple-s-wellness-spa.vercel.app").toString();
     await Promise.all(recipients.docs.filter(item=>item.data().enabled===true).map(async recipient=>{
      const tokens=await db.collection("notificationTokens").doc(recipient.id).collection("devices").get();
-     await Promise.all(tokens.docs.map(async device=>{const token=String(device.data().token??"");if(!token)return;try{await getAdminMessaging().send({token,notification:{title:"A new Tripple S offer is available",body:title},webpush:{fcmOptions:{link}}});}catch(error){console.error("[Tripple S] offer push failed",error instanceof Error?error.message:"unknown");}}));
+     await Promise.all(tokens.docs.map(async device=>{const token=String(device.data().token??"");if(!token)return;try{await getAdminMessaging().send({token,notification:{title:"A new Village Wellness Spa offer is available",body:title},webpush:{fcmOptions:{link}}});}catch(error){console.error("[Village Wellness Spa] offer push failed",error instanceof Error?error.message:"unknown");}}));
     }));
-   }catch(error){console.error("[Tripple S] offer notification setup unavailable",error instanceof Error?error.message:"unknown");}
+   }catch(error){console.error("[Village Wellness Spa] offer notification setup unavailable",error instanceof Error?error.message:"unknown");}
   }
   return NextResponse.json({ok:true});
  }catch{return NextResponse.json({error:"Offer could not be saved."},{status:500});}
