@@ -1,7 +1,7 @@
 "use client";
 
-const RECORDS_KEY = "tripple-s-local-demo-records-v1";
-const MODE_KEY = "tripple-s-local-demo-mode-v1";
+const RECORDS_KEY = "village-wellness-spa-local-demo-records-v1";
+const MODE_KEY = "village-wellness-spa-local-demo-mode-v1";
 
 export type LocalDemoRecord = {
   id: string;
@@ -71,7 +71,7 @@ export function makeLocalDemoId(): string {
 export function getLocalDemoBucket<T extends { id: string }>(bucket: string): T[] {
   if (typeof window === "undefined") return [];
   try {
-    const value: unknown = JSON.parse(window.localStorage.getItem("tripple-s-local-demo-bucket-" + bucket) || "[]");
+    const value: unknown = JSON.parse(window.localStorage.getItem("village-wellness-spa-local-demo-bucket-" + bucket) || "[]");
     return Array.isArray(value) ? value as T[] : [];
   } catch {
     return [];
@@ -82,17 +82,17 @@ export function saveLocalDemoBucketRecord<T extends { id: string }>(bucket: stri
   if (typeof window === "undefined") throw new Error("Local demo storage is only available in this browser.");
   const records = getLocalDemoBucket<T>(bucket).filter(item => item.id !== record.id);
   records.unshift(record);
-  window.localStorage.setItem("tripple-s-local-demo-bucket-" + bucket, JSON.stringify(records.slice(0, 500)));
+  window.localStorage.setItem("village-wellness-spa-local-demo-bucket-" + bucket, JSON.stringify(records.slice(0, 500)));
 }
 
 export function deleteLocalDemoBucketRecord(bucket: string, id: string): void {
   if (typeof window === "undefined") return;
   const records = getLocalDemoBucket(bucket).filter(item => item.id !== id);
-  window.localStorage.setItem("tripple-s-local-demo-bucket-" + bucket, JSON.stringify(records));
+  window.localStorage.setItem("village-wellness-spa-local-demo-bucket-" + bucket, JSON.stringify(records));
 }
 
 export function seedLocalDemoData(): void {
-  if (typeof window === "undefined" || window.localStorage.getItem("tripple-s-local-demo-seeded-v1") === "true") return;
+  if (typeof window === "undefined" || window.localStorage.getItem("village-wellness-spa-local-demo-seeded-v1") === "true") return;
   const date = new Date(Date.now() + 2 * 3600000 + 86400000).toISOString().slice(0, 10);
   saveLocalDemoRecord({
     id: "demo-appointment-request",
@@ -102,7 +102,7 @@ export function seedLocalDemoData(): void {
     phone: "DEMO ONLY",
     serviceId: "skin-consultation",
     serviceNameSnapshot: "Skin Consultation",
-    priceSnapshot: "P400",
+    priceSnapshot: "Request pricing",
     durationSnapshot: "30 min",
     preferredDate: date,
     preferredTime: "09:00",
@@ -132,5 +132,5 @@ export function seedLocalDemoData(): void {
     { id: "demo-break", date, startTime: "12:00", endTime: "12:30", title: "Demo break", kind: "BLOCK", notes: "Sample blocked time" },
     { id: "demo-walk-in", date, startTime: "13:00", endTime: "13:30", title: "Demo walk-in", kind: "WALK_IN", notes: "Sample walk-in occupancy" },
   ]) saveLocalDemoBucketRecord("calendar", item);
-  window.localStorage.setItem("tripple-s-local-demo-seeded-v1", "true");
+  window.localStorage.setItem("village-wellness-spa-local-demo-seeded-v1", "true");
 }
