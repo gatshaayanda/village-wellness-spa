@@ -64,7 +64,7 @@ function UsagePanel() {
   ];
 
   return <main className="adminPage"><div className="adminShell">
-    <header className="adminHeader"><div><span className="kicker">TRIPPLE S · ADMIN INSIGHTS</span><h1>Understand customer activity.</h1><p>Privacy-conscious funnel and availability signals to help explain what visitors do—not just how many pages they open.</p></div><div className="adminHeaderActions"><Link href="/admin" className="button buttonLight">Back to Admin</Link><button className="button buttonPrimary" onClick={() => void load()} disabled={loading}>{loading ? "Refreshing…" : "Refresh insights"}</button></div></header>
+    <header className="adminHeader"><div><span className="kicker">VILLAGE WELLNESS SPA · ADMIN INSIGHTS</span><h1>Understand customer activity.</h1><p>Privacy-conscious funnel and availability signals to help explain what visitors do—not just how many pages they open.</p></div><div className="adminHeaderActions"><Link href="/admin" className="button buttonLight">Back to Admin</Link><button className="button buttonPrimary" onClick={() => void load()} disabled={loading}>{loading ? "Refreshing…" : "Refresh insights"}</button></div></header>
     <div className="adminTabs"><button className={days===7?"active":""} onClick={()=>setDays(7)}>Last 7 days</button><button className={days===30?"active":""} onClick={()=>setDays(30)}>Last 30 days</button></div>
     {error && <div className="adminToast" role="alert">{error}</div>}
     {loading && <section className="adminPanel"><p>Loading daily summaries…</p></section>}
