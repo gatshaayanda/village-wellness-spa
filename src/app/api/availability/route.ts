@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
     }
     return NextResponse.json({ slots, note: day.byAppointment ? "Appointment-only hours; the clinic will confirm your request." : "" });
   } catch (error) {
-    console.error("[Tripple S] availability lookup failed", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] availability lookup failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Live availability is temporarily unavailable. Please try again shortly." }, { status: 503 });
   }
 }
