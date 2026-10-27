@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json({ days, start, end: today, rows }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.error("[Tripple S] usage summary unavailable", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] usage summary unavailable", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Usage insights could not be loaded." }, { status: 500 });
   }
 }
