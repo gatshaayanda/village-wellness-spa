@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json({ id: ref.id, reference: ref.id.slice(0, 8).toUpperCase() }, { status: 201 });
   } catch (error) {
-    console.error("[Tripple S] client enquiry save failed", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] client enquiry save failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "We could not record your enquiry. Please try again shortly." }, { status: 503 });
   }
 }
