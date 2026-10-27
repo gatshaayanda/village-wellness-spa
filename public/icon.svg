@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="120" fill="#171614"/>
-  <circle cx="256" cy="256" r="184" fill="#f8f6f1" stroke="#b5965a" stroke-width="12"/>
-  <text x="256" y="322" text-anchor="middle" font-family="Georgia, serif" font-size="190" fill="#b5965a">S</text>
-  <circle cx="256" cy="105" r="13" fill="#b5965a"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#E52B7C"/><path d="M256 414C137 333 94 239 151 143c25-42 70-65 105-70 8 69-9 119-40 161 57-37 104-83 139-141 67 103 56 213-99 321Z" fill="#20B273"/><path d="M256 414c-10-99-3-172 29-243" fill="none" stroke="#6B3C1B" stroke-width="16" stroke-linecap="round"/><circle cx="255" cy="239" r="48" fill="#fff"/><path d="M207 240c9-37 57-54 85-24 17 18 11 42-2 57-11 12-17 25-18 42h-39c2-24-4-39-16-52-9-10-13-14-10-23Z" fill="#6B3C1B"/></svg>
