@@ -1,12 +1,12 @@
 {
-  "name": "Tripple S Wellness Spa",
-  "short_name": "Tripple S Spa",
-  "description": "Medical aesthetics, skin health and wellness in Gaborone.",
+  "name": "Village Wellness Spa",
+  "short_name": "Village Spa",
+  "description": "Medical aesthetics, skin health and wellness in Mississauga.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f8f6f1",
-  "theme_color": "#171614",
+  "background_color": "#ffffff",
+  "theme_color": "#E52B7C",
   "lang": "en",
-  "icons": [{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "icons": [{"src":"/villagespa.jpg","sizes":"any","type":"image/jpeg","purpose":"any maskable"}]
 }
