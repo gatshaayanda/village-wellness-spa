@@ -27,7 +27,7 @@ export default function TreatmentDetailPage() {
   if (!service) {
     return (
       <main className="bookPage">
-        <nav className="nav"><div className="container navInner"><Link href="/" className="brand"><span className="brandMark"><img src="/villagespa.jpg" alt="" /></span><span>VILLAGE WELLNESS SPA<span>WELLNESS SPA</span></span></Link><Link href="/treatments" className="button buttonLight">All treatments</Link></div></nav>
+        <nav className="nav"><div className="container navInner"><Link href="/" className="brand"><span className="brandMark"><img src="/villagespa.jpg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link><Link href="/treatments" className="button buttonLight">All treatments</Link></div></nav>
         <div className="formWrap"><div className="formCard emptyPublic"><h1>Treatment not found</h1><p>This treatment may no longer be published. You can browse the current catalogue or contact Village Wellness Spa directly.</p><div className="actions"><Link href="/treatments" className="button buttonPrimary">View treatments</Link></div></div></div>
       </main>
     );
@@ -37,7 +37,7 @@ export default function TreatmentDetailPage() {
     <main className="site">
       <nav className="nav">
         <div className="container navInner">
-          <Link href="/" className="brand"><span className="brandMark">S</span><span>VILLAGE WELLNESS SPA<span>WELLNESS SPA</span></span></Link>
+          <Link href="/" className="brand"><span className="brandMark">S</span><span>Village<span>WELLNESS SPA</span></span></Link>
           <Link href="/book" className="button buttonPrimary">Book an appointment</Link>
         </div>
       </nav>
