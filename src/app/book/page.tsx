@@ -4,7 +4,7 @@ import BookForm from "./book-form";
 
 export const metadata: Metadata = {
   title: "Request an Appointment",
-  description: "Request an appointment with Tripple S Wellness Spa in Gaborone.",
+  description: "Request an appointment with Village Wellness Spa in Mississauga.",
   alternates: { canonical: "/book" },
 };
 
