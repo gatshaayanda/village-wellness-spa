@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const message=error instanceof Error?error.message:"";
     if (message==="SLOT_TAKEN") return NextResponse.json({error:"Someone has just taken that slot. Please choose another available time."},{status:409});
-    console.error("[Tripple S] booking save failed",message||"unknown");
+    console.error("[Village Wellness Spa] booking save failed",message||"unknown");
     return NextResponse.json({error:"We could not record the request. Please try again shortly."},{status:503});
   }
 }
