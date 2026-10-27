@@ -27,8 +27,8 @@ export default function TreatmentDetailPage() {
   if (!service) {
     return (
       <main className="bookPage">
-        <nav className="nav"><div className="container navInner"><Link href="/" className="brand"><span className="brandMark">S</span><span>TRIPPLE S<span>WELLNESS SPA</span></span></Link><Link href="/treatments" className="button buttonLight">All treatments</Link></div></nav>
-        <div className="formWrap"><div className="formCard emptyPublic"><h1>Treatment not found</h1><p>This treatment may no longer be published. You can browse the current catalogue or contact Tripple S directly.</p><div className="actions"><Link href="/treatments" className="button buttonPrimary">View treatments</Link></div></div></div>
+        <nav className="nav"><div className="container navInner"><Link href="/" className="brand"><span className="brandMark"><img src="/villagespa.jpg" alt="" /></span><span>VILLAGE WELLNESS SPA<span>WELLNESS SPA</span></span></Link><Link href="/treatments" className="button buttonLight">All treatments</Link></div></nav>
+        <div className="formWrap"><div className="formCard emptyPublic"><h1>Treatment not found</h1><p>This treatment may no longer be published. You can browse the current catalogue or contact Village Wellness Spa directly.</p><div className="actions"><Link href="/treatments" className="button buttonPrimary">View treatments</Link></div></div></div>
       </main>
     );
   }
@@ -37,7 +37,7 @@ export default function TreatmentDetailPage() {
     <main className="site">
       <nav className="nav">
         <div className="container navInner">
-          <Link href="/" className="brand"><span className="brandMark">S</span><span>TRIPPLE S<span>WELLNESS SPA</span></span></Link>
+          <Link href="/" className="brand"><span className="brandMark">S</span><span>VILLAGE WELLNESS SPA<span>WELLNESS SPA</span></span></Link>
           <Link href="/book" className="button buttonPrimary">Book an appointment</Link>
         </div>
       </nav>
@@ -52,7 +52,7 @@ export default function TreatmentDetailPage() {
               <h1>{service.name}</h1>
               <p className="treatmentLead">{service.description}</p>
               <div className="serviceMeta treatmentMeta"><strong>{service.price}</strong><small>{service.duration}</small></div>
-              {service.consultationRequired && <div className="assessmentNotice"><strong>Clinical assessment may be required.</strong><span>Suitability is determined by the Tripple S clinical team.</span></div>}
+              {service.consultationRequired && <div className="assessmentNotice"><strong>Clinical assessment may be required.</strong><span>Suitability is determined by the Village Wellness Spa clinical team.</span></div>}
               {service.assessmentNote && <p className="assessmentCopy">{service.assessmentNote}</p>}
               <div className="actions">
                 <Link href={`/book?service=${encodeURIComponent(service.id)}`} className="button buttonPrimary">Request this appointment</Link>
@@ -63,7 +63,7 @@ export default function TreatmentDetailPage() {
               <strong>What happens next</strong>
               <ol>
                 <li>Send your appointment request.</li>
-                <li>The Tripple S team reviews your request.</li>
+                <li>The Village Wellness Spa team reviews your request.</li>
                 <li>The team contacts you to confirm suitability, timing and appointment details.</li>
               </ol>
               <p>Submitting a request does not automatically confirm an appointment.</p>
@@ -71,8 +71,8 @@ export default function TreatmentDetailPage() {
           </div>
 
           <div className="detailSections">
-            <section><span className="kicker">Preparation</span><h2>Before your visit</h2><p>{service.prep || "Treatment-specific preparation will be provided by Tripple S when applicable. Please wait for the clinical team’s guidance rather than relying on generic instructions."}</p></section>
-            <section><span className="kicker">Aftercare</span><h2>After your visit</h2><p>{service.aftercare || "If aftercare is needed, the Tripple S clinical team will provide the relevant instructions for your treatment."}</p></section>
+            <section><span className="kicker">Preparation</span><h2>Before your visit</h2><p>{service.prep || "Treatment-specific preparation will be provided by Village Wellness Spa when applicable. Please wait for the clinical team’s guidance rather than relying on generic instructions."}</p></section>
+            <section><span className="kicker">Aftercare</span><h2>After your visit</h2><p>{service.aftercare || "If aftercare is needed, the Village Wellness Spa clinical team will provide the relevant instructions for your treatment."}</p></section>
           </div>
         </div>
       </section>
