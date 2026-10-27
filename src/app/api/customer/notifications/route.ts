@@ -15,13 +15,13 @@ export async function GET(request: NextRequest) {
   const saved = preferenceSnapshot.data() ?? {};
   return NextResponse.json({ preferences: { enabled: saved.enabled === true, appointmentUpdates: saved.appointmentUpdates !== false, offersAndNews: saved.offersAndNews === true, updatedAt: String(saved.updatedAt ?? "") }, registered: tokenSnapshot.size > 0 });
  } catch (error) {
-  console.error("[Tripple S] notification preferences unavailable", error instanceof Error ? error.message : "unknown");
+  console.error("[Village Wellness Spa] notification preferences unavailable", error instanceof Error ? error.message : "unknown");
   return NextResponse.json({ error: "Notification preferences are temporarily unavailable." }, { status: 503 });
  }
 }
 export async function POST(request: NextRequest) {
  const customer = await requireCustomer(request);
- if (!customer) return NextResponse.json({ error: "Your session expired. Refresh My Tripple S and try again." }, { status: 401 });
+ if (!customer) return NextResponse.json({ error: "Your session expired. Refresh My Village Wellness Spa and try again." }, { status: 401 });
  let body: Record<string, unknown>;
  try { body = await request.json() as Record<string, unknown>; } catch { return NextResponse.json({ error: "Check your notification choices and try again." }, { status: 400 }); }
  if ((body.appointmentUpdates !== undefined && typeof body.appointmentUpdates !== "boolean") ||
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   await preferenceRef.set(preferences, { merge: true });
   return NextResponse.json({ preferences, registered: Boolean(token) || !existingTokens.empty });
  } catch (error) {
-  console.error("[Tripple S] notification preferences save failed", error instanceof Error ? error.message : "unknown");
+  console.error("[Village Wellness Spa] notification preferences save failed", error instanceof Error ? error.message : "unknown");
   return NextResponse.json({ error: "Your notification choices could not be saved. Please try again." }, { status: 503 });
  }
 }
