@@ -31,7 +31,7 @@ export default function AdminModal({ title, description, onClose, children }: Pr
       <section className="adminModal" role="dialog" aria-modal="true" aria-label={title}>
         <header className="adminModalHeader">
           <div>
-            <span className="kicker">TRIPPLE S · CATALOGUE</span>
+            <span className="kicker">VILLAGE WELLNESS SPA · CATALOGUE</span>
             <h2>{title}</h2>
             {description && <p>{description}</p>}
           </div>
