@@ -31,4 +31,12 @@ Never commit secrets or .env.local.
 
 This is not a diagnostic or medical-advice system. Clinical suitability remains with the Tripple S clinical team.
 
-Fresha is a functional benchmark only; this repository is Tripple S's own product and contains no migration workflow.
+This repository is the Village Wellness Spa product. Keep branding, business details and integrations specific to Village Wellness Spa.
+
+## Village Wellness Spa identity
+
+- Address: 1900 Dundas Street West, Suite 27, Mississauga, ON L5K 1P9, Canada.
+- Brand palette: hot pink `#E52B7C`, emerald `#20B273`, chocolate `#6B3C1B`, white.
+- Use `public/villagespa.jpg` for the public brand and PWA/Apple web-app icons.
+- Preserve existing booking, account, admin, Firebase/Firestore and UploadThing workflows while adapting business copy and catalogue content.
+- Keep PWA installation and service-worker behavior intact; change branding and project-specific cache namespace only unless explicitly authorized.
