@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       await adminRef.set({ role: "owner", temporaryAccess: true, accessMethod: "one-word-admin" });
     } else if (!["owner", "staff"].includes(String(existing.data()?.role ?? ""))) {
       return NextResponse.json(
-        { error: "This access account is not authorized for Tripple S Admin." },
+        { error: "This access account is not authorized for Village Wellness Spa Admin." },
         { status: 403, headers: { "Cache-Control": "no-store" } },
       );
     }
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     const token = await getAdminAuth().createCustomToken(uid);
     return NextResponse.json({ token }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.error("[Tripple S] Admin sign-in failed:", error instanceof Error ? error.message : "unknown error");
+    console.error("[Village Wellness Spa] Admin sign-in failed:", error instanceof Error ? error.message : "unknown error");
     return NextResponse.json(
       { error: "Admin sign-in is temporarily unavailable. Check the server configuration." },
       { status: 500, headers: { "Cache-Control": "no-store" } },
