@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.warn("[Tripple S] usage event could not be recorded", error instanceof Error ? error.message : "unknown");
+    console.warn("[Village Wellness Spa] usage event could not be recorded", error instanceof Error ? error.message : "unknown");
     // Analytics must never block the customer journey.
     return NextResponse.json({ ok: false }, { status: 202, headers: { "Cache-Control": "no-store" } });
   }
