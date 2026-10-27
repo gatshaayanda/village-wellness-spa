@@ -6,8 +6,8 @@ export const dynamic = "force-dynamic";
 const collectionName = "customerWellness";
 type JournalEntry = { id: string; text: string; createdAt: string };
 type WellnessRecord = { garden?: { growth?: number; checkinDays?: string[]; lastRitualAt?: string }; journal?: JournalEntry[] };
-const todayInBotswana = () => {
-  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+const todayInCanada = () => {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Mississauga", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
   const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
   return `${values.year}-${values.month}-${values.day}`;
 };
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const snapshot = await getAdminDb().collection(collectionName).doc(customer.uid).get();
     return NextResponse.json(safeState(snapshot.exists ? snapshot.data() as WellnessRecord : undefined), { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    console.error("[Tripple S] wellness data unavailable", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] wellness data unavailable", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Your wellness space is temporarily unavailable. Please try again." }, { status: 503 });
   }
 }
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(safeState(snapshot.data() as WellnessRecord).journal);
     }
     if (action === "ritual") {
-      const today = todayInBotswana();
+      const today = todayInCanada();
       await db.runTransaction(async transaction => {
         const snapshot = await transaction.get(ref);
         const current = safeState(snapshot.exists ? snapshot.data() as WellnessRecord : undefined);
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.message === "JOURNAL_LIMIT") return NextResponse.json({ error: "Your journal has reached its 60-entry limit. Delete an older entry to make room." }, { status: 409 });
     if (error instanceof Error && error.message === "RITUAL_ALREADY_DONE") return NextResponse.json({ error: "You have already tended your garden today. Come back whenever it suits you." }, { status: 409 });
-    console.error("[Tripple S] wellness update failed", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] wellness update failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "That update could not be saved. Please try again." }, { status: 503 });
   }
 }
