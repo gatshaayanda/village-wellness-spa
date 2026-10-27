@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Village Wellness Spa | Medical Aesthetics & Wellness",
     description: "Where beauty meets medical excellence.",
   },
-  icons: { icon: "/villagespa.jpg", apple: "/villagespa.jpg" },
+  icons: { icon: "/icon.svg", apple: "/icon.svg" },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
