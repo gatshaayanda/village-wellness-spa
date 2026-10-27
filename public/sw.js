@@ -1,5 +1,5 @@
 const CACHE_NAME="village-wellness-spa-shell-v1";
-const APP_SHELL=["/","/treatments","/book","/admin","/offline","/icon.svg","/icon.svg","/manifest.webmanifest"];
+const APP_SHELL=["/","/treatments","/book","/admin","/offline","/icon.svg","/manifest.webmanifest"];
 try {
  importScripts("https://www.gstatic.com/firebasejs/11.9.0/firebase-app-compat.js","https://www.gstatic.com/firebasejs/11.9.0/firebase-messaging-compat.js");
  firebase.initializeApp({apiKey:"AIzaSyDOgUYyu2ZEMbZjb3mVtnjYD_lzEl79wzg",authDomain:"tripple-s-wellness-spa.firebaseapp.com",projectId:"tripple-s-wellness-spa",storageBucket:"tripple-s-wellness-spa.firebasestorage.app",messagingSenderId:"742237320978",appId:"1:742237320978:web:0d8d422c03de028f6965cb",measurementId:"G-L5VDQ5Q4YJ"});
