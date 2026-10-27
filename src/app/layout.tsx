@@ -6,42 +6,42 @@ import UsageTracker from "@/components/UsageTracker";
 import "./globals.css";
 import "./pwa.css";
 
-const siteUrl = "https://trippleswellnessspa.com";
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://village-wellness-spa.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Tripple S Wellness Spa | Medical Aesthetics & Wellness",
-    template: "%s | Tripple S Wellness Spa",
+    default: "Village Wellness Spa | Medical Aesthetics & Wellness",
+    template: "%s | Village Wellness Spa",
   },
-  description: "Tripple S Wellness Spa — medical aesthetics, skin health, IV wellness and body contouring in Gaborone.",
-  applicationName: "Tripple S Wellness Spa",
+  description: "Village Wellness Spa — medical aesthetics, skin health, IV wellness and body contouring in Mississauga.",
+  applicationName: "Village Wellness Spa",
   generator: "Next.js",
-  keywords: ["Tripple S Wellness Spa", "medical aesthetics", "skin health", "IV wellness", "body contouring", "Gaborone"],
+  keywords: ["Village Wellness Spa", "medical aesthetics", "skin health", "IV wellness", "body contouring", "Mississauga"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
-    siteName: "Tripple S Wellness Spa",
-    title: "Tripple S Wellness Spa | Medical Aesthetics & Wellness",
+    siteName: "Village Wellness Spa",
+    title: "Village Wellness Spa | Medical Aesthetics & Wellness",
     description: "Where beauty meets medical excellence.",
   },
   twitter: {
     card: "summary",
-    title: "Tripple S Wellness Spa | Medical Aesthetics & Wellness",
+    title: "Village Wellness Spa | Medical Aesthetics & Wellness",
     description: "Where beauty meets medical excellence.",
   },
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  icons: { icon: "/villagespa.jpg", apple: "/villagespa.jpg" },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "Tripple S Spa",
+    title: "Village Spa",
     statusBarStyle: "black-translucent",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#171614",
+  themeColor: "#E52B7C",
   colorScheme: "light",
 };
 
