@@ -28,7 +28,7 @@ export default function TreatmentsPage() {
     <main className="site">
       <nav className="nav">
         <div className="container navInner">
-          <Link href="/" className="brand"><span className="brandMark"><img src="/villagespa.jpg" alt="" /></span><span>VILLAGE WELLNESS SPA<span>WELLNESS SPA</span></span></Link>
+          <Link href="/" className="brand"><span className="brandMark"><img src="/villagespa.jpg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link>
           <div className="navLinks"><Link href="/account" className="textLink">My Village Wellness Spa</Link><Link href="/book" className="button buttonPrimary">Book an appointment</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link><Link href="/book" className="button buttonPrimary mobileBookLink">Book</Link>
         </div>
       </nav>
