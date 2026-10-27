@@ -24,14 +24,14 @@ export async function GET(request: NextRequest) {
       profileConnected: Boolean(saved.profileConnected),
     }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    console.error("[Tripple S] customer profile load failed", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] customer profile load failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Your saved contact details are temporarily unavailable." }, { status: 503 });
   }
 }
 
 export async function POST(request: NextRequest) {
   const customer = await requireCustomer(request);
-  if (!customer) return NextResponse.json({ error: "Sign in to secure your Tripple S profile." }, { status: 401 });
+  if (!customer) return NextResponse.json({ error: "Sign in to secure your Village Wellness Spa profile." }, { status: 401 });
   if (!customer.email) return NextResponse.json({ error: "Connect a Google account with an email address first." }, { status: 400 });
   try {
     const db = getAdminDb();
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ connected: true, updatedRequests: bookings.size }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    console.error("[Tripple S] customer profile sync failed", error instanceof Error ? error.message : "unknown");
+    console.error("[Village Wellness Spa] customer profile sync failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ error: "Your profile connected, but the request details could not be updated. Please contact the clinic if needed." }, { status: 503 });
   }
 }
