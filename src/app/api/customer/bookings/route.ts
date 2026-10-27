@@ -13,5 +13,5 @@ export async function GET(request: NextRequest) {
    ...(data.finalPriceSnapshot?{finalPrice:String(data.finalPriceSnapshot)}:{}),...(data.discountCodeSnapshot?{offerCode:String(data.discountCodeSnapshot)}:{})
   }; }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
   return NextResponse.json({items});
- } catch(error) { console.error("[Tripple S] customer booking history unavailable",error instanceof Error?error.message:"unknown"); return NextResponse.json({error:"Your appointment history is temporarily unavailable. Please try again."},{status:503}); }
+ } catch(error) { console.error("[Village Wellness Spa] customer booking history unavailable",error instanceof Error?error.message:"unknown"); return NextResponse.json({error:"Your appointment history is temporarily unavailable. Please try again."},{status:503}); }
 }
