@@ -52,7 +52,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       const allowed = role.exists() && ["owner", "staff"].includes(String(role.data().role));
       if (!allowed) {
         await signOut(auth);
-        throw new Error("This access account is not authorized for Tripple S Admin.");
+        throw new Error("This access account is not authorized for Village Wellness Spa Admin.");
       }
       setAuthorized(true);
       setAccessWord("");
@@ -63,11 +63,11 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     }
   }
 
-  if (checking) return <main className="adminPage"><div className="adminShell"><div className="emptyState"><h1>Opening Tripple S Admin</h1><p>Checking access…</p></div></div></main>;
-  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Tripple S Admin · Authorized access</span><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div>{children}</div>;
+  if (checking) return <main className="adminPage"><div className="adminShell"><div className="emptyState"><h1>Opening Village Wellness Spa Admin</h1><p>Checking access…</p></div></div></main>;
+  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Village Wellness Spa Admin · Authorized access</span><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div>{children}</div>;
 
   return <main className="adminPage"><div className="adminShell"><section className="adminPanel" style={{ maxWidth: 520, margin: "80px auto" }}>
-    <span className="kicker">TRIPPLE S · ADMIN</span>
+    <span className="kicker">VILLAGE WELLNESS SPA · ADMIN</span>
     <h1>Admin</h1>
     <p>Enter your authorized access word to manage appointments, services, products and clinic hours.</p>
     <form className="adminForm" onSubmit={signIn}>
