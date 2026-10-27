@@ -21,8 +21,8 @@ export default function UsageTracker() {
     trackUsage("page_view", { category: categoryFor(pathname) });
     if (pathname === "/book") {
       try {
-        if (sessionStorage.getItem("tripple-s-booking-started") !== "1") {
-          sessionStorage.setItem("tripple-s-booking-started", "1");
+        if (sessionStorage.getItem("village-spa-booking-started") !== "1") {
+          sessionStorage.setItem("village-spa-booking-started", "1");
           trackUsage("booking_start");
         }
       } catch {
