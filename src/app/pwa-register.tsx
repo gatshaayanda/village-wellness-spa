@@ -79,13 +79,13 @@ export default function PwaRegister() {
     <>
       {offline && (
         <div className="offlineBanner" role="status">
-          Offline mode · previously loaded Tripple S pages remain available. A booking request is only received by the clinic after it synchronizes.
+          Offline mode · previously loaded Village Wellness Spa pages remain available. A booking request is only received by the clinic after it synchronizes.
         </div>
       )}
       {installable && (
-        <div className="pwaInstall" role="region" aria-label="Install Tripple S Spa">
+        <div className="pwaInstall" role="region" aria-label="Install Village Spa">
           <div>
-            <strong>Install Tripple S Spa</strong>
+            <strong>Install Village Spa</strong>
             <span>Keep the spa one tap away.</span>
           </div>
           <button type="button" onClick={() => void install()}>
