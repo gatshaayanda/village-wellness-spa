@@ -10,11 +10,11 @@ export const ourFileRouter = {
   })
     .middleware(async ({ req }) => {
       const admin = await requireAdmin(req);
-      if (!admin) throw new UploadThingError("You must be signed in as an authorized Tripple S staff member.");
+      if (!admin) throw new UploadThingError("You must be signed in as an authorized Village Wellness Spa staff member.");
       return { userId: admin.uid };
     })
     .onUploadComplete(async ({ file, metadata }) => {
-      console.info("[Tripple S] treatment image uploaded", {
+      console.info("[Village Wellness Spa] treatment image uploaded", {
         userId: metadata.userId,
         name: file.name,
         size: file.size,
