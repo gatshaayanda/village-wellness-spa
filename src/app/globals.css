@@ -770,3 +770,6 @@
 @media(max-width:390px){
  .bookPageEditorial .bookingFormSection:nth-child(2) .formGrid,.bookPageEditorial .bookingFormSection:nth-child(3) .formGrid{grid-template-columns:1fr}
 }
+
+.bookPageEditorial .bookingError{grid-column:1/-1;margin:12px 18px 0}
+@media(max-width:700px){.bookPageEditorial .bookingError{grid-column:auto;margin:10px 12px 0}}
