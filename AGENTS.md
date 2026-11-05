@@ -1,11 +1,11 @@
 # Village Wellness Spa — Agent Operating Contract
 
 ## Product identity
-Village Wellness Spa is a boutique wellness spa and aesthetics clinic at 1900 Dundas Street West, Suite 27, Mississauga, ON L5K 1P9, Canada.
+Village Wellness Spa is a boutique wellness spa and aesthetics clinic in The Village, Gaborone, Botswana. A public business listing identifies Maratadiba Road, Plot 492; confirm the precise address and current contact details with the owner before final launch.
 
 Brand palette: hot pink `#E52B7C`, emerald `#20B273`, chocolate `#6B3C1B`, and white. Use the bundled `public/icon.svg` brand mark for customer-facing branding, metadata and PWA icons.
 
-Services include IV nutrient therapy, facials and skincare, microneedling, laser treatments, peels, injectables (Botox/fillers only when provided by certified practitioners), massage, nails, waxing/sugaring, body treatments and curated skincare products. Do not invent pricing, operating hours, contact details, reviews or medical outcomes. Use “Request pricing” where no approved price is available. Clinical suitability is determined by the qualified practitioner/team.
+Core focus: facials and skincare, microneedling, chemical peels, massage and professional skincare products. Additional services must be confirmed with the owner before publication. The initial catalogue contains owner-supplied indicative Gaborone market price bands, not confirmed Village Wellness Spa prices; clearly label estimates and let admins edit, hide or replace every item. Do not invent exact service prices, operating hours, contact details, reviews or medical outcomes. Clinical suitability is determined by the qualified practitioner/team.
 
 ## Implementation contract
 - Product owner and final reviewer: user. Technical navigator and implementer: ChatGPT.
