@@ -6,8 +6,8 @@ export type ServiceCategoryRecord = { id:string; name:string; active:boolean; or
 // Admin must confirm/edit the actual menu before public launch. Never describe these as confirmed quotes.
 export const trippleSCategorySeed: ServiceCategoryRecord[] = [
   { id:"facials-skincare", name:"Facials & Skincare", active:true, order:1 },
-  { id:"advanced-aesthetics", name:"Advanced Aesthetics", active:true, order:2 },
-  { id:"massage-body", name:"Massage & Body Wellness", active:true, order:3 },
+  { id:"advanced-aesthetics", name:"Advanced Aesthetic Treatments", active:true, order:2 },
+  { id:"massage-body", name:"Massage & Body Treatments", active:true, order:3 },
   { id:"express-body-care", name:"Express Body Care", active:true, order:4 },
   { id:"nails-grooming", name:"Nails & Grooming", active:true, order:5 }
 ];
