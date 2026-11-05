@@ -1,6 +1,6 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
-import { legacyTrippleSServiceSeedIds, trippleSCategorySeed, trippleSProductSeed, trippleSServiceSeed, type ServiceCategoryRecord } from "@/lib/tripple-s/catalog";
+import { legacyTrippleSCategorySeedIds, legacyTrippleSServiceSeedIds, trippleSCategorySeed, trippleSProductSeed, trippleSServiceSeed, type ServiceCategoryRecord } from "@/lib/tripple-s/catalog";
 import { defaultClinicSettings, type ClinicSettings } from "@/lib/tripple-s/clinic-settings";
 import { deleteLocalDemoBucketRecord, getLocalDemoBucket, getLocalDemoRecords, isLocalDemoMode, saveLocalDemoBucketRecord, updateLocalDemoRecord } from "@/lib/tripple-s/local-demo";
 
