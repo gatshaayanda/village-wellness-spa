@@ -5,7 +5,7 @@ import { useEffect,useMemo,useState } from "react";
 import AdminGate from "@/app/admin/admin-gate";
 import TreatmentImageUpload from "@/components/admin/treatment-image-upload";
 import AdminModal from "@/components/admin/admin-modal";
-import { deleteProductRecord,deleteServiceCategory,deleteServiceRecord,getBookingRequests,getClinicSettings,getProducts,getServiceCategories,getServices,saveClinicSettings,saveProductRecord,saveServiceCategory,saveServiceRecord,updateBookingStatus,updatePaymentStatus,type BookingRequestRecord,type BookingStatus,type PaymentStatus,type ProductRecord,type ServiceRecord } from "@/lib/firebase/data";
+import { deleteProductRecord,deleteServiceCategory,deleteServiceRecord,getBookingRequests,getClinicSettings,getProducts,getServiceCategories,getServices,reconcileVillageServiceSeeds,saveClinicSettings,saveProductRecord,saveServiceCategory,saveServiceRecord,updateBookingStatus,updatePaymentStatus,type BookingRequestRecord,type BookingStatus,type PaymentStatus,type ProductRecord,type ServiceRecord } from "@/lib/firebase/data";
 import { type ServiceCategoryRecord } from "@/lib/tripple-s/catalog";
 import { defaultClinicSettings, dayLabels, type ClinicSettings, type DayKey } from "@/lib/tripple-s/clinic-settings";
 
@@ -16,7 +16,7 @@ function Dashboard(){
  const [pendingDelete,setPendingDelete]=useState<{kind:"treatment"|"product"|"category";id:string;name:string;categoryName?:string}|null>(null);
  const [bulkDraft,setBulkDraft]=useState<{target:"services"|"products";ids:string[];mode:"set"|"increase"|"decrease"|"increasePercent"|"decreasePercent";value:string;category:string}|null>(null);
 
- useEffect(()=>{let cancelled=false;void Promise.all([getBookingRequests(),getServices(),getProducts(),getClinicSettings(),getServiceCategories()]).then(([r,s,p,hours,cats])=>{if(cancelled)return;setRequests(r);setServices(s);setProducts(p);setClinicSettings(hours);setCategories(cats);}).catch(()=>!cancelled&&setNotice("Admin data could not be loaded. Check Firebase access.")).finally(()=>!cancelled&&setLoading(false));return()=>{cancelled=true;}},[]);
+ useEffect(()=>{let cancelled=false;void (async()=>{try{await reconcileVillageServiceSeeds();const [r,s,p,hours,cats]=await Promise.all([getBookingRequests(),getServices(),getProducts(),getClinicSettings(),getServiceCategories()]);if(cancelled)return;setRequests(r);setServices(s);setProducts(p);setClinicSettings(hours);setCategories(cats);}catch{if(!cancelled)setNotice("Admin data could not be loaded. Check Firebase access and permissions.");}finally{if(!cancelled)setLoading(false);}})();return()=>{cancelled=true;}},[]);
  useEffect(()=>{if(!notice)return;const timeout=window.setTimeout(()=>setNotice(""),4500);return()=>window.clearTimeout(timeout);},[notice]);
  const counts=useMemo(()=>({total:requests.length,new:requests.filter(x=>x.status==="NEW").length,confirmed:requests.filter(x=>x.status==="CONFIRMED"&&(!x.requestType||x.requestType==="APPOINTMENT")).length,payment:requests.filter(x=>(!x.requestType||x.requestType==="APPOINTMENT")&&x.paymentStatus!=="PAID"&&x.status!=="CANCELLED").length}),[requests]);
  const current=requests.find(x=>x.id===selected)??null;
