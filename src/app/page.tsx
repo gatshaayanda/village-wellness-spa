@@ -77,7 +77,7 @@ export default function Home() {
             <span><strong>My appointments</strong><small>Requests, visits & account</small></span>
             <b aria-hidden="true">↗</b>
           </Link>
-          <Link href="/treatments?category=Wellness" className="villageQuickCard">
+          <Link href="/treatments" className="villageQuickCard">
             <span className="villageQuickIcon" aria-hidden="true">◌</span>
             <span><strong>Wellness & IV</strong><small>Explore wellness options</small></span>
             <b aria-hidden="true">↗</b>
