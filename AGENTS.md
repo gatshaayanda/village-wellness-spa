@@ -3,7 +3,7 @@
 ## Product identity
 Village Wellness Spa is a boutique wellness spa and aesthetics clinic at 1900 Dundas Street West, Suite 27, Mississauga, ON L5K 1P9, Canada.
 
-Brand palette: hot pink `#E52B7C`, emerald `#20B273`, chocolate `#6B3C1B`, and white. Use `public/villagespa.jpg` wherever the brand mark or PWA icon appears.
+Brand palette: hot pink `#E52B7C`, emerald `#20B273`, chocolate `#6B3C1B`, and white. Use the bundled `public/icon.svg` brand mark for customer-facing branding, metadata and PWA icons.
 
 Services include IV nutrient therapy, facials and skincare, microneedling, laser treatments, peels, injectables (Botox/fillers only when provided by certified practitioners), massage, nails, waxing/sugaring, body treatments and curated skincare products. Do not invent pricing, operating hours, contact details, reviews or medical outcomes. Use “Request pricing” where no approved price is available. Clinical suitability is determined by the qualified practitioner/team.
 
