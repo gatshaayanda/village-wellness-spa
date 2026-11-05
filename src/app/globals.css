@@ -727,3 +727,46 @@
  .bookPageEditorial .bookingPrivacy{margin:8px 12px 14px;font-size:.67rem}
  .bookPageEditorial .bookingAsideContent ol{grid-template-columns:1fr;gap:3px}
 }
+
+
+/* Booking compactness pass: keep decisions and the next action in one clear flow. */
+.bookPageEditorial .bookingIntroInner{width:min(1040px,calc(100% - 32px));margin:0 auto}
+.bookPageEditorial .bookingIntro h1{max-width:720px}
+.bookPageEditorial .bookingLayout{display:block;max-width:900px;margin:0 auto}
+.bookPageEditorial .bookingForm{display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden}
+.bookPageEditorial .bookingFormSection{min-width:0}
+.bookPageEditorial .bookingFormSection:first-child{grid-column:1/-1;border-bottom:1px solid #f0e3e9}
+.bookPageEditorial .bookingFormSection:nth-child(2){border-right:1px solid #f0e3e9}
+.bookPageEditorial .bookingFormSection:nth-child(3){border-right:0}
+.bookPageEditorial .bookingFormSection:nth-child(2) .formGrid{grid-template-columns:1fr}
+.bookPageEditorial .bookingFormSection:nth-child(2) .fieldFull{grid-column:auto}
+.bookPageEditorial .bookingFormSection:nth-child(3) .formGrid{grid-template-columns:1fr}
+.bookPageEditorial .bookingFormSection:nth-child(3) .fieldFull{grid-column:auto}
+.bookPageEditorial .bookingTrustNote{grid-column:1/-1;display:grid;gap:4px;padding:12px 18px;background:#f3faf5;border-top:1px solid #e0f0e5;color:#416e57}
+.bookPageEditorial .bookingTrustNote strong{font-size:.78rem}
+.bookPageEditorial .bookingTrustNote span{font-size:.72rem;line-height:1.45}
+.bookPageEditorial .bookingSubmit{grid-column:1/-1;width:calc(100% - 36px);margin:14px 18px 0}
+.bookPageEditorial .bookingPrivacy{grid-column:1/-1;margin:8px 18px 16px}
+.bookPageEditorial .selectedTreatment{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px}
+.bookPageEditorial .selectedTreatmentNote{grid-column:1/-1}
+.bookPageEditorial .bookingAside{display:none}
+@media(max-width:700px){
+ .bookPageEditorial .bookingIntroInner{width:calc(100% - 24px)}
+ .bookPageEditorial .bookingIntro{padding:14px 0 8px}
+ .bookPageEditorial .bookingIntro h1{font-size:1.8rem}
+ .bookPageEditorial .bookingIntro p{max-width:440px}
+ .bookPageEditorial .bookingSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .bookPageEditorial .bookingSteps span{display:flex;align-items:center;gap:5px;justify-content:center;padding:7px 4px;font-size:.59rem;white-space:nowrap}
+ .bookPageEditorial .bookingLayout{width:100%}
+ .bookPageEditorial .bookingForm{grid-template-columns:1fr;border-radius:11px}
+ .bookPageEditorial .bookingFormSection:first-child{grid-column:auto}
+ .bookPageEditorial .bookingFormSection:nth-child(2){border-right:0;border-bottom:1px solid #f0e3e9}
+ .bookPageEditorial .bookingFormSection:nth-child(2) .formGrid,.bookPageEditorial .bookingFormSection:nth-child(3) .formGrid{grid-template-columns:1fr 1fr}
+ .bookPageEditorial .bookingFormSection:nth-child(2) .fieldFull,.bookPageEditorial .bookingFormSection:nth-child(3) .fieldFull{grid-column:1/-1}
+ .bookPageEditorial .bookingTrustNote{grid-column:auto;padding:11px 13px}
+ .bookPageEditorial .bookingSubmit{grid-column:auto;width:calc(100% - 24px);margin:12px 12px 0}
+ .bookPageEditorial .bookingPrivacy{grid-column:auto;margin:7px 12px 13px}
+}
+@media(max-width:390px){
+ .bookPageEditorial .bookingFormSection:nth-child(2) .formGrid,.bookPageEditorial .bookingFormSection:nth-child(3) .formGrid{grid-template-columns:1fr}
+}
