@@ -572,3 +572,84 @@
  .adminForm .actions .button{width:100%;padding-inline:8px}
  .detailList div{grid-template-columns:1fr;gap:4px}
 }
+
+
+/* Village home — compact, app-first composition adapted from Iteration 13. */
+.villageHome{min-height:100vh;background:#fff8fb;padding-bottom:24px}
+.villageAppHeader{width:min(1120px,calc(100% - 36px));margin:0 auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.villageAccountShortcut{display:inline-flex;align-items:center;gap:8px;color:var(--chocolate);font-size:.8rem;font-weight:800}
+.villageAccountShortcut>span:first-child{width:35px;height:35px;border:1px solid #efd0df;border-radius:50%;display:grid;place-items:center;color:var(--hot-pink);font-size:1.25rem;background:#fff}
+.villageHomeContent{width:min(1120px,calc(100% - 36px));margin:0 auto}
+.villageHero{position:relative;min-height:420px;overflow:hidden;border-radius:18px;background:#603447;isolation:isolate;box-shadow:0 16px 40px rgba(83,35,57,.12)}
+.villageHeroPhoto{position:absolute;inset:0;z-index:-2;background-position:center 42%;background-size:cover;background-color:#74435b}
+.villageHeroFallback{background:radial-gradient(ellipse at 76% 22%,rgba(255,255,255,.22),transparent 28%),linear-gradient(125deg,#54263f 0%,#9b456b 52%,#d98aa9 100%)}
+.villageHeroFallback:after{content:"";position:absolute;width:340px;height:340px;right:7%;bottom:-210px;border:1px solid rgba(255,255,255,.25);border-radius:50%;box-shadow:0 0 0 38px rgba(255,255,255,.045),0 0 0 76px rgba(255,255,255,.035)}
+.villageHeroMonogram{position:absolute;right:15%;top:12%;font:italic 15rem/1 Georgia,serif;color:rgba(255,255,255,.13)}
+.villageHeroGlow{position:absolute;inset:0;background:linear-gradient(90deg,rgba(48,20,35,.35),transparent 78%)}
+.villageHeroContent{position:relative;z-index:1;max-width:660px;padding:clamp(28px,6vw,66px);color:#fff}
+.villageHeroEyebrow{font-size:.65rem;font-weight:900;letter-spacing:.17em;color:#ffe0ed}
+.villageHero h1{margin:20px 0 12px;font:600 clamp(2.5rem,5.5vw,4.65rem)/.99 Georgia,serif;letter-spacing:-.055em}
+.villageHero h1 em{font-style:italic;color:#ffd3e5}
+.villageHeroContent p{margin:0 0 23px;color:rgba(255,255,255,.88);font-size:.98rem}
+.villageBookCta{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:52px;padding:0 23px;border-radius:9px;background:var(--hot-pink);color:#fff;font-size:.88rem;font-weight:900;box-shadow:0 8px 22px rgba(35,8,23,.2)}
+.villageBookCta:hover{background:#c91d67}
+.villageHeroLocation{position:absolute;right:24px;bottom:20px;color:#fff;font-size:.62rem;font-weight:900;letter-spacing:.16em;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+.villageQuickLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 13px}
+.villageQuickCard{display:grid;grid-template-columns:44px minmax(0,1fr) 18px;align-items:center;gap:12px;min-height:88px;padding:14px 17px;border:1px solid #f0dce5;border-radius:12px;background:#fff;box-shadow:0 4px 15px rgba(107,60,27,.035);transition:transform .15s ease,border-color .15s ease}
+.villageQuickCard:hover{transform:translateY(-2px);border-color:#e7a9c4}
+.villageQuickIcon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#fff0f6;color:#c52369;font-size:1.35rem}
+.villageQuickCard>span:nth-child(2){display:grid;gap:5px;min-width:0}
+.villageQuickCard strong{font-size:.88rem;color:var(--chocolate)}
+.villageQuickCard small{font-size:.73rem;color:#806d63;line-height:1.35}
+.villageQuickCard>b{color:var(--emerald);font-size:.9rem}
+.villageTrustStrip{display:flex;justify-content:center;align-items:center;gap:13px;min-height:43px;margin:0 0 14px;padding:8px 12px;border-radius:8px;background:#f0faf4;color:#416e57;font-size:.72rem;font-weight:800}
+.villageTrustStrip i{font-style:normal;color:#a5c8b3}
+.villageVisitCompact{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 21px;border:1px solid #f0dce5;border-radius:12px;background:#fff}
+.villageVisitCompact>div{display:grid;gap:5px}
+.villageVisitCompact .kicker{font-size:.58rem}
+.villageVisitCompact strong{font:600 1.15rem Georgia,serif;color:var(--chocolate)}
+.villageVisitCompact p{margin:0;color:#78665d;font-size:.76rem;line-height:1.5}
+.villageEnquiryLink{border:0;background:none;color:var(--hot-pink);font-weight:900;font-size:.78rem;cursor:pointer;white-space:nowrap}
+.villageCompactFooter{width:min(1120px,calc(100% - 36px));margin:15px auto 0;display:flex;justify-content:space-between;color:#907d84;font-size:.67rem}
+.villageBottomNav{display:none}
+@media(max-width:700px){
+ .villageHome{padding-bottom:78px}
+ .villageAppHeader{width:calc(100% - 28px);min-height:64px}
+ .villageAppHeader .brandMark{width:39px;height:39px;flex-basis:39px}
+ .villageAppHeader .brand{font-size:.82rem}
+ .villageAccountShortcut{font-size:0}
+ .villageAccountShortcut>span:first-child{width:37px;height:37px;font-size:1.2rem}
+ .villageHomeContent{width:calc(100% - 28px)}
+ .villageHero{min-height:390px;border-radius:14px}
+ .villageHeroContent{padding:28px 22px 60px}
+ .villageHero h1{font-size:clamp(2.45rem,10vw,3.5rem);margin:18px 0 11px}
+ .villageHeroContent p{font-size:.86rem;max-width:260px;line-height:1.5}
+ .villageBookCta{width:100%;min-height:51px}
+ .villageHeroLocation{right:15px;bottom:14px;font-size:.55rem}
+ .villageQuickLinks{gap:9px;margin:13px 0 10px}
+ .villageQuickCard{grid-template-columns:34px minmax(0,1fr);gap:9px;min-height:83px;padding:11px 10px;border-radius:10px}
+ .villageQuickIcon{width:33px;height:33px;border-radius:8px;font-size:1.05rem}
+ .villageQuickCard strong{font-size:.75rem;line-height:1.25}
+ .villageQuickCard small{font-size:.64rem}
+ .villageQuickCard>b{display:none}
+ .villageTrustStrip{gap:7px;min-height:37px;margin-bottom:10px;padding:7px 5px;font-size:.58rem;white-space:nowrap}
+ .villageVisitCompact{align-items:flex-start;flex-direction:column;gap:11px;padding:14px;border-radius:10px}
+ .villageVisitCompact strong{font-size:1.05rem}
+ .villageVisitCompact p{font-size:.72rem}
+ .villageEnquiryLink{padding:0}
+ .villageCompactFooter{width:calc(100% - 28px);font-size:.62rem}
+ .villageBottomNav{position:fixed;z-index:40;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);min-height:66px;padding:7px 8px max(7px,env(safe-area-inset-bottom));border-top:1px solid #ecdce3;background:rgba(255,255,255,.97);backdrop-filter:blur(14px)}
+ .villageBottomNav a{display:grid;justify-items:center;align-content:center;gap:3px;color:#79656d}
+ .villageBottomNav a>span{font-size:1.2rem;line-height:1.15}
+ .villageBottomNav small{font-size:.61rem;font-weight:800}
+ .villageBottomNav a[aria-current=page]{color:#c52369}
+ .villageBottomNav .villageBottomBook{color:#fff}
+ .villageBottomNav .villageBottomBook>span{display:grid;place-items:center;width:30px;height:27px;border-radius:8px;background:var(--hot-pink);font-size:1.1rem}
+ .villageBottomNav .villageBottomBook small{color:#c52369}
+ .villageCompactFooter{margin-bottom:2px}
+}
+@media(min-width:701px){
+ .villageHero{min-height:460px}
+ .villageQuickCard{min-height:98px}
+ .villageBottomNav{display:none}
+}
