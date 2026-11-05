@@ -2,32 +2,59 @@ export type ServiceCategory = string;
 export type ServiceSeed = { id:string; name:string; category:ServiceCategory; description:string; price:string; duration:string; active:boolean; consultationRequired?:boolean; assessmentNote?:string };
 export type ServiceCategoryRecord = { id:string; name:string; active:boolean; order:number };
 
-// Export names are retained for compatibility with the existing data seeding workflow.
+// Prices below were checked against Village Wellness Spa's published service pages
+// on 2026-11-05. CAD prices remain editable in Admin; consultation-only services
+// intentionally stay unpriced. Recheck source prices before future bulk updates.
 export const trippleSCategorySeed: ServiceCategoryRecord[] = [
-  { id:"iv-wellness", name:"IV Bar & Wellness", active:true, order:1 },
-  { id:"facials-skincare", name:"Facials & Skincare", active:true, order:2 },
-  { id:"advanced-aesthetics", name:"Advanced Aesthetic Treatments", active:true, order:3 },
-  { id:"massage-body", name:"Massage & Body Treatments", active:true, order:4 },
-  { id:"nails-beauty", name:"Nails & Beauty", active:true, order:5 },
-  { id:"hair-removal", name:"Waxing & Sugaring", active:true, order:6 },
-  { id:"skincare-products", name:"Skincare Products", active:true, order:7 }
+  { id:"facials-skincare", name:"Facials & Skincare", active:true, order:1 },
+  { id:"advanced-aesthetics", name:"Advanced Aesthetic Treatments", active:true, order:2 },
+  { id:"massage-body", name:"Massage & Body Treatments", active:true, order:3 },
+  { id:"laser-hair-removal", name:"Laser Hair Removal", active:true, order:4 },
+  { id:"injectables", name:"Injectables & Consultations", active:true, order:5 },
+  { id:"iv-wellness", name:"IV & Wellness Enquiries", active:true, order:6 }
 ];
 
-const pricing = "Request pricing";
-const duration = "Confirm with the team";
+const confirm = "Confirm with the team";
+const consult = "Consultation required";
 export const trippleSServiceSeed: ServiceSeed[] = [
-  { id:"iv-nutrient-therapy", name:"IV Nutrient Therapy", category:"IV Bar & Wellness", description:"Explore IV wellness options with the spa team. Service details and suitability must be confirmed by a qualified practitioner.", price:pricing, duration, active:true, consultationRequired:true, assessmentNote:"Practitioner assessment and service details must be confirmed before booking." },
-  { id:"facial-skincare", name:"Facials & Skincare", category:"Facials & Skincare", description:"Personalised facial and skincare services selected around your goals and discussed with the spa team.", price:pricing, duration, active:true },
-  { id:"microneedling", name:"Microneedling", category:"Advanced Aesthetic Treatments", description:"An advanced skin treatment enquiry. A qualified practitioner will confirm suitability, treatment details and next steps.", price:pricing, duration, active:true, consultationRequired:true },
-  { id:"laser-treatments", name:"Laser Treatments", category:"Advanced Aesthetic Treatments", description:"Ask the team about available laser services and arrange an assessment where required.", price:pricing, duration, active:true, consultationRequired:true },
-  { id:"chemical-peels", name:"Chemical Peels", category:"Advanced Aesthetic Treatments", description:"Discuss peel options with the qualified practitioner, who will confirm suitability and preparation.", price:pricing, duration, active:true, consultationRequired:true },
-  { id:"injectables-consultation", name:"Injectables Consultation", category:"Advanced Aesthetic Treatments", description:"Enquire about injectable services offered by certified practitioners. Availability and suitability are confirmed by the practitioner.", price:pricing, duration, active:true, consultationRequired:true },
-  { id:"massage", name:"Massage", category:"Massage & Body Treatments", description:"Ask about massage options and find a visit that fits your needs.", price:pricing, duration, active:true },
-  { id:"nails", name:"Nails", category:"Nails & Beauty", description:"Enquire about manicure, pedicure and nail-care services currently offered by the spa.", price:pricing, duration, active:true },
-  { id:"waxing-sugaring", name:"Waxing & Sugaring", category:"Waxing & Sugaring", description:"Ask the team about available hair-removal services and current pricing.", price:pricing, duration, active:true },
-  { id:"body-treatments", name:"Body Treatments", category:"Massage & Body Treatments", description:"Explore available body-care treatments with the spa team.", price:pricing, duration, active:true }
+  { id:"customized-luxury-facial", name:"Customized Luxury Facial", category:"Facials & Skincare", description:"A tailored, results-focused facial using high-performance products and techniques. Published price starts at $205 CAD.", price:"From $205 CAD", duration:confirm, active:true },
+  { id:"customized-signature-facial", name:"Customized Signature Facial", category:"Facials & Skincare", description:"A maintenance-focused facial with cleansing, gentle exfoliation and a customized mask. Published price starts at $165 CAD.", price:"From $165 CAD", duration:confirm, active:true },
+  { id:"corrective-facial-peel", name:"Corrective Facial Peel", category:"Facials & Skincare", description:"Corrective peel options for texture, fine lines and uneven tone. Published price starts at $185 CAD; practitioner suitability review may apply.", price:"From $185 CAD", duration:confirm, active:true, consultationRequired:true, assessmentNote:"Confirm peel selection and suitability with the clinical team." },
+  { id:"jessner-peel", name:"Jessner Peel", category:"Facials & Skincare", description:"A medium-depth peel. The spa's published price is $130 CAD.", price:"$130 CAD", duration:confirm, active:true, consultationRequired:true, assessmentNote:"Confirm suitability and preparation instructions with the practitioner." },
+  { id:"back-facial", name:"Back Facial", category:"Facials & Skincare", description:"A purifying back treatment with deep cleansing, extractions and a clarifying mask. Published price $175 CAD.", price:"$175 CAD", duration:confirm, active:true },
+  { id:"ultimate-eye-treatment", name:"Ultimate Eye Treatment", category:"Facials & Skincare", description:"Eye-area treatment featuring microcurrent, LED and a customized gel mask. Published price $90 CAD.", price:"$90 CAD", duration:confirm, active:true },
+  { id:"hydraglow", name:"HydraGlow", category:"Advanced Aesthetic Treatments", description:"Multi-step cleanse, exfoliation, hydration and serum infusion using hydrogen-water technology. Published price $325 CAD.", price:"$325 CAD", duration:confirm, active:true },
+  { id:"oxygeneo-60", name:"OxyGeneo 3-in-1 Super Facial — 60 min", category:"Advanced Aesthetic Treatments", description:"A hydrating and brightening facial combining exfoliation, oxygenation and infusion. Published price $250 CAD.", price:"$250 CAD", duration:"60 min", active:true },
+  { id:"oxygeneo-90", name:"OxyGeneo 3-in-1 Super Facial — 90 min", category:"Advanced Aesthetic Treatments", description:"Includes TriPollar radio frequency. Published price $299 CAD.", price:"$299 CAD", duration:"90 min", active:true },
+  { id:"microneedling-face-neck", name:"Microneedling Face & Neck", category:"Advanced Aesthetic Treatments", description:"Advanced microneedling treatment. Published price $450 CAD; series of 3 is $1,125 CAD. Décolleté add-on $100 CAD; hands add-on $50 CAD.", price:"$450 CAD · Series of 3: $1,125 CAD", duration:confirm, active:true, consultationRequired:true, assessmentNote:"Confirm treatment plan, suitability and package details with the practitioner." },
+  { id:"forma-facial-contouring", name:"Forma Facial Contouring", category:"Advanced Aesthetic Treatments", description:"Non-invasive radio-frequency treatment. Published price $265 CAD; series of 6 is $1,500 CAD.", price:"$265 CAD · Series of 6: $1,500 CAD", duration:confirm, active:true, consultationRequired:true },
+  { id:"advanced-infusion-facial", name:"Advanced Infusion Facial", category:"Advanced Aesthetic Treatments", description:"Microdermabrasion and oxygen infusion. Published price $265 CAD; series of 6 is $1,500 CAD.", price:"$265 CAD · Series of 6: $1,500 CAD", duration:confirm, active:true },
+  { id:"skinceuticals-microdermabrasion", name:"SkinCeuticals Microdermabrasion", category:"Advanced Aesthetic Treatments", description:"Microdermabrasion treatment. Published price $225 CAD.", price:"$225 CAD", duration:confirm, active:true },
+  { id:"lumecca-ipl", name:"Lumecca IPL Skin Treatment", category:"Advanced Aesthetic Treatments", description:"IPL treatment for pigmentation and vascular concerns. Published price $350 CAD; assessment may be required.", price:"$350 CAD", duration:confirm, active:true, consultationRequired:true },
+  { id:"morpheus8-face-neck", name:"Morpheus8 Face & Neck", category:"Advanced Aesthetic Treatments", description:"Fractional microneedling with radiofrequency. The spa lists pricing by consultation.", price:consult, duration:confirm, active:true, consultationRequired:true, assessmentNote:"Pricing and suitability are confirmed during consultation." },
+  { id:"tixel-skin-resurfacing", name:"Tixel Skin Resurfacing", category:"Advanced Aesthetic Treatments", description:"Thermal skin resurfacing. The spa lists pricing by consultation.", price:consult, duration:confirm, active:true, consultationRequired:true },
+  { id:"massage-30-rmt", name:"30 Minute Therapeutic Massage (RMT)", category:"Massage & Body Treatments", description:"Therapeutic massage focused on the back, neck and shoulders. Published price $95 CAD.", price:"$95 CAD", duration:"30 min", active:true },
+  { id:"massage-45-rmt", name:"45 Minute Therapeutic Massage (RMT)", category:"Massage & Body Treatments", description:"Therapeutic massage using Swedish techniques. Published price $120 CAD.", price:"$120 CAD", duration:"45 min", active:true },
+  { id:"massage-60-rmt", name:"60 Minute Therapeutic Massage (RMT)", category:"Massage & Body Treatments", description:"Therapeutic massage with deep tissue, prenatal and aromatherapy options. Published price $140 CAD.", price:"$140 CAD", duration:"60 min", active:true },
+  { id:"massage-hot-stone-60", name:"60 Minute Hot Stone Massage (RMT)", category:"Massage & Body Treatments", description:"Hot stone massage. Published price $155 CAD.", price:"$155 CAD", duration:"60 min", active:true },
+  { id:"massage-90-rmt", name:"90 Minute Therapeutic Massage (RMT)", category:"Massage & Body Treatments", description:"Extended therapeutic massage. Published price $200 CAD.", price:"$200 CAD", duration:"90 min", active:true },
+  { id:"lymphatic-drainage-75", name:"75 Minute Lymphatic Drainage (RMT)", category:"Massage & Body Treatments", description:"Gentle rhythmic lymphatic drainage massage. Published price $250 CAD.", price:"$250 CAD", duration:"75 min", active:true },
+  { id:"acupuncture-60-rmt", name:"60 Minute Acupuncture Treatment (RMT)", category:"Massage & Body Treatments", description:"Acupuncture treatment listed by the spa. Published price $150 CAD.", price:"$150 CAD", duration:"60 min", active:true, consultationRequired:true },
+  { id:"osteopath-45", name:"Osteopath Treatment — 45 min", category:"Massage & Body Treatments", description:"Hands-on osteopathy treatment. Published price $120 CAD.", price:"$120 CAD", duration:"45 min", active:true },
+  { id:"osteopath-60", name:"Osteopath Treatment — 60 min", category:"Massage & Body Treatments", description:"Hands-on osteopathy treatment. Published price $140 CAD.", price:"$140 CAD", duration:"60 min", active:true },
+  { id:"fascial-stretch-30", name:"Fascial Stretch Therapy — 30 min", category:"Massage & Body Treatments", description:"Assisted stretch session. Published price $85 CAD.", price:"$85 CAD", duration:"30 min", active:true },
+  { id:"fascial-stretch-60", name:"Fascial Stretch Therapy — 60 min", category:"Massage & Body Treatments", description:"Extended assisted stretch session. Published price $145 CAD.", price:"$145 CAD", duration:"60 min", active:true },
+  { id:"aromatic-body-scrub", name:"Aromatic Body Scrub", category:"Massage & Body Treatments", description:"Exfoliating body treatment. Published price $105 CAD.", price:"$105 CAD", duration:confirm, active:true },
+  { id:"laser-underarm", name:"Laser Hair Removal — Underarm", category:"Laser Hair Removal", description:"Published price per treatment $50 CAD. Spa advertises 6 + 2 package offer.", price:"$50 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"laser-bikini", name:"Laser Hair Removal — Bikini", category:"Laser Hair Removal", description:"Published price per treatment $100 CAD. Spa advertises 6 + 2 package offer.", price:"$100 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"laser-brazilian", name:"Laser Hair Removal — Brazilian", category:"Laser Hair Removal", description:"Published price per treatment $150 CAD. Spa advertises 6 + 2 package offer.", price:"$150 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"laser-full-legs", name:"Laser Hair Removal — Full Legs", category:"Laser Hair Removal", description:"Published price per treatment $300 CAD. Spa advertises 6 + 2 package offer.", price:"$300 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"laser-chin", name:"Laser Hair Removal — Chin", category:"Laser Hair Removal", description:"Published price per treatment $50 CAD. Spa advertises 6 + 2 package offer.", price:"$50 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"laser-upper-lip", name:"Laser Hair Removal — Upper Lip", category:"Laser Hair Removal", description:"Published price per treatment $50 CAD. Spa advertises 6 + 2 package offer.", price:"$50 CAD / treatment", duration:confirm, active:true, consultationRequired:true },
+  { id:"injectables-consultation", name:"Injectables Consultation", category:"Injectables & Consultations", description:"Enquire about Sculptra, Botox/Dysport, dermal fillers or PRP. The spa directs customers to book a consultation; no public price is listed.", price:consult, duration:confirm, active:true, consultationRequired:true },
+  { id:"iv-wellness-enquiry", name:"IV & Wellness Enquiry", category:"IV & Wellness Enquiries", description:"Ask the team about current wellness services and availability. No verified public price list was found.", price:consult, duration:confirm, active:true, consultationRequired:true }
 ];
 
-// Keep the legacy IDs so the existing seeding/migration flow can identify inherited records.
+// Retain inherited IDs for compatibility with the existing catalogue migration workflow.
 export const legacyTrippleSServiceSeedIds: string[] = ["hydration-drip","weight-management-drip","clear-complexion-drip","lumiglow-skin-brightening","premium-glow-drip","ultimate-beauty-wellness","anti-sweat-injection","skin-boosters","prp-facial","microneedling","skin-repair-microneedling","pigmentation-peel","hydra-facial","deep-cleansing-led","anti-acne-peel","glow-up-peel","blemish-peel","dermaplaning","skin-tag-removal","lipolytic-10","lipolytic-20","lipolytic-30","sauna-45","sauna-60","skin-consultation"];
 export const trippleSProductSeed: {id:string;name:string;description:string;size:string;price:string;active:boolean;purchaseMethod:string}[] = [];
