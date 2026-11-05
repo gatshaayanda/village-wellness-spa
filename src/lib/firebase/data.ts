@@ -145,6 +145,42 @@ export async function deleteServiceCategory(id: string, name: string) {
   await setDoc(doc(db, "settings", "catalogueState"), { categoriesManaged: true }, { merge: true });
 }
 
+// Safe, additive Village price-list migration. It never overwrites an admin-edited
+// service and never deletes existing records; it runs once from the protected admin area.
+export async function reconcileVillageServiceSeeds() {
+  if (isLocalDemoMode()) return { added: 0, categoriesAdded: 0, skipped: true };
+  const stateRef = doc(db, "settings", "catalogueState");
+  const stateSnapshot = await getDoc(stateRef);
+  const state = stateSnapshot.data() ?? {};
+  if (Number(state.villageServiceSeedVersion ?? 0) >= 1) return { added: 0, categoriesAdded: 0, skipped: true };
+
+  const [serviceSnapshot, categorySnapshot] = await Promise.all([
+    getDocs(servicesCollection),
+    getDocs(serviceCategoriesCollection),
+  ]);
+  const serviceIds = new Set(serviceSnapshot.docs.map(item => item.id));
+  const categoryIds = new Set(categorySnapshot.docs.map(item => item.id));
+  let added = 0, categoriesAdded = 0;
+
+  for (const category of trippleSCategorySeed) {
+    if (categoryIds.has(category.id)) continue;
+    await setDoc(doc(db, "serviceCategories", category.id), category);
+    categoriesAdded++;
+  }
+  for (const service of trippleSServiceSeed) {
+    if (serviceIds.has(service.id)) continue;
+    await setDoc(doc(db, "services", service.id), service);
+    added++;
+  }
+  await setDoc(stateRef, {
+    villageServiceSeedVersion: 1,
+    servicesManaged: true,
+    categoriesManaged: true,
+    serviceCatalogVersion: 3,
+  }, { merge: true });
+  return { added, categoriesAdded, skipped: false };
+}
+
 export async function reconcileTrippleSCatalogue() {
   const stateRef = doc(db, "settings", "catalogueState");
   const stateSnapshot = await getDoc(stateRef);
