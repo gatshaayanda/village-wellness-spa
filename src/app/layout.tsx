@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     default: "Village Wellness Spa | Medical Aesthetics & Wellness",
     template: "%s | Village Wellness Spa",
   },
-  description: "Village Wellness Spa — IV wellness, facials, advanced skin treatments, massage, nails and body care in Mississauga, Ontario.",
+  description: "Village Wellness Spa — IV wellness, facials, advanced skin treatments, massage, nails and body care in The Village, Gaborone, Botswana.",
   applicationName: "Village Wellness Spa",
   generator: "Next.js",
-  keywords: ["Village Wellness Spa", "medical aesthetics", "skin health", "IV wellness", "body contouring", "Mississauga"],
+  keywords: ["Village Wellness Spa", "medical aesthetics", "skin health", "IV wellness", "body contouring", "Gaborone", "The Village"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
