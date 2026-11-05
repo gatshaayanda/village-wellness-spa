@@ -63,7 +63,7 @@ export default function Home() {
             <p>Thoughtful care, guided by your goals.</p>
             <Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link>
           </div>
-          <span className="villageHeroLocation">MISSISSAUGA, ONTARIO</span>
+          <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
 
         <section className="villageQuickLinks" aria-label="Explore Village Wellness Spa">
