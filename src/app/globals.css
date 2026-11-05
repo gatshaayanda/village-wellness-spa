@@ -653,3 +653,77 @@
  .villageQuickCard{min-height:98px}
  .villageBottomNav{display:none}
 }
+
+
+/* Booking flow refinement — Iteration 13 task hierarchy, Village brand.
+   Presentation only: retain the existing live availability, validation,
+   guest/account, booking API and confirmation lifecycle. */
+.bookPageEditorial .nav{min-height:64px}
+.bookPageEditorial .navInner{min-height:64px}
+.bookPageEditorial .bookingIntro{padding:20px 18px 12px}
+.bookPageEditorial .bookingIntro h1{font-size:clamp(1.9rem,3.7vw,2.8rem);margin:6px 0}
+.bookPageEditorial .bookingIntro p{font-size:.83rem;max-width:620px}
+.bookPageEditorial .bookingSteps{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.bookPageEditorial .bookingSteps span{padding:7px 10px;font-size:.67rem}
+.bookPageEditorial .formWrapWide{padding-top:5px}
+.bookPageEditorial .bookingLayout{grid-template-columns:minmax(0,1.55fr) minmax(230px,.55fr);gap:13px;align-items:start}
+.bookPageEditorial .bookingForm{border-radius:12px}
+.bookPageEditorial .bookingFormSection{padding:17px 19px}
+.bookPageEditorial .bookingSectionHeading{align-items:center;margin-bottom:12px}
+.bookPageEditorial .bookingSectionHeading h2{font-size:1.22rem}
+.bookPageEditorial .bookingSectionHeading p{font-size:.75rem;line-height:1.45}
+.bookPageEditorial .clientChoice{margin-bottom:11px}
+.bookPageEditorial .clientChoiceOption{padding:10px 12px}
+.bookPageEditorial .clientChoiceOption strong{font-size:.82rem}
+.bookPageEditorial .clientChoiceOption span{font-size:.7rem}
+.bookPageEditorial .bookingForm .field{gap:6px}
+.bookPageEditorial .bookingForm .field label{font-size:.76rem}
+.bookPageEditorial .bookingForm .field small{font-size:.69rem;line-height:1.4}
+.bookPageEditorial .bookingForm .formGrid{gap:10px}
+.bookPageEditorial .bookingForm .field input,.bookPageEditorial .bookingForm .field select,.bookPageEditorial .bookingForm .field textarea{min-height:42px;padding:9px 11px;font-size:.85rem}
+.bookPageEditorial .selectedTreatment{margin:9px 0;padding:11px}
+.bookPageEditorial .selectedTreatment p{font-size:.76rem;line-height:1.45}
+.bookPageEditorial .timeSelectionSummary{padding:9px 11px}
+.bookPageEditorial .bookingAside{position:sticky;top:82px}
+.bookPageEditorial .bookingAsideImage{height:125px}
+.bookPageEditorial .bookingAsideContent{padding:15px}
+.bookPageEditorial .bookingAsideContent h3{font-size:1.28rem}
+.bookPageEditorial .bookingAsideContent ol{padding-left:18px;font-size:.75rem;line-height:1.5}
+.bookPageEditorial .bookingAsideContent li{margin:5px 0}
+.bookPageEditorial .bookingSubmit{min-height:48px;margin-top:13px}
+.bookPageEditorial .bookingPrivacy{margin-top:8px}
+.bookPageEditorial .confirmEditorial{max-width:760px;margin:22px auto;padding:clamp(22px,4vw,38px)}
+@media(max-width:800px){
+ .bookPageEditorial .bookingLayout{grid-template-columns:1fr;gap:10px}
+ .bookPageEditorial .bookingAside{position:static;grid-row:auto}
+ .bookPageEditorial .bookingAsideImage{height:76px}
+ .bookPageEditorial .bookingAsideContent{padding:12px 14px}
+ .bookPageEditorial .bookingAsideContent h3{font-size:1.12rem}
+ .bookPageEditorial .bookingAsideContent ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-left:17px}
+ .bookPageEditorial .bookingAsideContent li{font-size:.68rem}
+ .bookPageEditorial .bookingAsideContent>p,.bookPageEditorial .asideContact{display:none}
+}
+@media(max-width:560px){
+ .bookPageEditorial{padding-bottom:22px}
+ .bookPageEditorial .nav{min-height:58px}
+ .bookPageEditorial .navInner{min-height:58px}
+ .bookPageEditorial .navLinks{display:none}
+ .bookPageEditorial .bookingIntro{padding:15px 12px 9px}
+ .bookPageEditorial .bookingIntro h1{font-size:1.85rem;line-height:1.05}
+ .bookPageEditorial .bookingIntro p{font-size:.76rem;line-height:1.45}
+ .bookPageEditorial .bookingSteps{gap:5px;margin-top:9px}
+ .bookPageEditorial .bookingSteps span{padding:6px 8px;font-size:.62rem}
+ .bookPageEditorial .formWrapWide{width:calc(100% - 16px)}
+ .bookPageEditorial .bookingFormSection{padding:14px 12px}
+ .bookPageEditorial .bookingSectionHeading{align-items:flex-start;gap:9px;margin-bottom:10px}
+ .bookPageEditorial .bookingSectionHeading>span{width:27px;height:27px;flex-basis:27px;font-size:.7rem}
+ .bookPageEditorial .bookingSectionHeading h2{font-size:1.08rem;margin:0 0 3px}
+ .bookPageEditorial .bookingSectionHeading p{font-size:.69rem}
+ .bookPageEditorial .clientChoice{gap:6px}
+ .bookPageEditorial .clientChoiceOption{padding:9px 8px}
+ .bookPageEditorial .bookingForm .formGrid{gap:9px}
+ .bookPageEditorial .bookingForm .field input,.bookPageEditorial .bookingForm .field select,.bookPageEditorial .bookingForm .field textarea{min-height:43px}
+ .bookPageEditorial .bookingSubmit{width:calc(100% - 24px);margin:12px 12px 0;min-height:48px}
+ .bookPageEditorial .bookingPrivacy{margin:8px 12px 14px;font-size:.67rem}
+ .bookPageEditorial .bookingAsideContent ol{grid-template-columns:1fr;gap:3px}
+}
