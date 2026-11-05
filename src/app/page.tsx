@@ -97,7 +97,7 @@ export default function Home() {
           <div>
             <span className="kicker">FIND YOUR WAY HERE</span>
             <strong>Village Wellness Spa</strong>
-            <p>1900 Dundas Street West, Suite 27<br />Mississauga, ON L5K 1P9, Canada</p>
+            <p>Maratadiba Road, Plot 492<br />The Village, Gaborone, Botswana</p>
           </div>
           <button type="button" className="villageEnquiryLink" onClick={() => setEnquiryOpen(true)}>Questions? Enquire <span aria-hidden="true">↗</span></button>
         </section>
