@@ -21,6 +21,7 @@ export default function BookForm() {
   const requestedService = searchParams.get("service") ?? "";
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
+  const [hasSavedProfile, setHasSavedProfile] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -46,6 +47,7 @@ export default function BookForm() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       const googleProfile = user?.providerData.find((provider) => provider.providerId === "google.com");
       setHasConnectedAccount(Boolean(user && !user.isAnonymous));
+      setHasSavedProfile(false);
       setCustomerName(user?.displayName || googleProfile?.displayName || "");
       setCustomerPhone(user?.phoneNumber ?? "");
       setCustomerEmail(user?.email || googleProfile?.email || "");
@@ -64,6 +66,7 @@ export default function BookForm() {
         setCustomerName(profile.name || user.displayName || googleProfile?.displayName || "");
         setCustomerPhone(profile.phone || user.phoneNumber || "");
         setCustomerEmail(profile.email || user.email || googleProfile?.email || "");
+        setHasSavedProfile(Boolean(profile.name && profile.phone));
       } catch (profileError) {
         console.warn("[Village Wellness Spa] saved customer details unavailable; using account details", profileError);
       }
