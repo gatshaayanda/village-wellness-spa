@@ -48,13 +48,15 @@ Research grounding (design guidance, not a claim that any single study guarantee
 - Conrad, Couper, Tourangeau & Peytchev (2010), *The impact of progress indicators on task completion*, Interacting with Computers, DOI: https://doi.org/10.1016/j.intcom.2010.03.001
 - *Wellbeing Supportive Design – Research-Based Guidelines for Supporting Psychological Wellbeing in User Experience* (2022), DOI: https://doi.org/10.1080/10447318.2022.2089812
 
-## Arrival queue and repeat-visit loop
-- Customer arrival check-in supports both remote “on the way” heads-ups and on-site arrival. Remote check-ins start as ON_THE_WAY and are not queue positions or confirmed appointments; reception must record ARRIVED when the customer physically reaches the spa.
-- Reception can register a walk-in on behalf of a customer. Both customer and staff paths write the same bookingRequests record with requestType: "QUEUE" so authenticated customer history can display it. Staff registration links to an existing customer profile only when phone and name match exactly and uniquely; never merge customer identities by phone alone.
-- Staff owns real visit status transitions: ARRIVED → WAITING → IN_TREATMENT → COMPLETED, with CANCELLED/NO_SHOW where appropriate. Status timestamps are written only when staff actually changes a status. No fake queue position, countdown, estimated start time, simulated progress or automatic arrival claim.
-- On completion, staff may record a suggested return date and care note. This is a customer booking prompt, not an automatic clinical recommendation. The practitioner/team determines suitability and timing; never infer treatment intervals.
-- Customer accounts show the queue visit status and any saved return recommendation, with a direct route to the existing appointment booking flow.
-- Keep the experience calm, discreet and service-led for The Village, Gaborone. Do not import G-West car-wash slang, racing/reward mechanics or high-energy queue styling. A garden game is a separate optional future feature and must not block booking, check-in or account tasks.
+## Reception walk-ins and repeat-visit loop
+- Customers book appointments through the existing booking flow. Do not offer remote “on the way” check-ins or customer-created same-day queue entries. The public `/queue` path redirects to appointment booking; the old customer queue API is removed.
+- Reception alone registers a walk-in after the customer is physically at the spa. Capture the customer's name, WhatsApp/mobile number and treatment. Record the visit as `requestType: "QUEUE"`, `queueMode: "STAFF"`, status `ARRIVED` in the existing `bookingRequests` collection.
+- Staff owns the real progression: `ARRIVED → WAITING → IN_TREATMENT → COMPLETED`, with cancellation/no-show where appropriate. Enforce transitions on the server. No invented queue position, countdown or treatment start estimate.
+- At registration, create a high-entropy, expiring, single-use account-claim link. Reception may send it to the customer's WhatsApp using the staff-generated message link. The customer signs in and claims the visit; never auto-merge identities by phone alone. Existing exact, unique name+phone matches may be linked to that customer UID, but the claim link remains scoped to that same account.
+- Staff confirms completion. At completion, staff may record the actual final visit amount and practitioner-approved suggested return date/care note. These details then appear in the customer's private account as a visit record/receipt summary. Do not label a visit amount as paid or issue a payment receipt unless payment is separately recorded as received.
+- The customer account provides a direct path to book the suggested next visit. Return dates are practitioner/team-entered guidance, not automatically inferred clinical intervals.
+- Keep customer-facing notifications preferences explicit. Promotion notifications and any future garden/keeping-sharp game are optional future engagement; do not promise delivery or add them to the core visit workflow before implemented.
+- Keep the experience calm, discreet and service-led for The Village, Gaborone. Do not import G-West car-wash slang, racing/reward mechanics or high-energy queue styling.
 
 Research grounding:
 - Hwang, Lee & Legendre (2024), *Operational Transparency as a Service Design: An Investigation on Labor/Effort Observation Effect*, Journal of Hospitality & Tourism Research, DOI: https://doi.org/10.1177/10963480231223146
