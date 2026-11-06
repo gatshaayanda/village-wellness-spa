@@ -158,7 +158,11 @@ function AccountContent() {
         }
         await loadBookings(activeUser);
       } catch (error) {
-        if (alive) setMessage(error instanceof Error ? error.message : "Your appointment history could not be loaded.");
+        if (alive) {
+          const detail = error instanceof Error ? error.message : "Your appointment history could not be loaded.";
+          if (detail.includes("existing customer profile")) setShowExistingAccount(true);
+          setMessage(detail);
+        }
       } finally {
         if (alive) setLoading(false);
       }
