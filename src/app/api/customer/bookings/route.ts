@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const items = snapshot.docs.map((document) => { const data=document.data(); return {
    id:document.id,reference:document.id.slice(0,8).toUpperCase(),createdAt:String(data.createdAt??""),
    serviceName:String(data.serviceNameSnapshot??"Consultation / help choosing"),requestType:String(data.requestType??"APPOINTMENT"),preferredDate:String(data.preferredDate??""),
-   preferredTime:String(data.preferredTime??""),status:String(data.status??"NEW"),statusUpdatedAt:String(data.statusUpdatedAt??""),paymentStatus:String(data.paymentStatus??"PAYMENT_PENDING"),
+   preferredTime:String(data.preferredTime??""),status:String(data.status??"NEW"),statusUpdatedAt:String(data.statusUpdatedAt??""),...(data.paymentStatus?{paymentStatus:String(data.paymentStatus)}:{}),
    ...(data.finalPriceSnapshot?{finalPrice:String(data.finalPriceSnapshot)}:{}),...(data.discountCodeSnapshot?{offerCode:String(data.discountCodeSnapshot)}:{})
   }; }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
   return NextResponse.json({items});
