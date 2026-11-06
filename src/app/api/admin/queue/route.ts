@@ -17,7 +17,10 @@ export async function POST(request:NextRequest){
    const name=String(body.name??"").trim().slice(0,120),phone=String(body.phone??"").trim().slice(0,40),serviceName=String(body.serviceName??"Consultation / help choosing").trim().slice(0,160);
    if(!name||!phone)return NextResponse.json({error:"Enter the customer's name and mobile number."},{status:400});
    const now=new Date().toISOString(),ref=db.collection("bookingRequests").doc();
-   await ref.set({createdAt:now,visitDate:today(),name,phone,serviceNameSnapshot:serviceName,requestType:"QUEUE",queueMode:"STAFF",status:"ARRIVED",statusUpdatedAt:now,paymentStatus:"NOT_RECORDED",createdBy:"STAFF"});
+   const matches=await db.collection("customerProfiles").where("phone","==",phone).get();
+   const exact=matches.docs.filter(d=>String(d.data().name??"").trim().toLocaleLowerCase()===name.toLocaleLowerCase());
+   const customerUid=exact.length===1?exact[0].id:"";
+   await ref.set({createdAt:now,visitDate:today(),name,phone,...(customerUid?{customerUid}:{}),serviceNameSnapshot:serviceName,requestType:"QUEUE",queueMode:"STAFF",status:"ARRIVED",statusUpdatedAt:now,paymentStatus:"NOT_RECORDED",createdBy:"STAFF"});
    return NextResponse.json({id:ref.id,reference:ref.id.slice(0,8).toUpperCase()},{status:201});
   }
   const id=String(body.id??""),status=String(body.status??"");
