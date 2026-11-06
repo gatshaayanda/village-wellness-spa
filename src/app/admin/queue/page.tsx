@@ -1,16 +1,198 @@
 "use client";
-import {useCallback,useEffect,useState} from "react";
+
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import AdminGate from "@/app/admin/admin-gate";
-import {auth} from "@/lib/firebase/client";
-type Item={id:string;name?:string;phone?:string;serviceNameSnapshot?:string;status:string;queueMode?:string;createdAt:string;recommendedReturnDate?:string;returnNote?:string};
-function QueueDashboard(){const [items,setItems]=useState<Item[]>([]),[name,setName]=useState(""),[phone,setPhone]=useState(""),[service,setService]=useState(""),[busy,setBusy]=useState(""),[notice,setNotice]=useState(""),[returnDates,setReturnDates]=useState<Record<string,string>>({}),[returnNotes,setReturnNotes]=useState<Record<string,string>>({});
- const token=async()=>{const user=auth.currentUser;if(!user)throw new Error("Please sign in again.");return user.getIdToken();};
- const load=useCallback(async()=>{const r=await fetch("/api/admin/queue",{headers:{Authorization:"Bearer "+await token()},cache:"no-store"});const d=await r.json();if(!r.ok)throw new Error(d.error||"Queue unavailable.");setItems(d.items||[]);},[]);
- useEffect(()=>{void load().catch(e=>setNotice(e.message));},[load]);
- async function update(id:string,status:string){setBusy(id);setNotice("");try{const r=await fetch("/api/admin/queue",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+await token()},body:JSON.stringify({id,status,recommendedReturnDate:returnDates[id]||"",returnNote:returnNotes[id]||""})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Update failed.");await load();setNotice("Visit updated. The saved status reflects the team's action.");}catch(e){setNotice(e instanceof Error?e.message:"Update failed.");}finally{setBusy("");}}
- async function add(e:React.FormEvent){e.preventDefault();setBusy("new");setNotice("");try{const r=await fetch("/api/admin/queue",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+await token()},body:JSON.stringify({action:"create",name,phone,serviceName:service||"Consultation / help choosing"})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Could not register walk-in.");setName("");setPhone("");setService("");await load();setNotice("Walk-in registered at reception · #"+d.reference);}catch(e){setNotice(e instanceof Error?e.message:"Could not register walk-in.");}finally{setBusy("");}}
- const active=items.filter(x=>!["COMPLETED","CANCELLED","NO_SHOW"].includes(x.status)),done=items.filter(x=>["COMPLETED","CANCELLED","NO_SHOW"].includes(x.status));
- return <main className="adminPage"><div className="adminShell"><header className="panelHeading"><div><span className="kicker">VILLAGE WELLNESS SPA · TODAY</span><h1>Arrival & visit queue</h1><p>Remote arrival heads-ups and reception check-ins, in one staff view.</p></div><Link href="/admin" className="button buttonLight">Main admin</Link></header><section className="adminPanel"><h2>Register a walk-in</h2><p>For a client who is already at reception. This creates the same visit record as customer check-in.</p><form className="adminForm" onSubmit={add}><div className="formGrid"><label>Client name<input value={name} onChange={e=>setName(e.target.value)} required maxLength={120}/></label><label>WhatsApp / mobile<input value={phone} onChange={e=>setPhone(e.target.value)} required maxLength={40}/></label><label className="fieldFull">Treatment / reason<input value={service} onChange={e=>setService(e.target.value)} placeholder="Optional — ask reception to help choose"/></label></div><button className="button buttonPrimary" disabled={busy==="new"}>{busy==="new"?"Registering…":"Check in walk-in ↗"}</button></form></section>{notice&&<p role="status" className="slotHint">{notice}</p>}<section className="adminPanel"><div className="panelHeading"><div><h2>Active visits <span>{active.length}</span></h2><p>Arrived clients first; remote arrival heads-ups remain clearly labelled until reception confirms arrival.</p></div><button className="button buttonLight" onClick={()=>void load()}>Refresh</button></div>{active.length===0?<p className="emptyState">No active queue visits have been recorded today.</p>:active.map(x=><article className="requestRow" key={x.id}><div><strong>{x.name||"Client"} · {x.serviceNameSnapshot||"Visit"}</strong><span>{x.phone} · {x.queueMode==="REMOTE"&&x.status==="ON_THE_WAY"?"On the way":x.status.replaceAll("_"," ").toLowerCase()} · {new Date(x.createdAt).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Gaborone"})}</span></div><div className="actions">{x.status==="ON_THE_WAY"&&<button className="button buttonLight" disabled={!!busy} onClick={()=>void update(x.id,"ARRIVED")}>Confirm arrival</button>}{x.status==="ARRIVED"&&<button className="button buttonLight" disabled={!!busy} onClick={()=>void update(x.id,"WAITING")}>Waiting</button>}{x.status==="WAITING"&&<button className="button buttonLight" disabled={!!busy} onClick={()=>void update(x.id,"IN_TREATMENT")}>Start treatment</button>}{x.status==="IN_TREATMENT"&&<><div className="field"><label>Suggested return date<input type="date" value={returnDates[x.id]||""} onChange={e=>setReturnDates(v=>({...v,[x.id]:e.target.value}))}/></label><label>Care / return note<input value={returnNotes[x.id]||""} onChange={e=>setReturnNotes(v=>({...v,[x.id]:e.target.value}))} placeholder="Optional practitioner guidance"/></label></div><button className="button buttonPrimary" disabled={!!busy} onClick={()=>void update(x.id,"COMPLETED")}>Complete visit</button></>}{!["ON_THE_WAY","IN_TREATMENT"].includes(x.status)&&<button className="button buttonLight" disabled={!!busy} onClick={()=>void update(x.id,"CANCELLED")}>Cancel</button>}</div></article>)}</section><section className="adminPanel"><h2>Closed today</h2>{done.length?done.map(x=><article className="requestRow" key={x.id}><div><strong>{x.name} · {x.serviceNameSnapshot}</strong><span>{x.status.replaceAll("_"," ")}{x.recommendedReturnDate?" · Return suggested "+x.recommendedReturnDate:""}</span></div></article>):<p>No visits closed yet.</p>}</section></div></main>;
+import { auth } from "@/lib/firebase/client";
+
+type Item = {
+  id: string;
+  name?: string;
+  phone?: string;
+  serviceNameSnapshot?: string;
+  status: string;
+  createdAt: string;
+  recommendedReturnDate?: string;
+  returnNote?: string;
+  finalPrice?: string;
+  finalPriceSnapshot?: string;
+};
+
+function QueueDashboard() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [service, setService] = useState("");
+  const [busy, setBusy] = useState("");
+  const [notice, setNotice] = useState("");
+  const [shareLink, setShareLink] = useState("");
+  const [sharePhone, setSharePhone] = useState("");
+  const [returnDates, setReturnDates] = useState<Record<string, string>>({});
+  const [returnNotes, setReturnNotes] = useState<Record<string, string>>({});
+  const [finalPrices, setFinalPrices] = useState<Record<string, string>>({});
+
+  const token = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Please sign in again.");
+    return user.getIdToken();
+  };
+
+  const load = useCallback(async () => {
+    const response = await fetch("/api/admin/queue", {
+      headers: { Authorization: "Bearer " + await token() },
+      cache: "no-store",
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Today's visits could not be loaded.");
+    setItems(data.items || []);
+  }, []);
+
+  useEffect(() => {
+    void load().catch(error => setNotice(error.message));
+  }, [load]);
+
+  async function update(id: string, status: string) {
+    setBusy(id);
+    setNotice("");
+    try {
+      const response = await fetch("/api/admin/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
+        body: JSON.stringify({
+          id,
+          status,
+          recommendedReturnDate: returnDates[id] || "",
+          returnNote: returnNotes[id] || "",
+          finalPrice: finalPrices[id] || "",
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Visit update failed.");
+      await load();
+      setNotice(status === "COMPLETED"
+        ? "Visit completed. The customer account now has the visit record and any saved receipt details."
+        : "Visit status saved.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Visit update failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function add(event: React.FormEvent) {
+    event.preventDefault();
+    setBusy("new");
+    setNotice("");
+    setShareLink("");
+    try {
+      const response = await fetch("/api/admin/queue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
+        body: JSON.stringify({ action: "create", name, phone, serviceName: service }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Walk-in could not be registered.");
+      const link = window.location.origin + "/account?claim=" + encodeURIComponent(data.claimToken);
+      setShareLink("https://wa.me/" + phone.replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent(
+        "Thank you for visiting Village Wellness Spa. Your private visit record and receipt will be available in your customer account once the team completes your visit: " + link
+      ));
+      setSharePhone(phone);
+      setName("");
+      setPhone("");
+      setService("");
+      await load();
+      setNotice("Walk-in registered as Arrived. Send the customer their private account link on WhatsApp.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Walk-in could not be registered.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  const active = items.filter(item => !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(item.status));
+  const closed = items.filter(item => ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(item.status));
+
+  return (
+    <main className="adminPage">
+      <div className="adminShell">
+        <header className="panelHeading">
+          <div>
+            <span className="kicker">VILLAGE WELLNESS SPA · TODAY</span>
+            <h1>Walk-ins & visits</h1>
+            <p>Reception records arrivals. The team updates each visit as care progresses.</p>
+          </div>
+          <Link href="/admin" className="button buttonLight">Main admin</Link>
+        </header>
+
+        <section className="adminPanel">
+          <h2>Register a walk-in</h2>
+          <p>For a customer who is at the spa. Add their details once; send their account link so the completed visit and receipt can be viewed later.</p>
+          <form className="adminForm" onSubmit={add}>
+            <div className="formGrid">
+              <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
+              <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
+              <label className="fieldFull">Treatment<input value={service} onChange={event => setService(event.target.value)} required maxLength={160} placeholder="Treatment or consultation" /></label>
+            </div>
+            <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Registering…" : "Register customer as arrived ↗"}</button>
+          </form>
+          {shareLink && (
+            <div className="customerPanel" role="status">
+              <strong>Customer account link ready</strong>
+              <p>Send the private visit link to {sharePhone}. Their visit will appear in their account after they open the link and sign in.</p>
+              <a className="button buttonPrimary" href={shareLink} target="_blank" rel="noreferrer">Send account link on WhatsApp ↗</a>
+            </div>
+          )}
+        </section>
+
+        {notice && <p role="status" className="slotHint">{notice}</p>}
+
+        <section className="adminPanel">
+          <div className="panelHeading">
+            <div><h2>In progress <span>{active.length}</span></h2><p>Move each customer through the work actually completed by the team.</p></div>
+            <button className="button buttonLight" type="button" onClick={() => void load()}>Refresh</button>
+          </div>
+          {active.length === 0 ? <p className="emptyState">No walk-in visits have been registered today.</p> : active.map(item => (
+            <article className="requestRow" key={item.id}>
+              <div>
+                <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
+                <span>{item.phone} · {item.status.replaceAll("_", " ").toLowerCase()} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
+              </div>
+              <div className="actions">
+                {item.status === "ARRIVED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "WAITING")}>Mark waiting</button>}
+                {item.status === "WAITING" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "IN_TREATMENT")}>Start treatment</button>}
+                {item.status === "IN_TREATMENT" && (
+                  <>
+                    <div className="field">
+                      <label>Final visit amount (P)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Optional" /></label>
+                      <label>Suggested return date<input type="date" value={returnDates[item.id] || ""} onChange={event => setReturnDates(values => ({ ...values, [item.id]: event.target.value }))} /></label>
+                      <label>Care / return note<input value={returnNotes[item.id] || ""} onChange={event => setReturnNotes(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Optional practitioner guidance" /></label>
+                    </div>
+                    <button className="button buttonPrimary" disabled={!!busy} onClick={() => void update(item.id, "COMPLETED")}>Confirm visit completed</button>
+                  </>
+                )}
+                {["ARRIVED", "WAITING"].includes(item.status) && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "CANCELLED")}>Cancel visit</button>}
+                {item.status === "IN_TREATMENT" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "CANCELLED")}>Cancel visit</button>}
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <section className="adminPanel">
+          <h2>Completed & closed today</h2>
+          {closed.length ? closed.map(item => (
+            <article className="requestRow" key={item.id}>
+              <div>
+                <strong>{item.name} · {item.serviceNameSnapshot}</strong>
+                <span>{item.status.replaceAll("_", " ")}{item.finalPriceSnapshot ? " · " + item.finalPriceSnapshot : ""}{item.recommendedReturnDate ? " · Suggested return " + item.recommendedReturnDate : ""}</span>
+              </div>
+            </article>
+          )) : <p>No visits closed yet.</p>}
+        </section>
+      </div>
+    </main>
+  );
 }
-export default function AdminQueuePage(){return <AdminGate><QueueDashboard/></AdminGate>;}
+
+export default function AdminQueuePage() {
+  return <AdminGate><QueueDashboard /></AdminGate>;
+}
