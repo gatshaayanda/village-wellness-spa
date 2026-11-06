@@ -73,6 +73,17 @@ const statusGuidance: Record<string, string> = {
   FOLLOW_UP: "The spa team has marked this request for follow-up. Watch for a message from the team.",
 };
 
+const waitlistGuidance: Record<string, string> = {
+  NEW: "Your waitlist request is with the spa team. It does not reserve a treatment slot; the team will contact you if a suitable opening can be offered.",
+  REVIEWING: "The team is checking whether the treatment, practitioner and room can fit your preferred timing. No appointment is reserved yet.",
+  APPROVED: "Your waitlist request has been reviewed. The team will contact you if they can offer a suitable opening. This is not an appointment confirmation.",
+  NEEDS_CONTACT: "The spa team needs to speak with you about your waitlist preference. Please contact the team using its usual contact channel.",
+  DECLINED: "The team cannot offer a suitable opening for this waitlist request. Contact the spa if you would like to discuss another preference.",
+  RESCHEDULED: "The team has updated the timing preference on your waitlist request. Check with the spa for the latest details.",
+  CANCELLED: "Your waitlist request has been cancelled. You can submit another request if needed.",
+  FOLLOW_UP: "The spa team has marked your waitlist request for follow-up. Watch for a message from the team.",
+};
+
 const paymentCopy: Record<string, string> = {
   PAYMENT_PENDING: "Not yet marked as paid",
   PAYMENT_INSTRUCTIONS: "Payment instructions provided",
@@ -220,7 +231,7 @@ function AccountContent() {
         <header className="customerAccountHeader">
           <span className="kicker">YOUR SPA, IN ONE PLACE</span>
           <h1>My account</h1>
-          <p>Follow your appointment requests, keep your details together and manage updates.</p>
+          <p>Follow appointment and waitlist requests, keep your details together and manage updates.</p>
         </header>
 
         {showPostSubmit && (
@@ -269,7 +280,7 @@ function AccountContent() {
                       </div>
                       <div className="customerBookingProgress">
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
-                        <p>{booking.requestType === "WAITLIST" && booking.status === "NEW" ? "Your waitlist request is with the spa team. It does not reserve a treatment slot; the team will contact you if a suitable opening can be offered." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
+                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
                         {booking.requestType !== "WAITLIST" && <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
                       </div>
