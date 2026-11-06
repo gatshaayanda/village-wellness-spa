@@ -97,6 +97,10 @@ export async function deleteProductRecord(id: string) { if (isLocalDemoMode()) {
 const serviceCategoriesCollection = collection(db, "serviceCategories");
 
 export async function getServiceCategories(): Promise<ServiceCategoryRecord[]> {
+  if (isLocalDemoMode()) {
+    const records = getLocalDemoBucket<ServiceCategoryRecord>("serviceCategories");
+    return (records.length ? records : trippleSCategorySeed).sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+  }
   const snapshot = await getDocs(serviceCategoriesCollection);
   const records = snapshot.docs.map(item => ({ id: item.id, ...(item.data() as Omit<ServiceCategoryRecord, "id">) }));
   if (records.length) return records.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
@@ -128,6 +132,16 @@ export async function getPublicServiceCategories(): Promise<ServiceCategoryRecor
 export async function saveServiceCategory(item: ServiceCategoryRecord, previousName?: string) {
   const name = item.name.trim().slice(0, 100);
   if (!name) throw new Error("Enter a category name.");
+  if (isLocalDemoMode()) {
+    const existing = await getServiceCategories();
+    if (existing.some(row => row.id !== item.id && row.name.trim().toLowerCase() === name.toLowerCase())) throw new Error("A category with that name already exists.");
+    if (previousName && previousName !== name) {
+      const services = await getServices();
+      for (const service of services) if (service.category === previousName) await saveServiceRecord({ ...service, category: name });
+    }
+    saveLocalDemoBucketRecord("serviceCategories", { ...item, name });
+    return;
+  }
   const existing = await getDocs(serviceCategoriesCollection);
   if (existing.docs.some(row => row.id !== item.id && String(row.data().name ?? "").trim().toLowerCase() === name.toLowerCase())) throw new Error("A category with that name already exists.");
   if (previousName && previousName !== name) {
@@ -139,6 +153,12 @@ export async function saveServiceCategory(item: ServiceCategoryRecord, previousN
 }
 
 export async function deleteServiceCategory(id: string, name: string) {
+  if (isLocalDemoMode()) {
+    const services = await getServices();
+    if (services.some(item => item.category === name)) throw new Error("Move or delete the services in this category before removing it.");
+    deleteLocalDemoBucketRecord("serviceCategories", id);
+    return;
+  }
   const services = await getDocs(servicesCollection);
   if (services.docs.some(item => String(item.data().category ?? "") === name)) throw new Error("Move or delete the services in this category before removing it.");
   await deleteDoc(doc(db, "serviceCategories", id));
