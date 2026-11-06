@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const reason = error instanceof Error ? error.message : "";
     return NextResponse.json({
-      error: reason === "ALREADY_CLAIMED" ? "This visit is already linked to another customer account. Please contact reception." : "This visit link is invalid or has expired.",
+      error: reason === "ALREADY_CLAIMED" ? "This visit is already linked to your existing customer profile. Sign in to that account to view it." : "This visit link is invalid or has expired.",
     }, { status: reason === "ALREADY_CLAIMED" ? 409 : 404 });
   }
 }
