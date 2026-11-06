@@ -6,7 +6,7 @@ const allowed=new Set(["WAITING","IN_TREATMENT","COMPLETED","CANCELLED","NO_SHOW
 function today(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Gaborone",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}
 export async function GET(request:NextRequest){
  if(!await requireAdmin(request))return NextResponse.json({error:"Sign in with an authorized staff account."},{status:401});
- try{const snap=await getAdminDb().collection("bookingRequests").where("requestType","==","QUEUE").get();const items=snap.docs.map(d=>({id:d.id,...d.data()})).filter((x:any)=>String(x.visitDate??x.preferredDate??"")===today()).sort((a:any,b:any)=>String(a.createdAt??"").localeCompare(String(b.createdAt??"")));return NextResponse.json({items});}
+ try{const snap=await getAdminDb().collection("bookingRequests").where("requestType","==","QUEUE").get();type QueueRecord={id:string;visitDate?:unknown;preferredDate?:unknown;createdAt?:unknown;[key:string]:unknown};const items:QueueRecord[]=snap.docs.map(d=>({id:d.id,...d.data()} as QueueRecord)).filter(item=>String(item.visitDate??item.preferredDate??"")===today()).sort((a,b)=>String(a.createdAt??"").localeCompare(String(b.createdAt??"")));return NextResponse.json({items});}
  catch(error){console.error("[Village Wellness Spa] queue load failed",error instanceof Error?error.message:"unknown");return NextResponse.json({error:"Today's queue could not be loaded."},{status:503});}
 }
 export async function POST(request:NextRequest){
