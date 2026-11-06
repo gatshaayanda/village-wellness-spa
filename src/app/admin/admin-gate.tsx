@@ -3,6 +3,7 @@
 import { onAuthStateChanged, signInWithCustomToken, signOut, type User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase/client";
+import Link from "next/link";
 
 const ADMIN_UID = "tripple-s-one-word-admin";
 
@@ -59,7 +60,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   }
 
   if (checking) return <main className="adminPage"><div className="adminShell"><div className="emptyState"><h1>Opening Village Wellness Spa Admin</h1><p>Checking access…</p></div></div></main>;
-  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Village Wellness Spa Admin · Authorized access</span><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div>{children}</div>;
+  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Village Wellness Spa Admin · Authorized access</span><div className="actions"><Link href="/admin/queue" className="button buttonLight">Arrival queue ↗</Link><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div></div>{children}</div>;
 
   return <main className="adminPage"><div className="adminShell"><section className="adminPanel" style={{ maxWidth: 520, margin: "80px auto" }}>
     <span className="kicker">VILLAGE WELLNESS SPA · ADMIN</span>
