@@ -7,7 +7,7 @@ import { auth } from "@/lib/firebase/client";
 
 type Analytics = {
   periodDays: number;
-  requests: number;
+  requests: number;\n  walkIns: number;\n  appointments: number;\n  completedWalkIns: number;\n  completedAppointments: number;\n  walkInRevenue: number;\n  appointmentRevenue: number;\n  distinctCompletedCustomers: number;
   confirmed: number;
   completed: number;
   cancelled: number;
@@ -47,15 +47,15 @@ function AnalyticsDashboard() {
       <article><span>Recorded revenue · 30 days</span><strong>{loading ? "—" : money(data?.paidRevenue ?? 0)}</strong></article>
       <article><span>Completed visits</span><strong>{loading ? "—" : data?.completed ?? 0}</strong></article>
       <article><span>Average paid visit</span><strong>{loading ? "—" : money(data?.averagePaidVisit ?? 0)}</strong></article>
-      <article><span>Returning customers</span><strong>{loading ? "—" : data?.returningCustomers ?? 0}</strong></article>
+      <article><span>Returning customers</span><strong>{loading ? "—" : data?.returningCustomers ?? 0}</strong></article>\n      <article><span>Distinct customers completed</span><strong>{loading ? "—" : data?.distinctCompletedCustomers ?? 0}</strong></article>
     </section>
     <section className="adminContent twoColumn">
       <div className="adminPanel"><div className="panelHeading"><div><span className="kicker">FINANCIAL RECONCILIATION · BWP</span><h2>Money actually recorded</h2></div></div>
-        <div className="adminStats"><article><span>Paid transactions</span><strong>{loading ? "—" : data?.paidTransactions ?? 0}</strong></article><article><span>Completed without payment record</span><strong>{loading ? "—" : data?.completedWithoutRecordedPayment ?? 0}</strong></article></div>
+        <div className="adminStats"><article><span>Paid transactions</span><strong>{loading ? "—" : data?.paidTransactions ?? 0}</strong></article><article><span>Completed without payment record</span><strong>{loading ? "—" : data?.completedWithoutRecordedPayment ?? 0}</strong></article><article><span>Walk-in collections</span><strong>{loading ? "—" : money(data?.walkInRevenue ?? 0)}</strong></article><article><span>Appointment collections</span><strong>{loading ? "—" : money(data?.appointmentRevenue ?? 0)}</strong></article></div>
         <p className="orderTruth">Revenue includes only completed visits with an explicit PAID status and a saved final amount. It does not treat booking requests, catalogue prices or unverified amounts as money received.</p>
       </div>
       <div className="adminPanel"><div className="panelHeading"><div><span className="kicker">OPERATIONS · LAST 30 DAYS</span><h2>Where things stand</h2></div></div>
-        <div className="adminStats"><article><span>Requests</span><strong>{loading ? "—" : data?.requests ?? 0}</strong></article><article><span>Confirmed / arrived / completed</span><strong>{loading ? "—" : data?.confirmed ?? 0}</strong></article><article><span>Cancelled / declined / missed</span><strong>{loading ? "—" : data?.cancelled ?? 0}</strong></article></div>
+        <div className="adminStats"><article><span>Total requests & visits</span><strong>{loading ? "—" : data?.requests ?? 0}</strong></article><article><span>Walk-ins</span><strong>{loading ? "—" : data?.walkIns ?? 0}</strong><small>{loading ? " " : `${data?.completedWalkIns ?? 0} completed`}</small></article><article><span>Appointments</span><strong>{loading ? "—" : data?.appointments ?? 0}</strong><small>{loading ? " " : `${data?.completedAppointments ?? 0} completed`}</small></article><article><span>Cancelled / declined / missed</span><strong>{loading ? "—" : data?.cancelled ?? 0}</strong></article></div>
       </div>
     </section>
     <section className="adminPanel"><div className="panelHeading"><div><span className="kicker">COLLECTION TREND · LAST 7 DAYS</span><h2>Daily recorded revenue</h2></div></div>
