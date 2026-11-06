@@ -208,6 +208,60 @@ export async function reconcileVillageServiceSeeds() {
   return { added, categoriesAdded, updated, skipped: false };
 }
 
+
+// Explicit admin repair: add missing starter records without overwriting owner edits or
+// resurrecting deleted records automatically during ordinary page loads.
+export async function restoreMissingVillageServiceSeeds() {
+  if (isLocalDemoMode()) {
+    const existing = getLocalDemoBucket<{ id: string; record: ServiceRecord }>("services");
+    const ids = new Set(existing.map(item => item.id));
+    let added = 0;
+    for (const item of trippleSServiceSeed) {
+      if (ids.has(item.id)) continue;
+      saveLocalDemoBucketRecord("services", { id: item.id, record: item });
+      added++;
+    }
+    const existingCategories = getLocalDemoBucket<ServiceCategoryRecord>("serviceCategories");
+    const categoryIds = new Set(existingCategories.map(item => item.id));
+    let categoriesAdded = 0;
+    for (const item of trippleSCategorySeed) {
+      if (categoryIds.has(item.id)) continue;
+      saveLocalDemoBucketRecord("serviceCategories", item);
+      categoriesAdded++;
+    }
+    return { added, categoriesAdded };
+  }
+
+  const [serviceSnapshot, categorySnapshot] = await Promise.all([
+    getDocs(servicesCollection),
+    getDocs(serviceCategoriesCollection),
+  ]);
+  const serviceIds = new Set(serviceSnapshot.docs.map(item => item.id));
+  const categoryIds = new Set(categorySnapshot.docs.map(item => item.id));
+  let added = 0;
+  let categoriesAdded = 0;
+
+  for (const category of trippleSCategorySeed) {
+    if (categoryIds.has(category.id)) continue;
+    await setDoc(doc(db, "serviceCategories", category.id), category);
+    categoriesAdded++;
+  }
+  for (const service of trippleSServiceSeed) {
+    if (serviceIds.has(service.id)) continue;
+    await setDoc(doc(db, "services", service.id), service);
+    added++;
+  }
+
+  await setDoc(doc(db, "settings", "catalogueState"), {
+    villageServiceSeedVersion: 3,
+    servicesManaged: true,
+    categoriesManaged: true,
+    serviceCatalogVersion: 3,
+  }, { merge: true });
+
+  return { added, categoriesAdded };
+}
+
 export async function reconcileTrippleSCatalogue() {
   const stateRef = doc(db, "settings", "catalogueState");
   const stateSnapshot = await getDoc(stateRef);
