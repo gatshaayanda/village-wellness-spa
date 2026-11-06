@@ -79,16 +79,6 @@ const statusGuidance: Record<string, string> = {
   FOLLOW_UP: "The spa team has marked this request for follow-up. Watch for a message from the team.",
 };
 
-const waitlistGuidance: Record<string, string> = {
-  NEW: "Your waitlist request is with the spa team. It does not reserve a treatment slot; the team will contact you if a suitable opening can be offered.",
-  REVIEWING: "The team is checking whether the treatment, practitioner and room can fit your preferred timing. No appointment is reserved yet.",
-  APPROVED: "Your waitlist request has been reviewed. The team will contact you if they can offer a suitable opening. This is not an appointment confirmation.",
-  NEEDS_CONTACT: "The spa team needs to speak with you about your waitlist preference. Please contact the team using its usual contact channel.",
-  DECLINED: "The team cannot offer a suitable opening for this waitlist request. Contact the spa if you would like to discuss another preference.",
-  RESCHEDULED: "The team has updated the timing preference on your waitlist request. Check with the spa for the latest details.",
-  CANCELLED: "Your waitlist request has been cancelled. You can submit another request if needed.",
-  FOLLOW_UP: "The spa team has marked your waitlist request for follow-up. Watch for a message from the team.",
-};
 
 const paymentCopy: Record<string, string> = {
   PAYMENT_PENDING: "Not yet marked as paid",
