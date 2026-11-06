@@ -47,3 +47,13 @@ Research grounding (design guidance, not a claim that any single study guarantee
 - Wang, Wu & Wang (2025), *Illuminating the unseen: How and why operational transparency mitigates customer dissatisfaction in platform-based services*, Journal of Business Research, DOI: https://doi.org/10.1016/j.jbusres.2025.115574
 - Conrad, Couper, Tourangeau & Peytchev (2010), *The impact of progress indicators on task completion*, Interacting with Computers, DOI: https://doi.org/10.1016/j.intcom.2010.03.001
 - *Wellbeing Supportive Design – Research-Based Guidelines for Supporting Psychological Wellbeing in User Experience* (2022), DOI: https://doi.org/10.1080/10447318.2022.2089812
+
+## Appointment waitlist and weather report
+- The homepage may offer a separate customer-facing appointment waitlist alongside the primary booking action. Describe it as a waitlist request, never as a live queue or a guaranteed place/position.
+- Waitlist entries use the existing `bookingRequests` collection with `requestType: "WAITLIST"`; do not create a second queue database or modify appointment slot reservations.
+- Waitlist requests are guest-first, optionally linked to the verified Firebase customer UID, visible in Admin → Requests → Waitlist and in the owner's private customer history.
+- A waitlist request must not lock a slot or be marked PAYMENT_PENDING, CONFIRMED, ARRIVED or COMPLETED through staff status controls. Staff verify practitioner, treatment room and treatment-duration capacity, then contact the client with a real available slot. The client submits a normal appointment request to reserve it.
+- Weather is a planning aid only. Never infer treatment suitability, medical outcomes, staff availability or appointment availability from weather.
+- Use the server-only `WEATHERAPI_KEY` environment variable for WeatherAPI.com. Never expose keys in client code or `NEXT_PUBLIC_*` variables. The current integration uses the free commercial tier's three-day forecast, attributes WeatherAPI.com, caches responses for 30 minutes and displays a plain-language forecast/safety disclaimer.
+- If weather configuration or the provider is unavailable, show a clear non-blocking message; booking and waitlist workflows must continue to work.
+- Preserve the existing booking availability checks and slot-lock transaction. Waitlist requests are a separate contact request and must never bypass or weaken the appointment booking checks.
