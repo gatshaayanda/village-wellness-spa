@@ -13,8 +13,8 @@ export const trippleSCategorySeed: ServiceCategoryRecord[] = [
 const durationToConfirm = "60 min · confirm with spa";
 export const trippleSServiceSeed: ServiceSeed[] = [
   { id:"village-facials-skincare", name:"Facials & Skincare", category:"Facials & Skincare", description:"Express facials, deep cleansing and hydrating treatments.", price:"P350–P750", duration:durationToConfirm, active:true },
-  { id:"village-advanced-aesthetics", name:"Advanced Aesthetic Treatments", category:"Advanced Aesthetics", description:"Chemical peels, exfoliating facials and dermaplaning. Practitioner assessment may be required.", price:"P800–P1,300", duration:durationToConfirm, active:true, consultationRequired:true, assessmentNote:"Confirm treatment suitability with the spa team before scheduling." },
-  { id:"village-full-body-massage", name:"Full Body Massage · 60 min", category:"Massage & Body Wellness", description:"Swedish, deep tissue and aromatherapy massage options.", price:"P450–P700", duration:"60 min", active:true },
+  { id:"village-advanced-aesthetics", name:"Advanced Aesthetic Treatments", category:"Advanced Aesthetic Treatments", description:"Chemical peels, exfoliating facials and dermaplaning. Practitioner assessment may be required.", price:"P800–P1,300", duration:durationToConfirm, active:true, consultationRequired:true, assessmentNote:"Confirm treatment suitability with the spa team before scheduling." },
+  { id:"village-full-body-massage", name:"Full Body Massage · 60 min", category:"Massage & Body Treatments", description:"Swedish, deep tissue and aromatherapy massage options.", price:"P450–P700", duration:"60 min", active:true },
   { id:"village-express-body-care", name:"Express Body Care", category:"Express Body Care", description:"Back, neck and shoulder massage (30 min) and body scrub options.", price:"P300–P500", duration:"30 min", active:true },
   { id:"village-nails-grooming", name:"Nails & Grooming", category:"Nails & Grooming", description:"Manicures, pedicures, gel overlays and brow shaping.", price:"P60–P450", duration:durationToConfirm, active:true }
 ];
