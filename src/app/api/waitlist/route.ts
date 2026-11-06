@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
       clientType,
       requestType: "WAITLIST",
       status: "NEW",
-      paymentStatus: "PAYMENT_PENDING",
       ...(message ? { message } : {}),
     };
     await reference.set(payload);
