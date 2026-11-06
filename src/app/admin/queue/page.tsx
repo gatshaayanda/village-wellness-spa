@@ -16,6 +16,8 @@ type Item = {
   returnNote?: string;
   finalPrice?: string;
   finalPriceSnapshot?: string;
+  paymentStatus?: string;
+  requestType?: string;
 };
 
 function QueueDashboard() {
@@ -30,6 +32,7 @@ function QueueDashboard() {
   const [returnDates, setReturnDates] = useState<Record<string, string>>({});
   const [returnNotes, setReturnNotes] = useState<Record<string, string>>({});
   const [finalPrices, setFinalPrices] = useState<Record<string, string>>({});
+  const [paymentMethods, setPaymentMethods] = useState<Record<string, string>>({});
 
   const token = async () => {
     const user = auth.currentUser;
@@ -64,6 +67,7 @@ function QueueDashboard() {
           recommendedReturnDate: returnDates[id] || "",
           returnNote: returnNotes[id] || "",
           finalPrice: finalPrices[id] || "",
+          paymentMethod: paymentMethods[id] || "CASH",
         }),
       });
       const data = await response.json();
@@ -92,11 +96,16 @@ function QueueDashboard() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Walk-in could not be registered.");
-      const link = window.location.origin + "/account?claim=" + encodeURIComponent(data.claimToken);
-      setShareLink("https://wa.me/" + phone.replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent(
-        "Thank you for visiting Village Wellness Spa. Your private visit record and receipt will be available in your customer account once the team completes your visit: " + link
-      ));
-      setSharePhone(phone);
+      if (data.claimToken) {
+        const link = window.location.origin + "/account?claim=" + encodeURIComponent(data.claimToken);
+        setShareLink("https://wa.me/" + phone.replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent(
+          "Welcome to Village Wellness Spa. Open your private customer account to keep your visit history and book again: " + link
+        ));
+        setSharePhone(phone);
+      } else {
+        setShareLink("");
+        setNotice("Returning customer recognised. This visit is already connected to their account.");
+      }
       setName("");
       setPhone("");
       setService("");
@@ -119,14 +128,14 @@ function QueueDashboard() {
           <div>
             <span className="kicker">VILLAGE WELLNESS SPA · TODAY</span>
             <h1>Walk-ins & visits</h1>
-            <p>Reception records arrivals. The team updates each visit as care progresses.</p>
+            <p>Two actions only: record arrival, then complete the visit when treatment and payment are done.</p>
           </div>
           <Link href="/admin" className="button buttonLight">Main admin</Link>
         </header>
 
         <section className="adminPanel">
           <h2>Register a walk-in</h2>
-          <p>For a customer who is at the spa. Add their details once; send their account link so the completed visit and receipt can be viewed later.</p>
+          <p>Only for customers physically at the spa. Returning customers are matched to their saved account when their details match.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
               <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
@@ -148,7 +157,7 @@ function QueueDashboard() {
 
         <section className="adminPanel">
           <div className="panelHeading">
-            <div><h2>In progress <span>{active.length}</span></h2><p>Move each customer through the work actually completed by the team.</p></div>
+            <div><h2>At the spa <span>{active.length}</span></h2><p>Everyone here is marked Arrived. Complete the visit when treatment is finished and payment has been received.</p></div>
             <button className="button buttonLight" type="button" onClick={() => void load()}>Refresh</button>
           </div>
           {active.length === 0 ? <p className="emptyState">No walk-in visits have been registered today.</p> : active.map(item => (
@@ -158,32 +167,30 @@ function QueueDashboard() {
                 <span>{item.phone} · {item.status.replaceAll("_", " ").toLowerCase()} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
               </div>
               <div className="actions">
-                {item.status === "ON_THE_WAY" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Confirm arrival</button>}{item.status === "ARRIVED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "WAITING")}>Mark waiting</button>}
-                {item.status === "WAITING" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "IN_TREATMENT")}>Start treatment</button>}
-                {item.status === "IN_TREATMENT" && (
+                {item.status === "CONFIRMED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Mark arrived</button>}
+                {["ARRIVED", "WAITING", "IN_TREATMENT"].includes(item.status) && (
                   <>
                     <div className="field">
-                      <label>Final visit amount (P)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Optional" /></label>
+                      <label>Amount received (P)<input inputMode="decimal" required value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Actual amount paid" /></label>
+                      <label>Payment method<select value={paymentMethods[item.id] || "CASH"} onChange={event => setPaymentMethods(values => ({ ...values, [item.id]: event.target.value }))}><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile money</option><option value="CARD">Card</option><option value="OTHER">Other</option></select></label>
                       <label>Suggested return date<input type="date" value={returnDates[item.id] || ""} onChange={event => setReturnDates(values => ({ ...values, [item.id]: event.target.value }))} /></label>
                       <label>Care / return note<input value={returnNotes[item.id] || ""} onChange={event => setReturnNotes(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Optional practitioner guidance" /></label>
                     </div>
-                    <button className="button buttonPrimary" disabled={!!busy} onClick={() => void update(item.id, "COMPLETED")}>Confirm visit completed</button>
+                    <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim()} onClick={() => void update(item.id, "COMPLETED")}>Complete visit · payment received</button>
                   </>
                 )}
-                {["ARRIVED", "WAITING"].includes(item.status) && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "CANCELLED")}>Cancel visit</button>}
-                {item.status === "IN_TREATMENT" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "CANCELLED")}>Cancel visit</button>}
               </div>
             </article>
           ))}
         </section>
 
         <section className="adminPanel">
-          <h2>Completed & closed today</h2>
+          <h2>Completed today</h2>
           {closed.length ? closed.map(item => (
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name} · {item.serviceNameSnapshot}</strong>
-                <span>{item.status.replaceAll("_", " ")}{item.finalPriceSnapshot ? " · " + item.finalPriceSnapshot : ""}{item.recommendedReturnDate ? " · Suggested return " + item.recommendedReturnDate : ""}</span>
+                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " received · " + (item.paymentStatus || "PAID") : "Completed"}{item.recommendedReturnDate ? " · Suggested return " + item.recommendedReturnDate : ""}</span>
               </div>
             </article>
           )) : <p>No visits closed yet.</p>}
