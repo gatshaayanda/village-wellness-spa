@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import AdminGate from "@/app/admin/admin-gate";
 import { auth } from "@/lib/firebase/client";
-import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";\nimport { trackUsage } from "@/lib/tripple-s/usage";
+import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
+import { trackUsage } from "@/lib/tripple-s/usage";
 
 type Item = {
   id: string;
@@ -69,6 +70,7 @@ function QueueDashboard() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Visit update failed.");
+      if (status === "COMPLETED") trackUsage("visit_completed");
       await load();
       setNotice(status === "COMPLETED"
         ? "Visit completed. The customer's account history has been updated."
@@ -103,6 +105,7 @@ function QueueDashboard() {
         ));
         setSharePhone(phone);
       }
+      trackUsage("walkin_registered");
       setName("");
       setPhone("");
       setService("");
