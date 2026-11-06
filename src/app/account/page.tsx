@@ -295,22 +295,22 @@ function AccountContent() {
                   {bookings.map((booking) => (
                     <article className="customerBooking" key={booking.id}>
                       <div className="customerBookingMain">
-                        <span className="kicker">{booking.requestType === "WAITLIST" ? "APPOINTMENT WAITLIST · REF " + booking.reference : booking.requestType === "QUEUE" ? "TODAY’S VISIT · REF " + booking.reference : "REF " + booking.reference}</span>
+                        <span className="kicker">{booking.requestType === "QUEUE" ? "SPA VISIT · REF " + booking.reference : "REF " + booking.reference}</span>
                         <h3>{booking.serviceName}</h3>
-                        <p>{booking.requestType === "WAITLIST" ? "Preferred: " + (booking.preferredDate || "Any suitable date") + (booking.preferredTime ? " · " + booking.preferredTime : " · Flexible time") : (booking.preferredDate || "Date to be arranged") + (booking.preferredTime ? " · " + booking.preferredTime : "")}</p>
+                        <p>{(booking.preferredDate || "Date to be arranged") + (booking.preferredTime ? " · " + booking.preferredTime : "")}</p>
                         <small>{booking.requestType === "QUEUE" && booking.status === "COMPLETED" ? "Visit completed" : "Requested " + (booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently")}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
                       </div>
                       <div className="customerBookingProgress">
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
-                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href="/book?newBooking=1" className="textLink">Book your next visit ↗</Link></p>}</p>
+                        <p>{statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href="/book?newBooking=1" className="textLink">Book your next visit ↗</Link></p>}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
-                        {booking.requestType !== "WAITLIST" && booking.requestType !== "QUEUE" && <small>Payment: {paymentCopy[booking.paymentStatus || "PAYMENT_PENDING"] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
+                        {booking.paymentStatus && <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}{booking.paymentMethod ? " · " + booking.paymentMethod.replaceAll("_", " ").toLowerCase() : ""}.</small>}
                       </div>
                     </article>
                   ))}
                 </div>
               )}
-              <p className="customerAccountTruth">A request is not an appointment confirmation or payment receipt. The spa team updates your status after review.</p>
+              <p className="customerAccountTruth">Your visit history and recorded payments stay together here. When you are ready, book your next treatment without choosing a first-time or returning-client option.</p>
             </section>
 
             <section className="customerPanel" id="profile">
