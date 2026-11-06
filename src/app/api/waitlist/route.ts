@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb, requireCustomer } from "@/lib/firebase/admin";
-import { trippleSServiceSeed } from "@/lib/tripple-s/catalog";
+import { trippleSServiceSeed, type ServiceSeed } from "@/lib/tripple-s/catalog";
 export const dynamic = "force-dynamic";
 
 function gaboroneToday() {
@@ -36,10 +36,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const db = getAdminDb();
-    let service: Record<string, unknown> | null = null;
+    let service: ServiceSeed | null = null;
     if (serviceId) {
       const serviceSnap = await db.collection("services").doc(serviceId).get();
-      service = serviceSnap.exists ? serviceSnap.data() ?? null : trippleSServiceSeed.find((item) => item.id === serviceId) ?? null;
+      service = serviceSnap.exists ? ({ id: serviceId, ...serviceSnap.data() } as ServiceSeed) : trippleSServiceSeed.find((item) => item.id === serviceId) ?? null;
       if (!service || service.active === false) return NextResponse.json({ error: "That treatment is no longer available. Please choose another." }, { status: 409 });
     }
 
