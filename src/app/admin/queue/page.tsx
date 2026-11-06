@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import AdminGate from "@/app/admin/admin-gate";
 import { auth } from "@/lib/firebase/client";
+import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 
 type Item = {
   id: string;
@@ -22,6 +23,7 @@ type Item = {
 
 function QueueDashboard() {
   const [items, setItems] = useState<Item[]>([]);
+  const [services, setServices] = useState<ServiceRecord[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [service, setService] = useState("");
@@ -52,6 +54,7 @@ function QueueDashboard() {
 
   useEffect(() => {
     void load().catch(error => setNotice(error.message));
+    void getPublicServices().then(setServices).catch(() => setNotice("Treatments could not be loaded. Check the treatment catalogue in Admin."));
   }, [load]);
 
   async function update(id: string, status: string) {
@@ -140,7 +143,7 @@ function QueueDashboard() {
             <div className="formGrid">
               <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
               <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
-              <label className="fieldFull">Treatment<input value={service} onChange={event => setService(event.target.value)} required maxLength={160} placeholder="Treatment or consultation" /></label>
+              <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose from the live treatment catalogue</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
             </div>
             <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Registering…" : "Register customer as arrived ↗"}</button>
           </form>
