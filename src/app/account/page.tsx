@@ -259,7 +259,7 @@ function AccountContent() {
           <>
             <section className="customerPanel" id="my-visits">
               <div className="customerPanelHeading">
-                <div><span className="kicker">YOUR APPOINTMENTS</span><h2>My visits</h2></div>
+                <div><span className="kicker">YOUR REQUESTS & VISITS</span><h2>My visits</h2></div>
                 <Link href="/book?newBooking=1" className="textLink">Request a visit ↗</Link>
               </div>
               {bookings.length === 0 ? (
@@ -273,7 +273,7 @@ function AccountContent() {
                   {bookings.map((booking) => (
                     <article className="customerBooking" key={booking.id}>
                       <div className="customerBookingMain">
-                        <span className="kicker">{booking.requestType === "WAITLIST" ? "APPOINTMENT WAITLIST" : "REF " + booking.reference}</span>
+                        <span className="kicker">{booking.requestType === "WAITLIST" ? "WAITLIST · REF " + booking.reference : "REF " + booking.reference}</span>
                         <h3>{booking.serviceName}</h3>
                         <p>{booking.requestType === "WAITLIST" ? "Preferred: " + (booking.preferredDate || "Any suitable date") + (booking.preferredTime ? " · " + booking.preferredTime : " · Flexible time") : (booking.preferredDate || "Date to be arranged") + (booking.preferredTime ? " · " + booking.preferredTime : "")}</p>
                         <small>Requested {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently"}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
