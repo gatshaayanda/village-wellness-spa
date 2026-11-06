@@ -23,6 +23,7 @@ type Booking = {
   preferredDate: string;
   preferredTime: string;
   status: string;
+  statusUpdatedAt?: string;
   paymentStatus: string;
   finalPrice?: string;
   offerCode?: string;
@@ -53,6 +54,31 @@ const statusCopy: Record<string, string> = {
   CANCELLED: "Cancelled",
   NO_SHOW: "Missed appointment",
   FOLLOW_UP: "Follow-up",
+};
+
+const statusGuidance: Record<string, string> = {
+  NEW: "The spa team has received your request and will review it. Your preferred time is not confirmed yet.",
+  REVIEWING: "The team is reviewing your treatment and preferred time. They will update this request when the review is complete.",
+  APPROVED: "Your request has been reviewed. Check any message from the spa for next steps; the appointment is not confirmed until its status says Appointment confirmed.",
+  PAYMENT_PENDING: "The team has updated your request. Check any message from the spa for the next step; this status does not mean a payment has been received.",
+  CONFIRMED: "Your appointment is confirmed. Keep the date and time above handy, and contact the spa if you need to make a change.",
+  ARRIVED: "Your visit has been checked in. The spa team will guide you through the appointment.",
+  COMPLETED: "The spa has marked this visit as complete. You can request another visit whenever you are ready.",
+  NEEDS_CONTACT: "The team needs to speak with you before this request can progress. Please contact the spa using its usual contact channel.",
+  DECLINED: "This request was declined. Contact the spa if you would like to discuss another date or treatment.",
+  RESCHEDULED: "The requested time needs to change. Please contact the spa or submit a new request with another preferred time.",
+  CANCELLED: "This request is cancelled and is no longer holding the requested slot. You can submit a new request if needed.",
+  NO_SHOW: "This visit was marked as missed. Contact the spa if you would like to arrange another appointment.",
+  FOLLOW_UP: "The spa team has marked this request for follow-up. Watch for a message from the team.",
+};
+
+const paymentCopy: Record<string, string> = {
+  PAYMENT_PENDING: "Not yet marked as paid",
+  PAYMENT_INSTRUCTIONS: "Payment instructions provided",
+  PAYMENT_PROOF_SUBMITTED: "Payment proof submitted · awaiting verification",
+  PAYMENT_VERIFIED: "Payment verified",
+  PAID: "Paid",
+  REFUNDED: "Refunded",
 };
 
 function AccountContent() {
@@ -240,7 +266,12 @@ function AccountContent() {
                         <p>{booking.preferredDate || "Date to be arranged"}{booking.preferredTime ? " · " + booking.preferredTime : ""}</p>
                         <small>Requested {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently"}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
                       </div>
-                      <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
+                      <div className="customerBookingProgress">
+                        <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
+                        <p>{statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
+                        {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
+                        <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>
+                      </div>
                     </article>
                   ))}
                 </div>
