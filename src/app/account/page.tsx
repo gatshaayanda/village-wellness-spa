@@ -27,7 +27,9 @@ type Booking = {
   statusUpdatedAt?: string;
   paymentStatus?: string;
   finalPrice?: string;
-  offerCode?: string;\n  recommendedReturnDate?: string;\n  returnNote?: string;
+  offerCode?: string;
+  recommendedReturnDate?: string;
+  returnNote?: string;
 };
 type Offer = {
   id: string;
