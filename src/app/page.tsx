@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import EnquiryModal from "@/components/enquiry-modal";
 import { getClinicSettings, getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 import { defaultClinicSettings, isAnnouncementVisible, type ClinicSettings } from "@/lib/tripple-s/clinic-settings";
+import SpaWeatherReport from "@/components/SpaWeatherReport";
 
 export default function Home() {
   const [services, setServices] = useState<ServiceRecord[]>([]);
@@ -61,11 +62,12 @@ export default function Home() {
             <span className="villageHeroEyebrow">MEDICAL AESTHETICS · SKIN HEALTH · WELLNESS</span>
             <h1 id="village-home-title">Feel good in your skin.<br /><em>Feel cared for.</em></h1>
             <p>Thoughtful care, guided by your goals.</p>
-            <Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link>
+            <div className="villageHeroActions"><Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link><Link href="/waitlist" className="villageWaitlistCta">Join the waitlist <span aria-hidden="true">↗</span></Link></div>
           </div>
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
 
+        <SpaWeatherReport />
         <section className="villageQuickLinks" aria-label="Explore Village Wellness Spa">
           <Link href="/treatments" className="villageQuickCard">
             <span className="villageQuickIcon" aria-hidden="true">✧</span>
