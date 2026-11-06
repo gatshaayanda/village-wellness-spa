@@ -4,7 +4,6 @@ import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
 const allowed = new Set(["ARRIVED", "COMPLETED"]);
-const paymentMethods = new Set(["CASH", "MOBILE_MONEY", "CARD", "OTHER"]);
 function today() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
