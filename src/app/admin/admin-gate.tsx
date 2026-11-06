@@ -46,7 +46,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ word: accessWord }),
       });
       const payload = await response.json() as { token?: string; error?: string };
-      if (!response.ok || !payload.token) throw new Error(payload.error ?? "Access denied. Check the access word and try again.");
+      if (!response.ok || !payload.token) throw new Error(payload.error ?? "Access denied. Check the admin password and try again.");
       const credential = await signInWithCustomToken(auth, payload.token);
       const role = await getDoc(doc(db, "admins", credential.user.uid));
       const allowed = role.exists() && ["owner", "staff"].includes(String(role.data().role));
@@ -57,7 +57,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       setAuthorized(true);
       setAccessWord("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "We could not sign you in. Check the access word and try again.");
+      setError(err instanceof Error ? err.message : "We could not sign you in. Check the admin password and try again.");
     } finally {
       setBusy(false);
     }
@@ -69,11 +69,11 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   return <main className="adminPage"><div className="adminShell"><section className="adminPanel" style={{ maxWidth: 520, margin: "80px auto" }}>
     <span className="kicker">VILLAGE WELLNESS SPA · ADMIN</span>
     <h1>Admin</h1>
-    <p>Enter your authorized access word to manage appointments, services, products and clinic hours.</p>
+    <p>Enter your admin password to manage appointments, services, products and clinic hours.</p>
     <form className="adminForm" onSubmit={signIn}>
-      <label>Access word<input type="password" value={accessWord} onChange={event => setAccessWord(event.target.value)} autoComplete="current-password" required autoFocus /></label>
+      <label>Admin password<input type="password" value={accessWord} onChange={event => setAccessWord(event.target.value)} autoComplete="current-password" required autoFocus /></label>
       {error && <p role="alert">{error}</p>}
-      <button className="button buttonPrimary" type="submit" disabled={busy}>{busy ? "Checking access…" : "Enter Admin"}</button>
+      <button className="button buttonPrimary" type="submit" disabled={busy}>{busy ? "Checking access…" : "Open admin ↗"}</button>
     </form>
   </section></div></main>;
 }
