@@ -51,10 +51,6 @@ const statusCopy: Record<string, string> = {
   CONFIRMED: "Appointment confirmed",
   ARRIVED: "Checked in",
   COMPLETED: "Visit completed",
-  ON_THE_WAY: "On the way",
-  WAITING: "Checked in · waiting",
-  IN_TREATMENT: "Treatment in progress",
-  ON_THE_WAY: "On the way",
   WAITING: "Checked in · waiting",
   IN_TREATMENT: "Treatment in progress",
   NEEDS_CONTACT: "The team needs to contact you",
@@ -72,7 +68,6 @@ const statusGuidance: Record<string, string> = {
   PAYMENT_PENDING: "The team has updated your request. Check any message from the spa for the next step; this status does not mean a payment has been received.",
   CONFIRMED: "Your appointment is confirmed. Keep the date and time above handy, and contact the spa if you need to make a change.",
   ARRIVED: "Reception has recorded your arrival. The team will guide you through the next step.",
-  ON_THE_WAY: "The spa has received your arrival heads-up. This is not a reserved appointment or confirmed queue position. Please check in with reception when you arrive.",
   WAITING: "Reception has checked you in and the team has recorded that you are waiting. They will guide you when your treatment is ready.",
   IN_TREATMENT: "The team has recorded that your treatment is in progress.",
   COMPLETED: "The spa has marked this visit as complete. You can request another visit whenever you are ready.",
@@ -233,7 +228,7 @@ function AccountContent() {
             <span className="brandMark"><img src="/icon.svg" alt="" /></span>
             <span>Village<span>WELLNESS SPA</span></span>
           </Link>
-          <div className="navLinks"><Link href="/treatments">Treatments</Link><Link href="/queue">Check in</Link><Link href="/book?newBooking=1">Book a visit</Link></div>
+          <div className="navLinks"><Link href="/treatments">Treatments</Link><Link href="/book">Appointments</Link><Link href="/book?newBooking=1">Book a visit</Link></div>
           <Link href="/book?newBooking=1" className="button buttonPrimary">New request ↗</Link>
         </div>
       </nav>
@@ -287,11 +282,11 @@ function AccountContent() {
                         <span className="kicker">{booking.requestType === "WAITLIST" ? "APPOINTMENT WAITLIST · REF " + booking.reference : booking.requestType === "QUEUE" ? "TODAY’S VISIT · REF " + booking.reference : "REF " + booking.reference}</span>
                         <h3>{booking.serviceName}</h3>
                         <p>{booking.requestType === "WAITLIST" ? "Preferred: " + (booking.preferredDate || "Any suitable date") + (booking.preferredTime ? " · " + booking.preferredTime : " · Flexible time") : (booking.preferredDate || "Date to be arranged") + (booking.preferredTime ? " · " + booking.preferredTime : "")}</p>
-                        <small>Requested {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently"}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
+                        <small>{booking.requestType === "QUEUE" && booking.status === "COMPLETED" ? "Visit completed" : "Requested " + (booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently")}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
                       </div>
                       <div className="customerBookingProgress">
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
-                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href="/book?newBooking=1" className="textLink">Book your next visit ↗</Link></p>}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href={"/book?newBooking=1"} className="textLink">Book your next visit ↗</Link></p>}</p>
+                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href="/book?newBooking=1" className="textLink">Book your next visit ↗</Link></p>}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
                         {booking.requestType !== "WAITLIST" && booking.requestType !== "QUEUE" && <small>Payment: {paymentCopy[booking.paymentStatus || "PAYMENT_PENDING"] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
                       </div>
