@@ -64,12 +64,14 @@ Research grounding:
 - Buell, Kim & Tsay (2016), *Creating Reciprocal Value Through Operational Transparency*, Management Science, DOI: https://doi.org/10.1287/mnsc.2015.2411
 - Current Gaborone service context reviewed: Ms Jay Beauty Care booking journey and Mosha Wellness Spa positioning. Use these as market context, not as templates to copy.
 
-## Appointment waitlist and weather report
-- The homepage may offer a separate customer-facing appointment waitlist alongside the primary booking action. Describe it as a waitlist request, never as a live queue or a guaranteed place/position.
-- Waitlist entries use the existing `bookingRequests` collection with `requestType: "WAITLIST"`; do not create a second queue database or modify appointment slot reservations.
-- Waitlist requests are guest-first, optionally linked to the verified Firebase customer UID, visible in Admin → Requests → Waitlist and in the owner's private customer history.
-- A waitlist request must not lock a slot or be marked PAYMENT_PENDING, CONFIRMED, ARRIVED or COMPLETED through staff status controls. Staff verify practitioner, treatment room and treatment-duration capacity, then contact the client with a real available slot. The client submits a normal appointment request to reserve it.
+## Appointment booking, reception walk-ins and weather report
+- There is no customer-facing appointment waitlist. Do not add a waitlist button, page, booking mode, API, admin filter or customer waitlist request. Existing legacy WAITLIST records are historical only and must not enter the active workflow.
+- Customers use the normal /book flow: choose a treatment, select a date and live available time, submit their details, and receive an honest request reference. Staff review the request and contact the customer to confirm; a request is not a confirmed appointment until staff updates its status.
+- Reception alone registers a walk-in after the customer is physically at the spa. Capture the customer name, WhatsApp/mobile number and treatment, then create a staff-owned visit in Admin → Walk-ins & visits. Do not offer remote check-in or customer-created queue entries.
+- Staff controls the real visit progression: ARRIVED → WAITING → IN_TREATMENT → COMPLETED, with cancellation/no-show where appropriate. No invented queue position, countdown or treatment start estimate.
+- At reception registration, create a high-entropy, expiring, single-use account-claim link. The customer signs in and claims the visit; never auto-merge identities by phone alone.
+- Staff confirms completion. At completion, staff may record the actual final visit amount and practitioner-approved suggested return date/care note. These details appear in the customer's private account. Do not label a visit amount as paid or issue a payment receipt unless payment is separately recorded as received.
 - Weather is a planning aid only. Never infer treatment suitability, medical outcomes, staff availability or appointment availability from weather.
-- Use the server-only `WEATHERAPI_KEY` environment variable for WeatherAPI.com. Never expose keys in client code or `NEXT_PUBLIC_*` variables. The current integration uses the free commercial tier's three-day forecast, attributes WeatherAPI.com, caches responses for 30 minutes and displays a plain-language forecast/safety disclaimer.
-- If weather configuration or the provider is unavailable, show a clear non-blocking message; booking and waitlist workflows must continue to work.
-- Preserve the existing booking availability checks and slot-lock transaction. Waitlist requests are a separate contact request and must never bypass or weaken the appointment booking checks.
+- Use the server-only WEATHERAPI_KEY environment variable for WeatherAPI.com. Never expose keys in client code or NEXT_PUBLIC_* variables. The current integration uses the free commercial tier's three-day forecast, attributes WeatherAPI.com, caches responses for 30 minutes and displays a plain-language forecast/safety disclaimer.
+- If weather configuration or the provider is unavailable, show a clear non-blocking message; appointment booking must continue to work.
+- Preserve the existing booking availability checks and slot-lock transaction.
