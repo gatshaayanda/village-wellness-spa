@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import AdminGate from "@/app/admin/admin-gate";
+import { auth } from "@/lib/firebase/client";
 
 type Analytics = {
   periodDays: number;
@@ -25,7 +26,9 @@ function AnalyticsDashboard() {
   const [error, setError] = useState("");
   useEffect(() => {
     let active = true;
-    fetch("/api/admin/analytics", { cache: "no-store" })
+    const user = auth.currentUser;
+    if (!user) { setError("Your admin session has expired. Sign in again."); setLoading(false); return () => { active = false; }; }
+    user.getIdToken().then(token => fetch("/api/admin/analytics", { headers: { Authorization: "Bearer " + token }, cache: "no-store" }))
       .then(async response => {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || "Analytics could not be loaded.");
