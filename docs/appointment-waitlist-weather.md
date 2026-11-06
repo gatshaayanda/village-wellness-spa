@@ -1,5 +1,17 @@
 # Appointment waitlist and Gaborone weather report
 
+## Industry and competitor notes
+
+Fresha's official documentation supports online waitlist entry, client-selected time preferences, manual or automatic handling, prioritisation rules and customer updates when openings appear. Its scheduling tools also account for staff shifts and bookable resources/rooms. Mindbody's spa scheduling guidance similarly describes matching a waitlisted service to a real opening and contacting a qualified customer.
+
+This implementation deliberately starts with **manual staff review**, not automatic slot matching: the current Village Wellness Spa app does not yet have a complete practitioner/room resource calendar or a tested priority and offer-expiry engine. It therefore records the customer's request, exposes it to staff, and lets the team contact the customer. Do not claim automatic queue order, live slot matching, guaranteed notifications or automatic booking until those systems are implemented and verified.
+
+References:
+- Fresha waitlist setup and online requests: https://www.fresha.com/help-center/knowledge-base/calendar/259-set-up-and-manage-your-waitlist
+- Fresha waitlist updates: https://www.fresha.com/help-center/knowledge-base/calendar/169-send-waitlist-updates
+- Fresha staff and bookable-resource scheduling: https://www.fresha.com/for-business/features/scheduling
+- Mindbody spa scheduling and waitlist management: https://www.mindbodyonline.com/en-gb/business/education/blog/booking-and-scheduling-software-spas
+
 ## Customer journey
 
 The homepage keeps **Book an appointment** as the primary action and adds **Join the waitlist** as a secondary route. The waitlist reuses the existing booking form presentation but submits to a separate server endpoint.
