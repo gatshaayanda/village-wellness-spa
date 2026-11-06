@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function WaitlistPage() {
-  redirect("/book?waitlist=1");
+  redirect("/book");
 }
