@@ -4,7 +4,9 @@ export type UsageEvent =
   | "availability_result"
   | "booking_submit_success"
   | "booking_conflict"
-  | "enquiry_submit_success"\n  | "walkin_registered"\n  | "visit_completed";
+  | "enquiry_submit_success"
+  | "walkin_registered"
+  | "visit_completed";
 
 type UsagePayload = {
   event: UsageEvent;
