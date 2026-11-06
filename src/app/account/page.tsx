@@ -27,7 +27,7 @@ type Booking = {
   statusUpdatedAt?: string;
   paymentStatus?: string;
   finalPrice?: string;
-  offerCode?: string;\n  recommendedReturnDate?: string;\n  returnNote?: string;
+  offerCode?: string;\n  recommendedReturnDate?: string;\n  returnNote?: string;\n  recommendedReturnDate?: string;\n  returnNote?: string;
 };
 type Offer = {
   id: string;
@@ -49,6 +49,9 @@ const statusCopy: Record<string, string> = {
   CONFIRMED: "Appointment confirmed",
   ARRIVED: "Checked in",
   COMPLETED: "Visit completed",
+  ON_THE_WAY: "On the way",
+  WAITING: "Checked in · waiting",
+  IN_TREATMENT: "Treatment in progress",
   ON_THE_WAY: "On the way",
   WAITING: "Checked in · waiting",
   IN_TREATMENT: "Treatment in progress",
@@ -286,7 +289,7 @@ function AccountContent() {
                       </div>
                       <div className="customerBookingProgress">
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
-                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href={"/book?newBooking=1"} className="textLink">Book your next visit ↗</Link></p>}</p>
+                        <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href="/book?newBooking=1" className="textLink">Book your next visit ↗</Link></p>}{booking.recommendedReturnDate && <p><strong>Suggested next visit: {new Date(booking.recommendedReturnDate + "T12:00:00").toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "long" })}.</strong> {booking.returnNote || "Your spa team has recorded this as a suggested return date."} <Link href={"/book?newBooking=1"} className="textLink">Book your next visit ↗</Link></p>}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
                         {booking.requestType !== "WAITLIST" && booking.requestType !== "QUEUE" && <small>Payment: {paymentCopy[booking.paymentStatus || "PAYMENT_PENDING"] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
                       </div>
