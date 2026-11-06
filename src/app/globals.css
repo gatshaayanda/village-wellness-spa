@@ -902,3 +902,47 @@
 .customerAccount .customerBookingProgress p{margin:0;font-size:.72rem;line-height:1.45;color:#6b5b62}
 .customerAccount .customerBookingProgress small{font-size:.65rem;line-height:1.4;color:var(--muted)}
 @media(max-width:620px){.customerAccount .customerBookingProgress{max-width:none;min-width:0;width:100%}}
+
+/* Appointment waitlist + weather report: compact, transparent additions to the existing customer journey. */
+.villageHeroActions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.villageWaitlistCta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 17px;border:1px solid rgba(255,255,255,.72);border-radius:9px;color:#fff;font-size:.8rem;font-weight:800;background:rgba(55,20,39,.2)}
+.villageWaitlistCta:hover{background:rgba(255,255,255,.14)}
+.spaWeatherReport{margin:14px 0 16px;padding:16px 18px;border:1px solid #f0dce5;border-radius:12px;background:#fff;box-shadow:0 4px 15px rgba(107,60,27,.035)}
+.spaWeatherReportHeading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:9px}
+.spaWeatherReportHeading h2{margin:4px 0 0;font:600 1.2rem Georgia,serif;color:var(--chocolate)}
+.spaWeatherReportHeading>small,.spaWeatherAttribution{font-size:.62rem;color:#806d63}
+.spaWeatherEyebrow{font-size:.58rem;font-weight:900;letter-spacing:.13em;color:#b62968}
+.spaWeatherCurrent{display:flex;align-items:center;gap:12px;padding:8px 0 12px;border-bottom:1px solid #f2e6eb}
+.spaWeatherCurrent>div:nth-child(2){display:grid;gap:3px}
+.spaWeatherCurrent>div:nth-child(2)>strong{font:600 1.65rem Georgia,serif;color:var(--chocolate)}
+.spaWeatherCurrent>div:nth-child(2)>span{font-size:.7rem;color:#806d63}
+.spaWeatherMetrics{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
+.spaWeatherMetrics span{display:grid;gap:3px;font-size:.61rem;color:#806d63}
+.spaWeatherMetrics b{font-size:.73rem;color:var(--chocolate)}
+.spaWeatherDays{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:11px 0}
+.spaWeatherDays article{display:grid;justify-items:center;gap:4px;padding:8px 3px;border-radius:8px;background:#fff8fb;text-align:center}
+.spaWeatherDays article>span{font-size:.61rem;font-weight:800;color:#70545f}
+.spaWeatherDays article>strong{font-size:.77rem;color:var(--chocolate)}
+.spaWeatherDays article>strong small{font-weight:500;color:#927d84}
+.spaWeatherDays article>small{font-size:.58rem;color:#806d63}
+.spaWeatherAttribution{display:block;line-height:1.5}
+.spaWeatherAttribution a,.spaWeatherSelected a{color:#b62968;text-decoration:underline}
+.spaWeatherUnavailable{margin:8px 0 12px;color:#806d63;font-size:.73rem;line-height:1.5}
+.spaWeatherSelected{display:grid;gap:8px;margin-top:10px;padding:12px;border:1px solid #f0dce5;border-radius:9px;background:#fff8fb}
+.spaWeatherSelected>p{margin:0;color:#806d63;font-size:.7rem;line-height:1.5}
+.spaWeatherSelectedGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.spaWeatherSelectedGrid>div{display:grid;gap:4px}
+.spaWeatherSelectedGrid>div:first-child strong{font-size:.73rem;color:var(--chocolate)}
+.spaWeatherSelectedGrid>div:first-child span{font-size:.9rem;font-weight:900;color:var(--chocolate)}
+.spaWeatherSelectedGrid small{font-size:.58rem;color:#806d63}
+.spaWeatherSelectedGrid b{font-size:.72rem;color:var(--chocolate)}
+.spaWeatherSelected>small{font-size:.59rem;line-height:1.5;color:#806d63}
+@media(max-width:700px){
+ .villageHeroActions{align-items:stretch}
+ .villageHeroActions>a{flex:1}
+ .spaWeatherReport{padding:13px;margin:12px 0}
+ .spaWeatherCurrent{flex-wrap:wrap}
+ .spaWeatherMetrics{width:100%;margin:0;justify-content:space-between}
+ .spaWeatherDays{grid-template-columns:repeat(5,minmax(72px,1fr));overflow-x:auto;padding-bottom:5px}
+ .spaWeatherSelectedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
