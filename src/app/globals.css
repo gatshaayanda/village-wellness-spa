@@ -839,3 +839,60 @@
  .bookPageEditorial .bookingForm .formGrid{grid-template-columns:1fr}
  .bookPageEditorial .bookingForm .fieldFull{grid-column:auto}
 }
+
+
+/* Customer account: compact, task-led layout aligned with the Iteration 13 visual standard. */
+.customerAccount{background:#fff8fb;padding-bottom:26px}
+.customerAccount .nav{background:rgba(255,255,255,.97)}
+.customerAccount .navInner{min-height:64px}
+.customerAccount .nav .button{min-height:39px;padding:9px 14px;font-size:.76rem}
+.customerAccountShell{width:min(900px,calc(100% - 28px));padding-top:22px}
+.customerAccountHeader{display:flex;align-items:baseline;gap:10px 18px;flex-wrap:wrap;margin:0 0 16px}
+.customerAccountHeader .kicker{flex:0 0 100%}
+.customerAccountHeader h1{font-family:Georgia,serif;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-.045em;line-height:1;margin:0}
+.customerAccountHeader p{font-size:.84rem;line-height:1.45;color:var(--muted);margin:0}
+.customerAccount .customerPanel{background:#fff;border:1px solid #ead8e0;border-radius:12px;padding:17px 19px;margin:0 0 12px;box-shadow:0 5px 18px rgba(107,60,27,.035)}
+.customerAccount .customerPanelHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.customerAccount .customerPanelHeading h2{font-family:Arial,Helvetica,sans-serif;font-size:1.12rem;letter-spacing:-.025em;line-height:1.2;margin:3px 0 0}
+.customerAccount .customerPanel p{font-size:.8rem;line-height:1.5;color:var(--muted)}
+.customerAccount .customerPanelHeading .textLink{font-size:.78rem;white-space:nowrap}
+.customerAccount .customerSetupIntro{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(110deg,#fff3f8,#fff 70%,#effaf4)}
+.customerAccount .customerSetupIntro h2{font-family:Arial,Helvetica,sans-serif;font-size:1.08rem;letter-spacing:-.02em;margin:4px 0}
+.customerAccount .customerSetupIntro p{margin:4px 0 0}
+.customerAccount .customerEmpty{padding:15px 0 5px}
+.customerAccount .customerEmpty strong{font-size:.9rem}
+.customerAccount .customerEmpty p{margin:5px 0 12px}
+.customerAccount .customerBookingList{display:grid;gap:7px}
+.customerAccount .customerBooking{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 13px;border:1px solid #f0e3e9;border-radius:9px;background:#fffafd}
+.customerAccount .customerBooking h3{font-size:.9rem;margin:3px 0}
+.customerAccount .customerBooking p{margin:0;font-size:.78rem}
+.customerAccount .customerBooking small{display:block;margin-top:4px;color:var(--muted);font-size:.68rem}
+.customerAccount .customerStatus{flex:0 0 auto;padding:6px 9px;border-radius:999px;background:#effaf4;color:#286344;font-size:.68rem;font-weight:800}
+.customerAccount .customerAccountTruth{font-size:.7rem!important;margin:11px 0 0}
+.customerAccount .customerAccountState{font-size:.68rem;font-weight:800;color:#286344;background:#effaf4;border-radius:999px;padding:6px 9px}
+.customerAccount .actions{gap:8px;margin-top:12px}
+.customerAccount .button{min-height:40px;padding:9px 14px;font-size:.76rem;border-radius:8px}
+.customerAccount .customerOfferList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.customerAccount .customerOffer{padding:12px;border:1px solid #f0e3e9;border-radius:9px;background:#fffafd}
+.customerAccount .customerOffer h3{font-size:.88rem;margin:4px 0}
+.customerAccount .customerOffer p{margin:0 0 7px}
+.customerAccount .customerOffer small{font-size:.7rem;color:var(--muted)}
+.customerAccount .customerNotifications{padding:14px 17px}
+.customerAccountMessage{margin:0 0 12px;padding:11px 13px;font-size:.78rem}
+.customerAccountFooter{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:7px 2px}
+.customerAccountFooter p{max-width:490px;margin:0;color:var(--muted);font-size:.68rem;line-height:1.45}
+@media(max-width:620px){
+ .customerAccount .navInner{min-height:58px}
+ .customerAccountShell{width:calc(100% - 20px);padding-top:15px}
+ .customerAccountHeader{display:block;margin-bottom:12px}
+ .customerAccountHeader h1{font-size:2rem;margin:4px 0}
+ .customerAccountHeader p{font-size:.76rem}
+ .customerAccount .customerPanel{padding:13px;margin-bottom:9px}
+ .customerAccount .customerPanelHeading{margin-bottom:9px}
+ .customerAccount .customerBooking{align-items:flex-start;flex-direction:column;gap:8px;padding:10px}
+ .customerAccount .customerStatus{align-self:flex-start}
+ .customerAccount .customerSetupIntro{align-items:flex-start;flex-direction:column;gap:9px}
+ .customerAccount .customerOfferList{grid-template-columns:1fr}
+ .customerAccountFooter{display:grid;gap:7px}
+ .customerAccount .navLinks{display:none}
+}

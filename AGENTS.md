@@ -10,7 +10,10 @@ Core focus: facials and skincare, microneedling, chemical peels, massage and pro
 ## Implementation contract
 - Product owner and final reviewer: user. Technical navigator and implementer: ChatGPT.
 - GitHub repository and current code are the source of truth. Inspect before changing; preserve working workflows and avoid unrelated refactors.
-- Preserve existing booking requests, customer accounts/history, protected admin access, Firestore data integration, UploadThing media uploads and admin CRUD. Booking requests are not automatically confirmed.
+- Preserve the customer booking flow, customer account/history, server-side admin access, Firestore persistence, UploadThing media uploads and admin CRUD.
+- Customer flow is guest-first: treatment → date/live availability → customer details → saved request/reference → optional account security → private visit history. A request is not a confirmed appointment until staff updates its status.
+- Customer accounts use Firebase Anonymous Auth for guest continuity and optional Google linking. Never silently merge separate customer identities. Appointment history and profile data must be scoped to the verified Firebase UID.
+- Keep customer account screens compact and task-led: visit history/status first, account security and update preferences next, optional active offers last. Do not add unrelated wellness games, journals or long editorial sections to the account.
 - Admin access uses the existing single access-word/password login at `/admin`, validated server-side through `ADMIN_PASSWORD`; keep the secret server-only. Do not hard-code the access word or expose it through a public environment variable.
 - The user manages Firebase environment/configuration. Do not change Firebase project IDs, credentials, environment files or service-account setup unless explicitly instructed.
 - Never commit secrets or local production environment files.
@@ -22,8 +25,8 @@ Core focus: facials and skincare, microneedling, chemical peels, massage and pro
 
 ## QA priorities
 1. Public home, service catalogue and service detail branding/copy.
-2. Guest appointment request and honest received/not-confirmed state.
-3. Optional customer account connection and booking history.
+2. Guest appointment request, live availability recheck and honest received/not-confirmed state.
+3. Customer account: booking history, optional Google linking, account collision handling and notification preferences.
 4. Admin one-word access, appointment review/status changes, calendar and service/product CRUD.
 5. Image upload through existing UploadThing integration.
 6. PWA install behavior and offline messaging.
