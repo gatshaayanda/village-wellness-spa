@@ -31,3 +31,19 @@ Core focus: facials and skincare, microneedling, chemical peels, massage and pro
 5. Image upload through existing UploadThing integration.
 6. PWA install behavior and offline messaging.
 7. Gaborone local date/time handling and configured address.
+
+## Operational transparency and behavioral-science standard
+- Apply operational transparency across booking, customer accounts, staff request handling, notifications and receipts: show genuine actions, persisted outcomes, current ownership/next steps and meaningful timestamps where the underlying system records them.
+- Do not add artificial waiting, fake progress bars, simulated staff activity, invented status history, false availability, or success messages before the server confirms persistence.
+- Keep appointment status separate from payment status. A request is not confirmed until staff sets CONFIRMED; a payment is not received until the payment record is explicitly PAID/verified. Never infer one from the other.
+- For every customer-visible status, explain in plain language what has happened and the next useful action. Use neutral, non-judgmental, informational feedback; avoid urgency, pressure, shame or manipulative scarcity.
+- Keep notification choices explicit and separate. Saving preferences is not proof that push delivery is configured or that the operating system displayed a notification.
+- Keep transparency concise and progressive: show the useful summary first, with additional detail only where it helps a customer or staff member make the next decision.
+- Preserve guest-first booking, account identity boundaries, saved booking references, existing admin workflows, Firestore records, UploadThing, PWA installation and chatbot behavior.
+- When adding status timestamps, write them only on actual server-side status changes. Legacy records without a timestamp must remain valid and must not be assigned fabricated historical dates.
+- QA real persisted transitions from NEW through review/confirmation/completion, and verify that payment status remains independent.
+
+Research grounding (design guidance, not a claim that any single study guarantees conversion):
+- Wang, Wu & Wang (2025), *Illuminating the unseen: How and why operational transparency mitigates customer dissatisfaction in platform-based services*, Journal of Business Research, DOI: https://doi.org/10.1016/j.jbusres.2025.115574
+- Conrad, Couper, Tourangeau & Peytchev (2010), *The impact of progress indicators on task completion*, Interacting with Computers, DOI: https://doi.org/10.1016/j.intcom.2010.03.001
+- *Wellbeing Supportive Design – Research-Based Guidelines for Supporting Psychological Wellbeing in User Experience* (2022), DOI: https://doi.org/10.1080/10447318.2022.2089812
