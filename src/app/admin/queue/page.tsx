@@ -158,7 +158,7 @@ function QueueDashboard() {
                 <span>{item.phone} · {item.status.replaceAll("_", " ").toLowerCase()} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
               </div>
               <div className="actions">
-                {item.status === "ARRIVED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "WAITING")}>Mark waiting</button>}
+                {item.status === "ON_THE_WAY" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Confirm arrival</button>}{item.status === "ARRIVED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "WAITING")}>Mark waiting</button>}
                 {item.status === "WAITING" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "IN_TREATMENT")}>Start treatment</button>}
                 {item.status === "IN_TREATMENT" && (
                   <>
