@@ -171,7 +171,34 @@ export async function reconcileVillageServiceSeeds() {
   const stateRef = doc(db, "settings", "catalogueState");
   const stateSnapshot = await getDoc(stateRef);
   const state = stateSnapshot.data() ?? {};
-  if (Number(state.villageServiceSeedVersion ?? 0) >= 3) return { added: 0, categoriesAdded: 0, updated: 0, skipped: true };
+  if (Number(state.villageServiceSeedVersion ?? 0) >= 3) {
+    // The public catalogue deliberately falls back to the starter treatments while the
+    // Firestore catalogue is still untouched. Mirror those records into Firestore for
+    // the admin CRUD screen, but never repopulate a catalogue the owner has managed.
+    if (state.servicesManaged === true) return { added: 0, categoriesAdded: 0, updated: 0, skipped: true };
+    const [existingServices, existingCategories] = await Promise.all([
+      getDocs(servicesCollection),
+      getDocs(serviceCategoriesCollection),
+    ]);
+    if (!existingServices.empty) return { added: 0, categoriesAdded: 0, updated: 0, skipped: true };
+    let added = 0, categoriesAdded = 0;
+    for (const category of trippleSCategorySeed) {
+      if (existingCategories.docs.some(item => item.id === category.id)) continue;
+      await setDoc(doc(db, "serviceCategories", category.id), category);
+      categoriesAdded++;
+    }
+    for (const service of trippleSServiceSeed) {
+      await setDoc(doc(db, "services", service.id), service);
+      added++;
+    }
+    await setDoc(stateRef, {
+      servicesManaged: true,
+      categoriesManaged: true,
+      serviceCatalogVersion: 3,
+      villageServiceSeedVersion: 3,
+    }, { merge: true });
+    return { added, categoriesAdded, updated: 0, skipped: false };
+  }
 
   const [serviceSnapshot, categorySnapshot] = await Promise.all([getDocs(servicesCollection), getDocs(serviceCategoriesCollection)]);
   const serviceIds = new Set(serviceSnapshot.docs.map(item => item.id));
