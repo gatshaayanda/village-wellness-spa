@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   const email = String(body.email ?? customer?.email ?? "").trim().slice(0, 200);
   const date = String(body.preferredDate ?? "").trim();
   const time = String(body.time ?? "").trim();
-  const clientType = body.clientType === "RETURNING" ? "RETURNING" : "NEW";
+
   const serviceId = String(body.serviceId ?? "").trim();
   const message = String(body.message ?? "").trim().slice(0, 1500);
   const code = String(body.discountCode ?? "").trim().toUpperCase();
@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
   if (!name || !phone || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return NextResponse.json({ error: "Enter your name and mobile number, then choose a valid date and available time." }, { status: 400 });
   try {
     const db = getAdminDb();
+    const priorVisits = await db.collection("bookingRequests").where("phone", "==", phone).get();
+    const clientType = priorVisits.docs.some(item => item.data().status === "COMPLETED") ? "RETURNING" : "NEW";
     const settingsSnap = await db.collection("settings").doc("clinic").get();
     const saved = settingsSnap.data() ?? {};
     const settings = { openingHours: { ...defaultClinicSettings.openingHours, ...(saved.openingHours ?? {}) }, bookingRules: { ...defaultClinicSettings.bookingRules, ...(saved.bookingRules ?? {}), minimumNoticeHours: 0 } };
