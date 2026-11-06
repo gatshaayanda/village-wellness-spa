@@ -9,6 +9,7 @@ import type { FormEvent } from "react";
 import { getClinicSettings, getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 import { defaultClinicSettings, dayLabels, isAnnouncementVisible, parseDurationMinutes, type ClinicSettings, type DayKey } from "@/lib/tripple-s/clinic-settings";
 import { trackUsage } from "@/lib/tripple-s/usage";
+import SpaWeatherReport from "@/components/SpaWeatherReport";
 
 const whatsapp = "/#visit";
 function localDateValue() {
@@ -19,6 +20,7 @@ function localDateValue() {
 export default function BookForm() {
   const searchParams = useSearchParams();
   const requestedService = searchParams.get("service") ?? "";
+  const waitlistMode = searchParams.get("waitlist") === "1";
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
   const [customerName, setCustomerName] = useState("");
@@ -35,6 +37,7 @@ export default function BookForm() {
   const [availabilityRetry, setAvailabilityRetry] = useState(0);
   const [loadingServices, setLoadingServices] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedRequestType, setSubmittedRequestType] = useState<"APPOINTMENT" | "WAITLIST">("APPOINTMENT");
   const [reference, setReference] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -110,7 +113,7 @@ export default function BookForm() {
 
   useEffect(() => {
     setSelectedTime(""); setAvailableSlots([]); setAvailabilityError(""); setAvailabilityNote("");
-    if (!preferredDate) return;
+    if (!preferredDate || waitlistMode) { setLoadingSlots(false); return; }
     let cancelled = false; setLoadingSlots(true);
     fetch("/api/availability?date=" + encodeURIComponent(preferredDate) + "&duration=" + encodeURIComponent(selectedDuration))
       .then(async response => { const data=await response.json(); if(!response.ok) throw new Error(data.error||"Could not load available times."); return data as {slots:string[];note?:string}; })
@@ -118,7 +121,7 @@ export default function BookForm() {
       .catch(error=>{if(!cancelled){setAvailabilityError(error instanceof Error?error.message:"Could not load available times.");trackUsage("availability_result",{outcome:"error"});}})
       .finally(()=>{if(!cancelled)setLoadingSlots(false);});
     return ()=>{cancelled=true;};
-  }, [preferredDate, selectedDuration, availabilityRetry]);
+  }, [preferredDate, selectedDuration, availabilityRetry, waitlistMode]);
   const dayKeys: DayKey[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
   const selectedDay = preferredDate ? dayKeys[new Date(`${preferredDate}T12:00:00`).getDay()] : null;
   const selectedHours = selectedDay ? clinicSettings.openingHours[selectedDay] : undefined;
@@ -133,13 +136,15 @@ export default function BookForm() {
     setError("");
 
     const requestedDate = String(form.get("date") ?? "").trim();
-    if (!requestedDate || !selectedTime) { setError("Choose a date and one of the available appointment times."); setBusy(false); return; }
-    const requestedDay = dayKeys[new Date(requestedDate + "T12:00:00").getDay()];
-    const requestedHours = clinicSettings.openingHours[requestedDay];
-    if (!requestedHours?.open || !availableSlots.includes(selectedTime)) { setError("That time is no longer available. Please choose another slot."); setBusy(false); return; }
+    if (!waitlistMode && (!requestedDate || !selectedTime)) { setError("Choose a date and one of the available appointment times."); setBusy(false); return; }
+    if (!waitlistMode) {
+      const requestedDay = dayKeys[new Date(requestedDate + "T12:00:00").getDay()];
+      const requestedHours = clinicSettings.openingHours[requestedDay];
+      if (!requestedHours?.open || !availableSlots.includes(selectedTime)) { setError("That time is no longer available. Please choose another slot."); setBusy(false); return; }
+    }
     const service = services.find((item) => item.id === String(form.get("serviceId") ?? ""));
     const email = String(form.get("email") ?? "").trim();
-    const preferredTime = selectedTime;
+    const preferredTime = waitlistMode ? String(form.get("preferredTime") ?? "").trim() : selectedTime;
     const message = String(form.get("message") ?? "").trim();
     const discountCode = String(form.get("discountCode") ?? "").trim();
     const request = {
@@ -168,7 +173,14 @@ export default function BookForm() {
       const headers: Record<string,string>={"Content-Type":"application/json"};
       // Anonymous identity is invisible and optional; auth failure must not block guest booking.
       if(hasFirebaseWebConfig){try{const customer=auth.currentUser??(await signInAnonymously(auth)).user;headers.Authorization="Bearer "+await getIdToken(customer);}catch(authError){console.warn("[Village Wellness Spa] optional customer session unavailable; continuing as guest",authError);}}
-      const response = await fetch("/api/bookings", { method: "POST", headers, body: JSON.stringify({ ...request, time: selectedTime, discountCode }) });
+      const endpoint = waitlistMode ? "/api/waitlist" : "/api/bookings";
+      const payload = waitlistMode ? {
+        name: request.name, phone: request.phone, email,
+        ...(requestedDate ? { preferredDate: requestedDate } : {}),
+        ...(preferredTime ? { preferredTime } : {}),
+        ...(service ? { serviceId: service.id } : {}), clientType, ...(message ? { message } : {}),
+      } : { ...request, time: selectedTime, discountCode };
+      const response = await fetch(endpoint, { method: "POST", headers, body: JSON.stringify(payload) });
       const result = await response.json();
       if (!response.ok) {
         if (response.status === 409 && String(result.error ?? "").toLowerCase().includes("just taken that slot")) trackUsage("booking_conflict");
@@ -176,6 +188,7 @@ export default function BookForm() {
       }
       trackUsage("booking_submit_success");
       setReference(String(result.reference || result.id).slice(0, 8).toUpperCase());
+      setSubmittedRequestType(waitlistMode ? "WAITLIST" : "APPOINTMENT");
       setSubmitted(true);
       formElement.reset();
     } catch (err) {
@@ -189,9 +202,9 @@ export default function BookForm() {
   return <main className="bookPage bookPageEditorial">
     <nav className="nav"><div className="container navInner"><Link href="/" className="brand" aria-label="Village Wellness Spa home"><span className="brandMark"><img src="/icon.svg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link><div className="navLinks"><Link href="/treatments" className="textLink">Browse treatments & prices</Link><Link href="/account" className="textLink">My Village Wellness Spa</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link></div></nav>
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
-    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose a treatment and preferred time. The team will review your request and confirm the appointment.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date & time</span><span><b>3</b> Your details</span></div></div></div>
+    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>{waitlistMode ? <>Join the <em>waitlist.</em></> : <>Book your <em>spa visit.</em></>}</h1><p>{waitlistMode ? "Tell us what treatment and timing would suit you. The team can contact you if a suitable opening becomes available. Joining the waitlist does not reserve an appointment." : "Choose a treatment and preferred time. The team will review your request and confirm the appointment."}</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> {waitlistMode ? "Your preference" : "Date & time"}</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
-      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Thank you. We’ll be in touch.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below; you do not need to secure your profile again." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. Your request is already saved, and this step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my visit history →</Link> : <Link href="/account?submitted=1" className="button buttonPrimary">Secure my profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
+      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">{submittedRequestType === "WAITLIST" ? "Waitlist request received" : "Request received"}</span><h2>{submittedRequestType === "WAITLIST" ? "We have your request." : "Thank you. We’ll be in touch."}</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>{submittedRequestType === "WAITLIST" ? "Your waitlist request is saved for the spa team to review. It does not reserve a treatment slot or guarantee an opening. The team will contact you if they can offer a suitable time." : "Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps."} {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my request →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my request & secure profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
         <form className="formCard bookingForm" onSubmit={handleSubmit}>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>What brings you in?</h2><p>{hasConnectedAccount ? "Your request will be linked to your My Village Wellness Spa account, so you can return here to follow its progress." : "You can request a visit as a guest. If you choose, you can secure your profile after sending the request."}</p></div></div>
@@ -199,8 +212,8 @@ export default function BookForm() {
             <div className="field"><label htmlFor="serviceId">Choose a treatment</label><select id="serviceId" name="serviceId" value={serviceId} onChange={(event) => setServiceId(event.target.value)}><option value="">{loadingServices ? "Loading the menu…" : "I’m not sure — help me choose"}</option>{services.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.price} · {item.duration}</option>)}</select><small>Not sure what to choose? Leave this blank and the team can guide you.</small></div>
             {selected && <div className="selectedTreatment"><div><span className="kicker">Your selection</span><strong>{selected.name}</strong><p>{selected.description}</p></div><div className="selectedTreatmentPrice"><strong>{selected.price}</strong><span>{selected.duration}</span></div>{selected.consultationRequired && <p className="selectedTreatmentNote">Clinical assessment may be required. Suitability is determined by the Village Wellness Spa clinical team.</p>}</div>}
           </section>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>02</span><div><h2>When works for you?</h2><p>Select a preferred slot. Your appointment is only confirmed after the team contacts you.</p></div></div>
-            <div className="formGrid"><div className="field"><label htmlFor="date">Appointment date</label><input id="date" name="date" type="date" min={minDate} value={preferredDate} onChange={event=>setPreferredDate(event.target.value)} required/><small>{selectedHours?.open ? (selectedDay ? dayLabels[selectedDay] : "") + " · Operating hours " + selectedHours.start + "–" + selectedHours.end + ". " : selectedDay ? "The clinic is not accepting requests on " + dayLabels[selectedDay] + ". " : ""}Times below are checked against the live calendar.</small></div><div className="field fieldFull"><label>Appointment time</label>{!preferredDate?<p className="slotHint">Choose a date to check available times.</p>:loadingSlots?<p className="slotHint">Checking the live calendar…</p>:availabilityError?<div className="slotError" role="alert"><p>{availabilityError}</p><p>We will not show unverified times as live availability. Your appointment has not been booked.</p><div className="actions"><button type="button" className="button buttonLight" onClick={()=>setAvailabilityRetry(value=>value+1)}>Try checking again</button></div></div>:availableSlots.length===0?<p className="slotHint">{availabilityNote || "No available times were found for this date. Try another day."}</p>:<><p className="slotHint">Times are checked against the live calendar and rechecked when you submit. {availabilityNote ? " " + availabilityNote : ""}</p><div className="timeSelectionSummary"><div><strong>{selectedTime || "Choose a time"}</strong><small>{selectedTime ? "Selected appointment time" : `${availableSlots.length} available times`}</small></div><button type="button" className="button buttonLight" onClick={()=>setShowTimePicker(true)} aria-haspopup="dialog">{selectedTime ? "Change time" : "Choose time"}</button></div>{showTimePicker&&<div className="timePickerBackdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setShowTimePicker(false);}}><section className="timePickerDialog" role="dialog" aria-modal="true" aria-labelledby="time-picker-title" tabIndex={-1}><div className="timePickerHeading"><div><span className="kicker">LIVE AVAILABILITY</span><h3 id="time-picker-title">Choose your time</h3><p>{selectedDay ? dayLabels[selectedDay] : ""} · {selectedHours?.start}–{selectedHours?.end}</p></div><button type="button" className="timePickerClose" aria-label="Close time selector" onClick={()=>setShowTimePicker(false)}>×</button></div><div className="slotHourGroups" aria-label="Available appointment times">{slotGroups.map(([hour, times])=><section className="slotHourGroup" key={hour} aria-labelledby={`slot-hour-${hour}`}><h4 id={`slot-hour-${hour}`}>{hour}:00 hour</h4><div className="slotGrid" role="group" aria-label={`Times starting at ${hour}:00`}>{times.map(time=><button key={time} type="button" className={selectedTime===time?"slotButton selected":"slotButton"} aria-pressed={selectedTime===time} onClick={()=>{setSelectedTime(time);setShowTimePicker(false);}}>{time}</button>)}</div></section>)}</div><p className="slotHint">Choose a time to return to your booking. The calendar is checked again when you submit.</p></section></div>}</>}</div><div className="field"><label htmlFor="discountCode">Offer code <span>(optional)</span></label><input id="discountCode" name="discountCode" autoComplete="off" placeholder="Enter a published offer code"/></div><div className="field fieldFull"><label htmlFor="message">{clientType === "NEW" ? "What would help you feel welcome on your first visit?" : "Anything you’d like us to keep in mind for this visit?"} <span>(optional)</span></label><textarea id="message" name="message" maxLength={1500} placeholder={clientType === "NEW" ? "For example, how you heard about Village Wellness Spa or anything that would help you feel comfortable. Share only what you’re happy for the team to know." : "For example, what you’d like to focus on today or a practical preference. Please avoid sensitive medical details."}/><small>This note is shared with the clinic team for this request. Please don’t include private family details or sensitive medical information unless the clinic specifically asks through an appropriate channel.</small></div></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>02</span><div><h2>{waitlistMode ? "What timing would suit you?" : "When works for you?"}</h2><p>{waitlistMode ? "Share a preferred date and time, or leave them flexible. This is a request for an opening, not a reserved slot." : "Select a preferred slot. Your appointment is only confirmed after the team contacts you."}</p></div></div>
+            <div className="formGrid"><div className="field"><label htmlFor="date">{waitlistMode ? "Preferred date (optional)" : "Appointment date"}</label><input id="date" name="date" type="date" min={minDate} value={preferredDate} onChange={event=>setPreferredDate(event.target.value)} required={!waitlistMode}/><small>{waitlistMode ? "Leave this blank if any suitable opening would work." : selectedHours?.open ? (selectedDay ? dayLabels[selectedDay] : "") + " · Operating hours " + selectedHours.start + "–" + selectedHours.end + ". Times below are checked against the live calendar." : selectedDay ? "The clinic is not accepting requests on " + dayLabels[selectedDay] + ". " : "Times below are checked against the live calendar."}</small>{preferredDate && <SpaWeatherReport selectedDate={preferredDate}/>}</div>{waitlistMode ? <div className="field"><label htmlFor="preferredTime">Preferred time (optional)</label><input id="preferredTime" name="preferredTime" type="time"/><small>Leave blank if you are flexible. The team will check whether a suitable opening is possible.</small></div> : <div className="field fieldFull"><label>Appointment time</label>{!preferredDate?<p className="slotHint">Choose a date to check available times.</p>:loadingSlots?<p className="slotHint">Checking the live calendar…</p>:availabilityError?<div className="slotError" role="alert"><p>{availabilityError}</p><p>We will not show unverified times as live availability. Your appointment has not been booked.</p><div className="actions"><button type="button" className="button buttonLight" onClick={()=>setAvailabilityRetry(value=>value+1)}>Try checking again</button></div></div>:availableSlots.length===0?<p className="slotHint">{availabilityNote || "No available times were found for this date. Try another day."}</p>:<><p className="slotHint">Times are checked against the live calendar and rechecked when you submit. {availabilityNote ? " " + availabilityNote : ""}</p><div className="timeSelectionSummary"><div><strong>{selectedTime || "Choose a time"}</strong><small>{selectedTime ? "Selected appointment time" : `${availableSlots.length} available times`}</small></div><button type="button" className="button buttonLight" onClick={()=>setShowTimePicker(true)} aria-haspopup="dialog">{selectedTime ? "Change time" : "Choose time"}</button></div>{showTimePicker&&<div className="timePickerBackdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)setShowTimePicker(false);}}><section className="timePickerDialog" role="dialog" aria-modal="true" aria-labelledby="time-picker-title" tabIndex={-1}><div className="timePickerHeading"><div><span className="kicker">LIVE AVAILABILITY</span><h3 id="time-picker-title">Choose your time</h3><p>{selectedDay ? dayLabels[selectedDay] : ""} · {selectedHours?.start}–{selectedHours?.end}</p></div><button type="button" className="timePickerClose" aria-label="Close time selector" onClick={()=>setShowTimePicker(false)}>×</button></div><div className="slotHourGroups" aria-label="Available appointment times">{slotGroups.map(([hour, times])=><section className="slotHourGroup" key={hour} aria-labelledby={`slot-hour-${hour}`}><h4 id={`slot-hour-${hour}`}>{hour}:00 hour</h4><div className="slotGrid" role="group" aria-label={`Times starting at ${hour}:00`}>{times.map(time=><button key={time} type="button" className={selectedTime===time?"slotButton selected":"slotButton"} aria-pressed={selectedTime===time} onClick={()=>{setSelectedTime(time);setShowTimePicker(false);}}>{time}</button>)}</div></section>)}</div><p className="slotHint">Choose a time to return to your booking. The calendar is checked again when you submit.</p></section></div>}</>}</div>}{!waitlistMode && <div className="field"><label htmlFor="discountCode">Offer code <span>(optional)</span></label><input id="discountCode" name="discountCode" autoComplete="off" placeholder="Enter a published offer code"/></div>}<div className="field fieldFull"><label htmlFor="message">{clientType === "NEW" ? "What would help you feel welcome on your first visit?" : "Anything you’d like us to keep in mind for this visit?"} <span>(optional)</span></label><textarea id="message" name="message" maxLength={1500} placeholder={clientType === "NEW" ? "For example, how you heard about Village Wellness Spa or anything that would help you feel comfortable. Share only what you’re happy for the team to know." : "For example, what you’d like to focus on today or a practical preference. Please avoid sensitive medical details."}/><small>This note is shared with the clinic team for this request. Please don’t include private family details or sensitive medical information unless the clinic specifically asks through an appropriate channel.</small></div></div>
           </section>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasConnectedAccount ? "We’ve filled in details available from your account. Check them and make any needed changes." : "We only ask for the details the team needs to respond. You can optionally secure your profile after your request."}</p></div></div>
             <div className="formGrid">
@@ -211,11 +224,11 @@ export default function BookForm() {
             {!hasConnectedAccount && <p className="slotHint">After you send your request, you can optionally connect Google to secure your My Village Wellness Spa profile. You can still request a visit without doing that now.</p>}
           </section>
           {error && <p className="bookingError" role="alert">{error}</p>}
-          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Sending your request…" : "Send appointment request"} <span aria-hidden="true">→</span></button>
+          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Sending your request…" : waitlistMode ? "Join the waitlist" : "Send appointment request"} <span aria-hidden="true">→</span></button>
           <p className="bookingPrivacy">Your details are used to respond to this request. Please do not enter sensitive medical information in this form.</p>          
 
         </form>
-        <div className="bookingTrustNote"><strong>Your request is not a confirmed appointment.</strong><span>The team reviews the treatment and preferred time, then contacts you to confirm. No payment is taken here.</span></div>
+        <div className="bookingTrustNote"><strong>{waitlistMode ? "Joining the waitlist does not reserve a slot." : "Your request is not a confirmed appointment."}</strong><span>{waitlistMode ? "The team reviews your preference and contacts you if a suitable opening can be offered. No payment is taken here." : "The team reviews the treatment and preferred time, then contacts you to confirm. No payment is taken here."}</span></div>
       </div>}
     </div>
   </main>;
