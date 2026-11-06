@@ -16,9 +16,9 @@ export async function GET(request: NextRequest) {
       db.collection("bookingRequests").where("requestType", "==", "QUEUE").get(),
       db.collection("bookingRequests").where("preferredDate", "==", date).get(),
     ]);
-    const walkInItems = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) => String(item.visitDate ?? item.preferredDate ?? "") === date);
+    const walkInItems = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) => String(item.visitDate ?? item.preferredDate ?? "") === date && item.status !== "ON_THE_WAY").map((item: any) => ({ ...item, status: ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : item.status }));
     const appointmentItems = appointments.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) =>
-      item.requestType !== "QUEUE" && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
+      item.requestType !== "QUEUE" && item.requestType !== "WAITLIST" && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
     );
     const items = [...walkInItems, ...appointmentItems].sort((a: any, b: any) => String(a.createdAt ?? "").localeCompare(String(b.createdAt ?? "")));
     return NextResponse.json({ items });
@@ -40,13 +40,20 @@ export async function POST(request: NextRequest) {
       const serviceName = String(body.serviceName ?? "").trim().slice(0, 160);
       if (!name || !phone || !serviceName) return NextResponse.json({ error: "Choose the treatment and enter the customer's name and mobile number." }, { status: 400 });
       const now = new Date().toISOString(), ref = db.collection("bookingRequests").doc();
-      const matches = await db.collection("customerProfiles").where("phone", "==", phone).get();
-      const exact = matches.docs.filter(doc => String(doc.data().name ?? "").trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+      const digits = phone.replace(/\\D/g, "");
+      const normalizedPhone = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits.length === 8 ? "267" + digits : digits;
+      const matches = await db.collection("customerProfiles").get();
+      const exact = matches.docs.filter(doc => {
+        const profile = doc.data();
+        const profileDigits = String(profile.phone ?? "").replace(/\\D/g, "");
+        const profilePhone = profileDigits.startsWith("267") ? profileDigits : profileDigits.startsWith("0") ? "267" + profileDigits.slice(1) : profileDigits.length === 8 ? "267" + profileDigits : profileDigits;
+        return profilePhone === normalizedPhone && String(profile.name ?? "").trim().toLocaleLowerCase() === name.toLocaleLowerCase();
+      });
       const customerUid = exact.length === 1 ? exact[0].id : "";
       const claimToken = customerUid ? "" : randomBytes(32).toString("hex");
       const claimTokenHash = claimToken ? createHash("sha256").update(claimToken).digest("hex") : "";
       await ref.set({
-        createdAt: now, visitDate: today(), preferredDate: today(), name, phone,
+        createdAt: now, visitDate: today(), preferredDate: today(), name, phone: normalizedPhone,
         ...(customerUid ? { customerUid, profileConnected: true } : {}),
         serviceNameSnapshot: serviceName, requestType: "QUEUE", queueMode: "STAFF",
         status: "ARRIVED", statusUpdatedAt: now, paymentStatus: "NOT_RECORDED",
