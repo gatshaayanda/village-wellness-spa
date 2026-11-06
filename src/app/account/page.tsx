@@ -144,6 +144,18 @@ function AccountContent() {
       }
       setUser(activeUser);
       try {
+        const claimToken = new URLSearchParams(window.location.search).get("claim");
+        if (claimToken) {
+          const claimResponse = await fetch("/api/customer/claim-visit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: "Bearer " + await activeUser.getIdToken() },
+            body: JSON.stringify({ token: claimToken }),
+          });
+          const claimResult = await claimResponse.json() as { error?: string };
+          window.history.replaceState({}, "", "/account");
+          if (!claimResponse.ok) throw new Error(claimResult.error || "This visit could not be linked to your account.");
+          if (alive) setMessage("Your reception visit is now linked to this account.");
+        }
         await loadBookings(activeUser);
       } catch (error) {
         if (alive) setMessage(error instanceof Error ? error.message : "Your appointment history could not be loaded.");
