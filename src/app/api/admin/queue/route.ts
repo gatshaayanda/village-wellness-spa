@@ -66,19 +66,18 @@ export async function POST(request: NextRequest) {
       if (requestType === "WAITLIST") throw new Error("RETIRED_WAITLIST");
       const current = String(data.status ?? "");
       const canArrive = status === "ARRIVED" && requestType !== "QUEUE" && current === "CONFIRMED";
-      const canComplete = status === "COMPLETED" && (current === "ARRIVED" || current === "WAITING" || current === "IN_TREATMENT");
+      const canComplete = status === "COMPLETED" && (current === "ARRIVED" || current === "WAITING" || current === "IN_TREATMENT"); // Legacy intermediate states remain completable; new visits use ARRIVED → COMPLETED only.
       if (!(canArrive || canComplete)) throw new Error("INVALID_TRANSITION");
       const now = new Date().toISOString(), patch: Record<string, unknown> = { status, statusUpdatedAt: now };
       if (status === "COMPLETED") {
         const price = String(body.finalPrice ?? "").trim().replace(/^P\s*/i, "");
-        const method = String(body.paymentMethod ?? "").trim().toUpperCase();
-        if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) throw new Error("INVALID_FINAL_PRICE");
-        if (!paymentMethods.has(method)) throw new Error("INVALID_PAYMENT_METHOD");
         patch.completedAt = now;
-        patch.finalPriceSnapshot = "P" + Number(price).toFixed(2);
-        patch.paymentStatus = "PAID";
-        patch.paymentMethod = method;
-        patch.paymentRecordedAt = now;
+        if (price) {
+          if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) throw new Error("INVALID_FINAL_PRICE");
+          patch.finalPriceSnapshot = "P" + Number(price).toFixed(2);
+          patch.paymentStatus = "PAID";
+          patch.paymentRecordedAt = now;
+        }
         const date = String(body.recommendedReturnDate ?? "").trim();
         const note = String(body.returnNote ?? "").trim().slice(0, 500);
         if (date) {
@@ -98,7 +97,6 @@ export async function POST(request: NextRequest) {
       RETIRED_WAITLIST: "Waitlist records are no longer part of the visit workflow.",
       INVALID_TRANSITION: "This visit cannot make that change. Refresh the list and check its current status.",
       INVALID_FINAL_PRICE: "Enter the actual amount received in pula.",
-      INVALID_PAYMENT_METHOD: "Choose how the customer paid.",
       INVALID_RETURN_DATE: "Choose a valid recommended return date.",
     };
     return NextResponse.json({ error: errors[message] || "The visit update could not be saved." }, { status: message === "NOT_FOUND" ? 404 : 400 });
