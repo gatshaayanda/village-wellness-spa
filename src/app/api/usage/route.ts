@@ -5,7 +5,7 @@ import { getAdminDb } from "@/lib/firebase/admin";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const events = new Set(["page_view", "booking_start", "availability_result", "booking_submit_success", "booking_conflict", "enquiry_submit_success"]);
+const events = new Set(["page_view", "booking_start", "availability_result", "booking_submit_success", "booking_conflict", "enquiry_submit_success", "walkin_registered", "visit_completed"]);
 const categories = new Set(["home", "treatments", "treatment_detail", "products", "booking", "account", "other"]);
 const sources = new Set(["direct", "search", "social", "referral"]);
 const devices = new Set(["mobile", "tablet", "desktop"]);
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       if (outcome === "error") increment("availabilityErrors");
     } else if (event === "booking_submit_success") increment("bookingSubmissions");
     else if (event === "booking_conflict") increment("bookingConflicts");
-    else if (event === "enquiry_submit_success") increment("enquiries");
+    else if (event === "enquiry_submit_success") increment("enquiries");\n    else if (event === "walkin_registered") increment("walkInsRegistered");\n    else if (event === "visit_completed") increment("visitsCompleted");
 
     await getAdminDb().collection("usageDaily").doc(today).set({
       date: today,
