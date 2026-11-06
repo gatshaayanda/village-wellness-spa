@@ -1,9 +1,10 @@
 "use client";
 
 import { onAuthStateChanged, signInWithCustomToken, signOut, type User } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { auth, db } from "@/lib/firebase/client";
+import { auth } from "@/lib/firebase/client";
+
+const ADMIN_UID = "tripple-s-one-word-admin";
 
 export default function AdminGate({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -21,17 +22,12 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       return;
     }
     setChecking(true);
-    try {
-      const role = await getDoc(doc(db, "admins", nextUser.uid));
-      const allowed = role.exists() && ["owner", "staff"].includes(String(role.data().role));
-      setAuthorized(allowed);
-      if (!allowed) await signOut(auth);
-    } catch {
-      setAuthorized(false);
-      await signOut(auth);
-    } finally {
-      setChecking(false);
-    }
+    // The server has already validated ADMIN_PASSWORD and minted this dedicated UID.
+    // Avoid a second browser-side Firestore role read during sign-in.
+    const allowed = nextUser.uid === ADMIN_UID;
+    setAuthorized(allowed);
+    if (!allowed) await signOut(auth);
+    setChecking(false);
   }), []);
 
   async function signIn(event: React.FormEvent) {
@@ -48,12 +44,11 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       const payload = await response.json() as { token?: string; error?: string };
       if (!response.ok || !payload.token) throw new Error(payload.error ?? "Access denied. Check the admin password and try again.");
       const credential = await signInWithCustomToken(auth, payload.token);
-      const role = await getDoc(doc(db, "admins", credential.user.uid));
-      const allowed = role.exists() && ["owner", "staff"].includes(String(role.data().role));
-      if (!allowed) {
+      if (credential.user.uid !== ADMIN_UID) {
         await signOut(auth);
-        throw new Error("This access account is not authorized for Village Wellness Spa Admin.");
+        throw new Error("The server returned an unexpected admin account. Please try again.");
       }
+      setUser(credential.user);
       setAuthorized(true);
       setAccessWord("");
     } catch (err) {
