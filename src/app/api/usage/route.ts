@@ -40,7 +40,9 @@ export async function POST(request: NextRequest) {
       if (outcome === "error") increment("availabilityErrors");
     } else if (event === "booking_submit_success") increment("bookingSubmissions");
     else if (event === "booking_conflict") increment("bookingConflicts");
-    else if (event === "enquiry_submit_success") increment("enquiries");\n    else if (event === "walkin_registered") increment("walkInsRegistered");\n    else if (event === "visit_completed") increment("visitsCompleted");
+    else if (event === "enquiry_submit_success") increment("enquiries");
+    else if (event === "walkin_registered") increment("walkInsRegistered");
+    else if (event === "visit_completed") increment("visitsCompleted");
 
     await getAdminDb().collection("usageDaily").doc(today).set({
       date: today,
