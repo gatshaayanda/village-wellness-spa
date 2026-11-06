@@ -151,12 +151,12 @@ export async function reconcileVillageServiceSeeds() {
   const stateRef = doc(db, "settings", "catalogueState");
   const stateSnapshot = await getDoc(stateRef);
   const state = stateSnapshot.data() ?? {};
-  if (Number(state.villageServiceSeedVersion ?? 0) >= 2) return { added: 0, categoriesAdded: 0, skipped: true };
+  if (Number(state.villageServiceSeedVersion ?? 0) >= 3) return { added: 0, categoriesAdded: 0, updated: 0, skipped: true };
 
   const [serviceSnapshot, categorySnapshot] = await Promise.all([getDocs(servicesCollection), getDocs(serviceCategoriesCollection)]);
   const serviceIds = new Set(serviceSnapshot.docs.map(item => item.id));
   const categoryIds = new Set(categorySnapshot.docs.map(item => item.id));
-  let added = 0, categoriesAdded = 0;
+  let added = 0, categoriesAdded = 0, updated = 0;
 
   for (const id of legacyTrippleSCategorySeedIds) {
     const old = categorySnapshot.docs.find(item => item.id === id);
@@ -171,18 +171,39 @@ export async function reconcileVillageServiceSeeds() {
     await setDoc(doc(db, "serviceCategories", category.id), category);
     categoriesAdded++;
   }
+  const previousPriceById: Record<string, string> = {
+    "village-facials-skincare": "Estimated P350–P750",
+    "village-advanced-aesthetics": "Estimated P800–P1,300",
+    "village-full-body-massage": "Estimated P450–P700",
+    "village-express-body-care": "Estimated P300–P500",
+    "village-nails-grooming": "Estimated P60–P450",
+  };
+  const oldDescriptionNote = "Indicative Gaborone market estimate supplied for initial catalogue setup. The spa must confirm the exact treatment, current price and duration before the appointment is accepted.";
   for (const service of trippleSServiceSeed) {
-    if (serviceIds.has(service.id)) continue;
-    await setDoc(doc(db, "services", service.id), service);
-    added++;
+    const existing = serviceSnapshot.docs.find(item => item.id === service.id);
+    if (!existing) {
+      await setDoc(doc(db, "services", service.id), service);
+      added++;
+      continue;
+    }
+    const current = existing.data();
+    const changes: Record<string, unknown> = {};
+    if (current.price === previousPriceById[service.id]) changes.price = service.price;
+    if (typeof current.description === "string" && current.description.endsWith(oldDescriptionNote)) {
+      changes.description = current.description.slice(0, -oldDescriptionNote.length).trimEnd();
+    }
+    if (Object.keys(changes).length) {
+      await updateDoc(existing.ref, changes);
+      updated++;
+    }
   }
   await setDoc(stateRef, {
-    villageServiceSeedVersion: 2,
+    villageServiceSeedVersion: 3,
     servicesManaged: true,
     categoriesManaged: true,
     serviceCatalogVersion: 3,
   }, { merge: true });
-  return { added, categoriesAdded, skipped: false };
+  return { added, categoriesAdded, updated, skipped: false };
 }
 
 export async function reconcileTrippleSCatalogue() {
