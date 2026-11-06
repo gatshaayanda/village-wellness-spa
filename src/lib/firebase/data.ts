@@ -192,6 +192,8 @@ export async function reconcileVillageServiceSeeds() {
     if (typeof current.description === "string" && current.description.endsWith(oldDescriptionNote)) {
       changes.description = current.description.slice(0, -oldDescriptionNote.length).trimEnd();
     }
+    if (service.id === "village-advanced-aesthetics" && current.category === "Advanced Aesthetics") changes.category = service.category;
+    if (service.id === "village-full-body-massage" && current.category === "Massage & Body Wellness") changes.category = service.category;
     if (Object.keys(changes).length) {
       await updateDoc(existing.ref, changes);
       updated++;
