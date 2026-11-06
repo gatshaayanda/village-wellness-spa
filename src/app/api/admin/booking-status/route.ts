@@ -13,7 +13,7 @@ export async function POST(request:NextRequest){
    const requestSnap=await tx.get(ref);if(!requestSnap.exists)throw new Error("REQUEST_NOT_FOUND");
    customerUid=String(requestSnap.data()?.customerUid??"");
    const held= status==="DECLINED"||status==="CANCELLED"||status==="RESCHEDULED" ? await tx.get(db.collection("slotReservations").where("bookingRequestId","==",id)) : null;
-   tx.update(ref,{status});
+   tx.update(ref,{status,statusUpdatedAt:new Date().toISOString()});
    if(held)held.docs.forEach(item=>tx.delete(item.ref));
   });
   if(customerUid){try{
