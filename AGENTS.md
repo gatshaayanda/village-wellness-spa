@@ -48,6 +48,20 @@ Research grounding (design guidance, not a claim that any single study guarantee
 - Conrad, Couper, Tourangeau & Peytchev (2010), *The impact of progress indicators on task completion*, Interacting with Computers, DOI: https://doi.org/10.1016/j.intcom.2010.03.001
 - *Wellbeing Supportive Design – Research-Based Guidelines for Supporting Psychological Wellbeing in User Experience* (2022), DOI: https://doi.org/10.1080/10447318.2022.2089812
 
+## Arrival queue and repeat-visit loop
+- Customer arrival check-in supports both remote “on the way” heads-ups and on-site arrival. Remote check-ins start as ON_THE_WAY and are not queue positions or confirmed appointments; reception must record ARRIVED when the customer physically reaches the spa.
+- Reception can register a walk-in on behalf of a customer. Both customer and staff paths write the same bookingRequests record with requestType: "QUEUE" so authenticated customer history can display it. Staff registration links to an existing customer profile only when phone and name match exactly and uniquely; never merge customer identities by phone alone.
+- Staff owns real visit status transitions: ARRIVED → WAITING → IN_TREATMENT → COMPLETED, with CANCELLED/NO_SHOW where appropriate. Status timestamps are written only when staff actually changes a status. No fake queue position, countdown, estimated start time, simulated progress or automatic arrival claim.
+- On completion, staff may record a suggested return date and care note. This is a customer booking prompt, not an automatic clinical recommendation. The practitioner/team determines suitability and timing; never infer treatment intervals.
+- Customer accounts show the queue visit status and any saved return recommendation, with a direct route to the existing appointment booking flow.
+- Keep the experience calm, discreet and service-led for The Village, Gaborone. Do not import G-West car-wash slang, racing/reward mechanics or high-energy queue styling. A garden game is a separate optional future feature and must not block booking, check-in or account tasks.
+
+Research grounding:
+- Hwang, Lee & Legendre (2024), *Operational Transparency as a Service Design: An Investigation on Labor/Effort Observation Effect*, Journal of Hospitality & Tourism Research, DOI: https://doi.org/10.1177/10963480231223146
+- Buell & Norton (2011), *The Labor Illusion: How Operational Transparency Increases Perceived Value*, Management Science, DOI: https://doi.org/10.1287/mnsc.1110.1376
+- Buell, Kim & Tsay (2016), *Creating Reciprocal Value Through Operational Transparency*, Management Science, DOI: https://doi.org/10.1287/mnsc.2015.2411
+- Current Gaborone service context reviewed: Ms Jay Beauty Care booking journey and Mosha Wellness Spa positioning. Use these as market context, not as templates to copy.
+
 ## Appointment waitlist and weather report
 - The homepage may offer a separate customer-facing appointment waitlist alongside the primary booking action. Describe it as a waitlist request, never as a live queue or a guaranteed place/position.
 - Waitlist entries use the existing `bookingRequests` collection with `requestType: "WAITLIST"`; do not create a second queue database or modify appointment slot reservations.
