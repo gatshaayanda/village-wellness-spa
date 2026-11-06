@@ -20,6 +20,7 @@ type Booking = {
   reference: string;
   createdAt: string;
   serviceName: string;
+  requestType?: string;
   preferredDate: string;
   preferredTime: string;
   status: string;
@@ -261,16 +262,16 @@ function AccountContent() {
                   {bookings.map((booking) => (
                     <article className="customerBooking" key={booking.id}>
                       <div className="customerBookingMain">
-                        <span className="kicker">REF {booking.reference}</span>
+                        <span className="kicker">{booking.requestType === "WAITLIST" ? "APPOINTMENT WAITLIST" : "REF " + booking.reference}</span>
                         <h3>{booking.serviceName}</h3>
-                        <p>{booking.preferredDate || "Date to be arranged"}{booking.preferredTime ? " · " + booking.preferredTime : ""}</p>
+                        <p>{booking.requestType === "WAITLIST" ? "Preferred: " + (booking.preferredDate || "Any suitable date") + (booking.preferredTime ? " · " + booking.preferredTime : " · Flexible time") : (booking.preferredDate || "Date to be arranged") + (booking.preferredTime ? " · " + booking.preferredTime : "")}</p>
                         <small>Requested {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB", { timeZone: "Africa/Gaborone" }) : "recently"}{booking.finalPrice ? " · " + booking.finalPrice : ""}</small>
                       </div>
                       <div className="customerBookingProgress">
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
-                        <p>{statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
+                        <p>{booking.requestType === "WAITLIST" && booking.status === "NEW" ? "Your waitlist request is with the spa team. It does not reserve a treatment slot; the team will contact you if a suitable opening can be offered." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
-                        <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>
+                        {booking.requestType !== "WAITLIST" && <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
                       </div>
                     </article>
                   ))}
