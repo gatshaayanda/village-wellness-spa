@@ -10,7 +10,7 @@ export async function GET() {
     const url = new URL("https://api.weatherapi.com/v1/forecast.json");
     url.searchParams.set("key", key);
     url.searchParams.set("q", "Gaborone, Botswana");
-    url.searchParams.set("days", "5");
+    url.searchParams.set("days", "3");
     url.searchParams.set("aqi", "no");
     url.searchParams.set("alerts", "no");
     const response = await fetch(url, { next: { revalidate: 1800 }, signal: AbortSignal.timeout(8000) });
