@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import AdminGate from "@/app/admin/admin-gate";
 import { auth } from "@/lib/firebase/client";
-import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
+import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";\nimport { trackUsage } from "@/lib/tripple-s/usage";
 
 type Item = {
   id: string;
