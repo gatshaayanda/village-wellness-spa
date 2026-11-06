@@ -13,11 +13,10 @@ type Item = {
   serviceNameSnapshot?: string;
   status: string;
   createdAt: string;
-  recommendedReturnDate?: string;
-  returnNote?: string;
-  finalPrice?: string;
   finalPriceSnapshot?: string;
   paymentStatus?: string;
+  recommendedReturnDate?: string;
+  returnNote?: string;
   requestType?: string;
 };
 
@@ -31,10 +30,8 @@ function QueueDashboard() {
   const [notice, setNotice] = useState("");
   const [shareLink, setShareLink] = useState("");
   const [sharePhone, setSharePhone] = useState("");
-  const [returnDates, setReturnDates] = useState<Record<string, string>>({});
-  const [returnNotes, setReturnNotes] = useState<Record<string, string>>({});
   const [finalPrices, setFinalPrices] = useState<Record<string, string>>({});
-  const [paymentMethods, setPaymentMethods] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
 
   const token = async () => {
     const user = auth.currentUser;
@@ -53,32 +50,29 @@ function QueueDashboard() {
   }, []);
 
   useEffect(() => {
-    void load().catch(error => setNotice(error.message));
-    void getPublicServices().then(setServices).catch(() => setNotice("Treatments could not be loaded. Check the treatment catalogue in Admin."));
+    let active = true;
+    void load().catch(error => { if (active) setNotice(error.message); })
+      .finally(() => { if (active) setLoading(false); });
+    void getPublicServices().then(value => { if (active) setServices(value.filter(item => item.active)); })
+      .catch(() => { if (active) setNotice("Treatments could not be loaded. Check the treatment catalogue in Admin."); });
+    return () => { active = false; };
   }, [load]);
 
-  async function update(id: string, status: string) {
+  async function update(id: string, status: "ARRIVED" | "COMPLETED") {
     setBusy(id);
     setNotice("");
     try {
       const response = await fetch("/api/admin/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
-        body: JSON.stringify({
-          id,
-          status,
-          recommendedReturnDate: returnDates[id] || "",
-          returnNote: returnNotes[id] || "",
-          finalPrice: finalPrices[id] || "",
-          paymentMethod: paymentMethods[id] || "CASH",
-        }),
+        body: JSON.stringify({ id, status, finalPrice: finalPrices[id] || "" }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Visit update failed.");
       await load();
       setNotice(status === "COMPLETED"
-        ? "Visit completed. The customer account now has the visit record and any saved receipt details."
-        : "Visit status saved.");
+        ? "Visit completed. The customer's account history has been updated."
+        : "Customer marked as arrived.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Visit update failed.");
     } finally {
@@ -88,6 +82,7 @@ function QueueDashboard() {
 
   async function add(event: React.FormEvent) {
     event.preventDefault();
+    if (busy) return;
     setBusy("new");
     setNotice("");
     setShareLink("");
@@ -97,23 +92,24 @@ function QueueDashboard() {
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
         body: JSON.stringify({ action: "create", name, phone, serviceName: service }),
       });
-      const data = await response.json();
+      const data = await response.json() as { claimToken?: string; linkedToExistingAccount?: boolean; error?: string };
       if (!response.ok) throw new Error(data.error || "Walk-in could not be registered.");
       if (data.claimToken) {
         const link = window.location.origin + "/account?claim=" + encodeURIComponent(data.claimToken);
-        setShareLink("https://wa.me/" + phone.replace(/[^0-9]/g, "") + "?text=" + encodeURIComponent(
-          "Welcome to Village Wellness Spa. Open your private customer account to keep your visit history and book again: " + link
+        const digits = phone.replace(/\D/g, "");
+        const normalized = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits;
+        setShareLink("https://wa.me/" + normalized + "?text=" + encodeURIComponent(
+          "Welcome to Village Wellness Spa. Your visit is saved. Open your private customer account to keep your visit history, receive spa updates and book again: " + link
         ));
         setSharePhone(phone);
-      } else {
-        setShareLink("");
-        setNotice("Returning customer recognised. This visit is already connected to their account.");
       }
       setName("");
       setPhone("");
       setService("");
       await load();
-      setNotice("Walk-in registered as Arrived. Send the customer their private account link on WhatsApp.");
+      setNotice(data.linkedToExistingAccount
+        ? "Walk-in registered as arrived and linked to the customer's existing account."
+        : "Walk-in registered as arrived. The customer's optional account link is ready to share.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Walk-in could not be registered.");
     } finally {
@@ -122,7 +118,7 @@ function QueueDashboard() {
   }
 
   const active = items.filter(item => !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(item.status));
-  const closed = items.filter(item => ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(item.status));
+  const completed = items.filter(item => item.status === "COMPLETED");
 
   return (
     <main className="adminPage">
@@ -131,27 +127,27 @@ function QueueDashboard() {
           <div>
             <span className="kicker">VILLAGE WELLNESS SPA · TODAY</span>
             <h1>Walk-ins & visits</h1>
-            <p>Two actions only: record arrival, then complete the visit when treatment and payment are done.</p>
+            <p>Two steps: mark arrival, then mark the visit completed. No queue stages to manage.</p>
           </div>
           <Link href="/admin" className="button buttonLight">Main admin</Link>
         </header>
 
         <section className="adminPanel">
-          <h2>Register a walk-in</h2>
-          <p>Only for customers physically at the spa. Returning customers are matched to their saved account when their details match.</p>
+          <h2>Register arrival</h2>
+          <p>Reception records the customer and treatment. Returning customers are linked to their existing account where an exact unique match is available.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
               <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
               <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
-              <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose from the live treatment catalogue</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
+              <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose treatment</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
             </div>
-            <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Registering…" : "Register customer as arrived ↗"}</button>
+            <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Saving arrival…" : "Arrived ↗"}</button>
           </form>
           {shareLink && (
             <div className="customerPanel" role="status">
               <strong>Customer account link ready</strong>
-              <p>Send the private visit link to {sharePhone}. Their visit will appear in their account after they open the link and sign in.</p>
-              <a className="button buttonPrimary" href={shareLink} target="_blank" rel="noreferrer">Send account link on WhatsApp ↗</a>
+              <p>Send this optional link to {sharePhone}. The customer can open their account, keep visit history and book again. They do not need to complete a form at reception.</p>
+              <a className="button buttonPrimary" href={shareLink} target="_blank" rel="noreferrer">Prepare WhatsApp welcome ↗</a>
             </div>
           )}
         </section>
@@ -160,27 +156,23 @@ function QueueDashboard() {
 
         <section className="adminPanel">
           <div className="panelHeading">
-            <div><h2>At the spa <span>{active.length}</span></h2><p>Everyone here is marked Arrived. Complete the visit when treatment is finished and payment has been received.</p></div>
-            <button className="button buttonLight" type="button" onClick={() => void load()}>Refresh</button>
+            <div><h2>At the spa <span>{active.length}</span></h2><p>When the treatment is finished, mark the visit completed. No intermediate queue statuses.</p></div>
+            <button className="button buttonLight" type="button" onClick={() => void load().catch(error => setNotice(error.message))}>Refresh</button>
           </div>
-          {active.length === 0 ? <p className="emptyState">No walk-in visits have been registered today.</p> : active.map(item => (
+          {loading ? <p className="slotHint">Loading today's visits…</p> : active.length === 0 ? <p className="emptyState">No active visits at the spa.</p> : active.map(item => (
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
-                <span>{item.phone} · {item.status.replaceAll("_", " ").toLowerCase()} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
+                <span>{item.phone || "No phone saved"} · {item.status === "CONFIRMED" ? "Appointment due" : "Arrived"} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
               </div>
               <div className="actions">
-                {item.status === "CONFIRMED" && <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Mark arrived</button>}
-                {["ARRIVED", "WAITING", "IN_TREATMENT"].includes(item.status) && (
-                  <>
-                    <div className="field">
-                      <label>Amount received (P)<input inputMode="decimal" required value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Actual amount paid" /></label>
-                      <label>Payment method<select value={paymentMethods[item.id] || "CASH"} onChange={event => setPaymentMethods(values => ({ ...values, [item.id]: event.target.value }))}><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile money</option><option value="CARD">Card</option><option value="OTHER">Other</option></select></label>
-                      <label>Suggested return date<input type="date" value={returnDates[item.id] || ""} onChange={event => setReturnDates(values => ({ ...values, [item.id]: event.target.value }))} /></label>
-                      <label>Care / return note<input value={returnNotes[item.id] || ""} onChange={event => setReturnNotes(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Optional practitioner guidance" /></label>
-                    </div>
-                    <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim()} onClick={() => void update(item.id, "COMPLETED")}>Complete visit · payment received</button>
-                  </>
+                {item.status === "CONFIRMED" ? (
+                  <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Arrived</button>
+                ) : (
+                  <div className="field">
+                    <label>Amount received (optional, BWP)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Record actual amount for analytics" /></label>
+                    <button className="button buttonPrimary" disabled={!!busy} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit"}</button>
+                  </div>
                 )}
               </div>
             </article>
@@ -188,15 +180,15 @@ function QueueDashboard() {
         </section>
 
         <section className="adminPanel">
-          <h2>Completed today</h2>
-          {closed.length ? closed.map(item => (
+          <h2>Completed today <span>{completed.length}</span></h2>
+          {completed.length ? completed.map(item => (
             <article className="requestRow" key={item.id}>
               <div>
-                <strong>{item.name} · {item.serviceNameSnapshot}</strong>
-                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " received · " + (item.paymentStatus || "PAID") : "Completed"}{item.recommendedReturnDate ? " · Suggested return " + item.recommendedReturnDate : ""}</span>
+                <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
+                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " recorded · " + (item.paymentStatus || "PAID") : "Completed · no amount recorded"}</span>
               </div>
             </article>
-          )) : <p>No visits closed yet.</p>}
+          )) : <p className="emptyState">No completed visits yet.</p>}
         </section>
       </div>
     </main>
