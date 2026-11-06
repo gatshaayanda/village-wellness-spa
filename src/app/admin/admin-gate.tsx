@@ -60,7 +60,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   }
 
   if (checking) return <main className="adminPage"><div className="adminShell"><div className="emptyState"><h1>Opening Village Wellness Spa Admin</h1><p>Checking access…</p></div></div></main>;
-  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Village Wellness Spa Admin · Authorized access</span><div className="actions"><Link href="/admin/queue" className="button buttonLight">Arrival queue ↗</Link><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div></div>{children}</div>;
+  if (user && authorized) return <div className="adminAuthorized"><div className="adminAccountBar"><span>Village Wellness Spa Admin · Authorized access</span><div className="actions"><Link href="/admin/queue" className="button buttonLight">Walk-ins & visits ↗</Link><button className="button buttonLight" type="button" onClick={() => void signOut(auth)}>Sign out</button></div></div>{children}</div>;
 
   return <main className="adminPage"><div className="adminShell"><section className="adminPanel" style={{ maxWidth: 520, margin: "80px auto" }}>
     <span className="kicker">VILLAGE WELLNESS SPA · ADMIN</span>
