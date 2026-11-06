@@ -46,7 +46,7 @@ export default function SpaWeatherReport({ selectedDate }: { selectedDate?: stri
             <div><small>UV index</small><b>{selected.uv ?? "—"}</b></div>
             <div><small>Sunrise · Sunset</small><b>{selected.sunrise || "—"} · {selected.sunset || "—"}</b></div>
           </div> : <p>{unavailable ? "The forecast is temporarily unavailable. Your appointment request is not affected." : "A reliable forecast for this date is not available yet. Check again closer to your visit."}</p>}
-        <small>Forecasts can change. Use this for visit planning, not clinical or treatment advice. <a href="https://www.weatherapi.com/" target="_blank" rel="noreferrer">Weather data by WeatherAPI.com</a>.</small>
+        <small>Weather information is general and forecasts may be inaccurate. Do not rely on it for personal safety or emergencies; consult official meteorological services when accuracy matters. Not clinical advice. <a href="https://www.weatherapi.com/" target="_blank" rel="noreferrer">Weather data by WeatherAPI.com</a>.</small>
       </aside>
     );
   }
@@ -54,7 +54,7 @@ export default function SpaWeatherReport({ selectedDate }: { selectedDate?: stri
   return (
     <section className="spaWeatherReport" aria-label="Gaborone weather report">
       <div className="spaWeatherReportHeading">
-        <div><span className="spaWeatherEyebrow">PLAN YOUR VISIT · GABORONE</span><h2>Weather, at a glance.</h2></div>
+        <div><span className="spaWeatherEyebrow">PLAN YOUR VISIT · GABORONE · 3-DAY OUTLOOK</span><h2>Weather, at a glance.</h2></div>
         {data?.current?.updatedAt && <small>Updated {data.current.updatedAt}</small>}
       </div>
       {loading ? <p className="spaWeatherUnavailable">Loading the local forecast…</p>
@@ -72,7 +72,7 @@ export default function SpaWeatherReport({ selectedDate }: { selectedDate?: stri
             <small>{day.rainChance ?? "—"}% rain</small>
           </article>)}</div>
         </>}
-      <small className="spaWeatherAttribution">Forecasts can change. Weather data by <a href="https://www.weatherapi.com/" target="_blank" rel="noreferrer">WeatherAPI.com</a>. Weather is for visit planning, not clinical or treatment advice.</small>
+      <small className="spaWeatherAttribution">Weather information is general and forecasts may be inaccurate. Do not rely on it for personal safety or emergencies; consult official meteorological services when accuracy matters. Not clinical advice. Weather data by <a href="https://www.weatherapi.com/" target="_blank" rel="noreferrer">WeatherAPI.com</a>.</small>
     </section>
   );
 }
