@@ -62,7 +62,7 @@ export default function Home() {
             <span className="villageHeroEyebrow">MEDICAL AESTHETICS · SKIN HEALTH · WELLNESS</span>
             <h1 id="village-home-title">Feel good in your skin.<br /><em>Feel cared for.</em></h1>
             <p>Thoughtful care, guided by your goals.</p>
-            <div className="villageHeroActions"><Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link><Link href="/waitlist" className="villageWaitlistCta">Join the waitlist <span aria-hidden="true">↗</span></Link></div>
+            <div className="villageHeroActions"><Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link><Link href="/queue" className="villageWaitlistCta">Check in / join today’s queue <span aria-hidden="true">↗</span></Link></div>
           </div>
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
