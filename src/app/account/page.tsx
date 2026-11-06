@@ -25,7 +25,7 @@ type Booking = {
   preferredTime: string;
   status: string;
   statusUpdatedAt?: string;
-  paymentStatus: string;
+  paymentStatus?: string;
   finalPrice?: string;
   offerCode?: string;
 };
@@ -282,7 +282,7 @@ function AccountContent() {
                         <span className="customerStatus">{statusCopy[booking.status] || booking.status}</span>
                         <p>{booking.requestType === "WAITLIST" ? waitlistGuidance[booking.status] || "Your waitlist request is being reviewed by the spa team. It does not reserve an appointment slot." : statusGuidance[booking.status] || "The spa team will update this request when its status changes."}</p>
                         {booking.statusUpdatedAt && <small>Status updated {new Date(booking.statusUpdatedAt).toLocaleString("en-GB", { timeZone: "Africa/Gaborone", dateStyle: "medium", timeStyle: "short" })}</small>}
-                        {booking.requestType !== "WAITLIST" && <small>Payment: {paymentCopy[booking.paymentStatus] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
+                        {booking.requestType !== "WAITLIST" && <small>Payment: {paymentCopy[booking.paymentStatus || "PAYMENT_PENDING"] || booking.paymentStatus}. Appointment status and payment status are tracked separately.</small>}
                       </div>
                     </article>
                   ))}
