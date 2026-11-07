@@ -11,7 +11,6 @@ import { defaultClinicSettings, dayLabels, isAnnouncementVisible, parseDurationM
 import { trackUsage } from "@/lib/tripple-s/usage";
 import SpaWeatherReport from "@/components/SpaWeatherReport";
 
-const whatsapp = "/#visit";
 function localDateValue() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
@@ -21,7 +20,6 @@ export default function BookForm() {
   const requestedService = searchParams.get("service") ?? "";
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
-  const [hasSavedProfile, setHasSavedProfile] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -192,7 +190,7 @@ export default function BookForm() {
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
     <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose a treatment and available time. The team will review your request and confirm the appointment.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b>Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
-      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Thank you. We’ll be in touch.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>"Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps." {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my request →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my request & secure profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
+      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Thank you. We’ll be in touch.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my request →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my request & secure profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
         <form className="formCard bookingForm" onSubmit={handleSubmit}>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>What brings you in?</h2><p>{hasConnectedAccount ? "Your request will be linked to your My Village Wellness Spa account, so you can return here to follow its progress." : "You can request a visit as a guest. If you choose, you can secure your profile after sending the request."}</p></div></div>
