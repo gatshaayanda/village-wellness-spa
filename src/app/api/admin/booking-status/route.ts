@@ -9,12 +9,10 @@ export async function POST(request:NextRequest){
  try{
   const db=getAdminDb(),ref=db.collection("bookingRequests").doc(id);
   let customerUid="";
-  let requestType="APPOINTMENT";
   let didChange=false;
   await db.runTransaction(async tx=>{
    const requestSnap=await tx.get(ref);if(!requestSnap.exists)throw new Error("REQUEST_NOT_FOUND");
    customerUid=String(requestSnap.data()?.customerUid??"");
-   requestType=String(requestSnap.data()?.requestType??"APPOINTMENT");
    if(String(requestSnap.data()?.status??"NEW")===status)return;
    didChange=true;
    const held= status==="DECLINED"||status==="CANCELLED"||status==="RESCHEDULED" ? await tx.get(db.collection("slotReservations").where("bookingRequestId","==",id)) : null;
