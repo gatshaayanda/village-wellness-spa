@@ -952,5 +952,59 @@
 .villageHeroActions .textLink{color:#fff;text-decoration:underline;text-underline-offset:4px;font-size:.78rem;font-weight:750}
 @media(max-width:700px){.villageWalkInNote{font-size:.72rem;max-width:340px}.villageHeroActions .textLink{display:inline-flex;align-items:center;justify-content:center;min-height:44px}}
 
-/* First-visit / returning-client choice in the booking journey. */
-.visitTypePicker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 8px}.visitTypeOption{display:grid;gap:5px;text-align:left;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer}.visitTypeOption strong{font-size:.9rem}.visitTypeOption span{font-size:.76rem;color:var(--muted)}.visitTypeOption.selected{border-color:var(--gold);background:#fbf7ef;box-shadow:inset 0 0 0 1px var(--gold)}.visitTypeOption:focus-visible{outline:3px solid rgba(181,150,90,.25);outline-offset:2px}.visitTypeHint{margin:0 0 15px;color:var(--muted);font-size:.78rem;line-height:1.5}@media(max-width:420px){.visitTypePicker{gap:7px}.visitTypeOption{padding:11px 10px}.visitTypeOption strong{font-size:.82rem}.visitTypeOption span{font-size:.7rem}}
+
+/* Village Wellness Spa public journey: one clear booking action. */
+.villageHeroActions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.villageStaffLink{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.72rem;text-decoration:none}
+.villageStaffLink span{font-size:.62rem;font-weight:800;letter-spacing:.12em;color:var(--accent)}
+/* Iteration 13 ServiceGuide, adapted to Village Wellness Spa. */
+.sd-guide-root{position:fixed;right:22px;bottom:22px;z-index:90;font-family:inherit}
+.sd-guide-launcher{display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:13px 17px;background:#6b3c1b;color:#fff;box-shadow:0 12px 32px #27130f30;font-weight:750;cursor:pointer}
+.sd-guide-launcher span{font-size:.86rem}
+.sd-guide-launcher.is-open{background:#4d2a18}
+.sd-guide-teaser{position:absolute;right:0;bottom:66px;width:min(320px,calc(100vw - 32px));display:grid;grid-template-columns:26px 1fr 24px;gap:10px;padding:16px;background:#fff;border:1px solid #eadfe2;border-radius:16px;box-shadow:0 18px 50px #27130f24;color:#35262b}
+.sd-guide-teaser-spark{color:#e52b7c}
+.sd-guide-teaser strong{font-size:.9rem}
+.sd-guide-teaser p{margin:5px 0 12px;color:#766a70;font-size:.78rem;line-height:1.45}
+.sd-guide-teaser-actions{display:flex;align-items:center;gap:12px}
+.sd-guide-teaser-actions button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:#6b3c1b;font-size:.78rem;font-weight:750;cursor:pointer}
+.sd-guide-teaser-actions .sd-guide-dismiss{color:#84777c;font-weight:600}
+.sd-guide-teaser-close{border:0;background:transparent;color:#766a70;cursor:pointer}
+.sd-guide-backdrop{position:fixed;inset:0;background:#1c101426;z-index:-1}
+.sd-guide-panel{position:absolute;right:0;bottom:66px;width:min(390px,calc(100vw - 32px));max-height:min(78dvh,720px);display:flex;flex-direction:column;overflow:hidden;background:#fff;border:1px solid #eadfe2;border-radius:20px;box-shadow:0 22px 70px #27130f30;color:#35262b}
+.sd-guide-head{display:flex;align-items:center;gap:11px;padding:15px 16px;background:#6b3c1b;color:#fff}
+.sd-guide-avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#ffffff24}
+.sd-guide-head>div:nth-child(2){min-width:0;flex:1}
+.sd-guide-eyebrow{font-size:.58rem;letter-spacing:.12em;opacity:.78}
+.sd-guide-head h2{margin:2px 0;font-size:1rem}
+.sd-guide-head p{display:flex;align-items:center;gap:6px;margin:0;font-size:.68rem;opacity:.85}
+.sd-guide-head p span{width:6px;height:6px;border-radius:50%;background:#8fe0a8}
+.sd-guide-head>button{display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:#ffffff20;color:#fff;cursor:pointer}
+.sd-guide-intro{padding:13px 16px 7px}
+.sd-guide-intro strong{font-size:.88rem}
+.sd-guide-intro p{margin:4px 0;color:#766a70;font-size:.75rem;line-height:1.45}
+.sd-guide-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:8px 16px}
+.sd-guide-actions button{display:flex;align-items:center;gap:7px;min-height:42px;padding:9px 10px;border:1px solid #eee3e6;border-radius:10px;background:#fff;color:#4a3038;text-align:left;font-size:.72rem;font-weight:700;cursor:pointer}
+.sd-guide-actions button>span{color:#e52b7c}
+.sd-guide-actions button svg{margin-left:auto;flex:none}
+.sd-guide-services{min-height:0;overflow:auto;padding:8px 16px}
+.sd-guide-section-label{display:block;margin:0 0 7px;color:#8c7b82;font-size:.6rem;font-weight:800;letter-spacing:.12em}
+.sd-guide-services>button{display:flex;align-items:center;gap:9px;width:100%;padding:9px 0;border:0;border-top:1px solid #f0e9eb;background:#fff;text-align:left;cursor:pointer}
+.sd-guide-service-thumb{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:9px;background:#f8edf1;overflow:hidden}
+.sd-guide-service-thumb img{width:100%;height:100%;object-fit:cover}
+.sd-guide-service-copy{display:grid;gap:3px;min-width:0;flex:1}
+.sd-guide-service-copy strong{font-size:.75rem}
+.sd-guide-service-copy small{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;color:#83767c;font-size:.66rem;line-height:1.35}
+.sd-guide-services>button>b{flex:none;color:#6b3c1b;font-size:.72rem}
+.sd-guide-continue{display:flex;align-items:center;justify-content:center;gap:8px;margin:7px 16px;padding:11px;border:0;border-radius:10px;background:#e52b7c;color:#fff;font-weight:750;cursor:pointer}
+.sd-guide-thread{display:grid;gap:6px;max-height:105px;overflow:auto;padding:8px 16px}
+.sd-guide-message{max-width:92%;margin:0;padding:9px 11px;border-radius:12px;background:#f7f1f3;color:#59434b;font-size:.72rem;line-height:1.45}
+.sd-guide-message.is-you{justify-self:end;background:#fce8f0;color:#6b3c1b}
+.sd-guide-composer{display:flex;gap:7px;padding:10px 13px;border-top:1px solid #f0e9eb}
+.sd-guide-composer input{min-width:0;flex:1;padding:11px 12px;border:1px solid #e8dce0;border-radius:10px;font:inherit;font-size:.76rem}
+.sd-guide-composer button{display:grid;place-items:center;width:40px;border:0;border-radius:10px;background:#6b3c1b;color:#fff;cursor:pointer}
+.sd-guide-composer button:disabled{opacity:.45;cursor:not-allowed}
+.sd-guide-type-hint,.sd-guide-footnote{margin:0;padding:0 14px 8px;color:#8a7c81;font-size:.61rem}
+.sd-guide-footnote{display:flex;align-items:center;gap:5px;padding-bottom:12px}
+@media(max-width:600px){.sd-guide-root{right:14px;bottom:14px}.sd-guide-panel{position:fixed;right:0;bottom:0;width:100vw;max-height:82dvh;border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom)}.sd-guide-teaser{right:0;bottom:64px}}
+@media(prefers-reduced-motion:reduce){.sd-guide-panel,.sd-guide-teaser{animation:none!important;transition:none!important}}
