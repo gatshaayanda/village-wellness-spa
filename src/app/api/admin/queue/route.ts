@@ -3,6 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
+type VisitRecord = Record<string, unknown> & { id: string };
 const allowed = new Set(["ARRIVED", "COMPLETED"]);
 function today() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -15,11 +16,15 @@ export async function GET(request: NextRequest) {
       db.collection("bookingRequests").where("requestType", "==", "QUEUE").get(),
       db.collection("bookingRequests").where("preferredDate", "==", date).get(),
     ]);
-    const walkInItems = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) => String(item.visitDate ?? item.preferredDate ?? "") === date && item.status !== "ON_THE_WAY").map((item: any) => ({ ...item, status: ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : item.status }));
-    const appointmentItems = appointments.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) =>
+    const walkInRecords: VisitRecord[] = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const walkInItems: VisitRecord[] = walkInRecords
+      .filter(item => String(item.visitDate ?? item.preferredDate ?? "") === date && item.status !== "ON_THE_WAY")
+      .map(item => ({ ...item, status: ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : String(item.status ?? "") }));
+    const appointmentRecords: VisitRecord[] = appointments.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const appointmentItems: VisitRecord[] = appointmentRecords.filter(item =>
       item.requestType !== "QUEUE" && item.requestType !== "WAITLIST" && (!item.requestType || item.requestType === "APPOINTMENT") && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
     );
-    const items = [...walkInItems, ...appointmentItems].sort((a: any, b: any) => String(a.createdAt ?? "").localeCompare(String(b.createdAt ?? "")));
+    const items = [...walkInItems, ...appointmentItems].sort((a, b) => String(a.createdAt ?? "").localeCompare(String(b.createdAt ?? "")));
     return NextResponse.json({ items });
   } catch (error) {
     console.error("[Village Wellness Spa] visits load failed", error instanceof Error ? error.message : "unknown");
