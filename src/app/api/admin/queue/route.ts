@@ -78,11 +78,13 @@ export async function POST(request: NextRequest) {
       if (status === "COMPLETED") {
         const price = String(body.finalPrice ?? "").trim().replace(/^P\s*/i, "");
         patch.completedAt = now;
+        // The spa's operating rule is that reception completes a visit only after payment.
+        // The actual amount is optional here; revenue is counted only when an amount is recorded.
+        patch.paymentStatus = "PAID";
+        patch.paymentRecordedAt = now;
         if (price) {
           if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) throw new Error("INVALID_FINAL_PRICE");
           patch.finalPriceSnapshot = "P" + Number(price).toFixed(2);
-          patch.paymentStatus = "PAID";
-          patch.paymentRecordedAt = now;
         }
         const date = String(body.recommendedReturnDate ?? "").trim();
         const note = String(body.returnNote ?? "").trim().slice(0, 500);
