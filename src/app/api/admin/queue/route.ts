@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       const claimToken = customerUid ? "" : randomBytes(32).toString("hex");
       const claimTokenHash = claimToken ? createHash("sha256").update(claimToken).digest("hex") : "";
       await ref.set({
-        createdAt: now, visitDate: today(), preferredDate: today(), name, phone: normalizedPhone,
+        createdAt: now, visitDate: today(), preferredDate: today(), name, phone: normalizedPhone, phoneNormalized: normalizedPhone,
         ...(customerUid ? { customerUid, profileConnected: true } : {}),
         serviceNameSnapshot: serviceName, requestType: "QUEUE", queueMode: "STAFF",
         status: "ARRIVED", statusUpdatedAt: now, paymentStatus: "NOT_RECORDED",
