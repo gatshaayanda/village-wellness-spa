@@ -182,6 +182,30 @@ export async function reconcileVillageServiceSeeds() {
   const stateRef = doc(db, "settings", "catalogueState");
   const stateSnapshot = await getDoc(stateRef);
   const state = stateSnapshot.data() ?? {};
+  // One-time itemised treatment catalogue migration. Add only missing stable IDs;
+  // never overwrite owner edits. Hide the five known aggregate starter placeholders.
+  if (Number(state.villageItemisedSeedVersion ?? 0) < 1) {
+    const [existingServices, existingCategories] = await Promise.all([getDocs(servicesCollection), getDocs(serviceCategoriesCollection)]);
+    const serviceIds = new Set(existingServices.docs.map(item => item.id));
+    const categoryIds = new Set(existingCategories.docs.map(item => item.id));
+    let added = 0, categoriesAdded = 0;
+    for (const category of trippleSCategorySeed) {
+      if (categoryIds.has(category.id)) continue;
+      await setDoc(doc(db, "serviceCategories", category.id), category);
+      categoriesAdded++;
+    }
+    for (const service of trippleSServiceSeed) {
+      if (serviceIds.has(service.id)) continue;
+      await setDoc(doc(db, "services", service.id), service);
+      added++;
+    }
+    for (const id of ["village-facials-skincare", "village-advanced-aesthetics", "village-full-body-massage", "village-express-body-care", "village-nails-grooming"]) {
+      const aggregate = existingServices.docs.find(item => item.id === id);
+      if (aggregate) await updateDoc(aggregate.ref, { active: false });
+    }
+    await setDoc(stateRef, { villageItemisedSeedVersion: 1, categoriesManaged: true, servicesManaged: true }, { merge: true });
+    return { added, categoriesAdded, updated: 0, skipped: false };
+  }
   if (Number(state.villageServiceSeedVersion ?? 0) >= 3) {
     // The public catalogue deliberately falls back to the starter treatments while the
     // Firestore catalogue is still untouched. Mirror those records into Firestore for
