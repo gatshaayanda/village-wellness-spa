@@ -18,7 +18,7 @@ export type ProductRecord = {
 function isUnverifiedCategoryPrice(item: ServiceRecord): boolean {
   const seed = trippleSServiceSeed.find(candidate => candidate.id === item.id);
   if (!seed) return false;
-  return item.price.trim().replace(/^Estimated\\s+/i, "") === seed.price;
+  return item.price.trim().replace(/^Estimated\s+/i, "") === seed.price;
 }
 function publicServiceList(items: ServiceRecord[]): ServiceRecord[] {
   return items.filter(item => item.active && !isUnverifiedCategoryPrice(item));
