@@ -87,9 +87,12 @@ export async function POST(request: NextRequest) {
       if (status === "COMPLETED") {
         const price = String(body.finalPrice ?? "").trim().replace(/^P\s*/i, "");
         if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) throw new Error("INVALID_FINAL_PRICE");
+        const paymentMethod = String(body.paymentMethod ?? "").trim();
+        if (!["CASH", "ORANGE_MONEY", "CARD", "OTHER"].includes(paymentMethod)) throw new Error("INVALID_PAYMENT_METHOD");
         patch.completedAt = now;
         patch.finalPriceSnapshot = "P" + Number(price).toFixed(2);
         patch.paymentStatus = "PAID";
+        patch.paymentMethod = paymentMethod;
         patch.paymentRecordedAt = now;
         const date = String(body.recommendedReturnDate ?? "").trim();
         const note = String(body.returnNote ?? "").trim().slice(0, 500);
@@ -110,6 +113,7 @@ export async function POST(request: NextRequest) {
       RETIRED_WAITLIST: "Waitlist records are no longer part of the visit workflow.",
       INVALID_TRANSITION: "This visit cannot make that change. Refresh the list and check its current status.",
       INVALID_FINAL_PRICE: "Enter the actual amount received in pula.",
+      INVALID_PAYMENT_METHOD: "Choose how the customer paid before completing the visit.",
       INVALID_RETURN_DATE: "Choose a valid recommended return date.",
     };
     return NextResponse.json({ error: errors[message] || "The visit update could not be saved." }, { status: message === "NOT_FOUND" ? 404 : 400 });
