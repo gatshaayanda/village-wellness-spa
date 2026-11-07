@@ -13,6 +13,17 @@ export type ProductRecord = {
   id: string; name: string; description: string; size?: string; price: string; active: boolean; purchaseMethod?: string; imageUrl?: string;
 };
 
+// The five broad starter ranges are unverified category placeholders, not itemised treatment prices.
+// Keep them editable in Admin, but do not publish them as customer-facing treatment prices.
+function isUnverifiedCategoryPrice(item: ServiceRecord): boolean {
+  const seed = trippleSServiceSeed.find(candidate => candidate.id === item.id);
+  if (!seed) return false;
+  return item.price.trim().replace(/^Estimated\\s+/i, "") === seed.price;
+}
+function publicServiceList(items: ServiceRecord[]): ServiceRecord[] {
+  return items.filter(item => item.active && !isUnverifiedCategoryPrice(item));
+}
+
 export type BookingStatus = "NEW" | "REVIEWING" | "APPROVED" | "PAYMENT_PENDING" | "CONFIRMED" | "NEEDS_CONTACT" | "DECLINED" | "RESCHEDULED" | "CANCELLED" | "NO_SHOW" | "FOLLOW_UP";
 export type PaymentStatus = "PAYMENT_PENDING" | "PAYMENT_INSTRUCTIONS" | "PAYMENT_PROOF_SUBMITTED" | "PAYMENT_VERIFIED" | "PAID" | "REFUNDED";
 
@@ -33,7 +44,7 @@ export async function getServices(): Promise<ServiceRecord[]> {
 }
 
 export async function getPublicServices(): Promise<ServiceRecord[]> {
-  if (isLocalDemoMode()) return getServices();
+  if (isLocalDemoMode()) return publicServiceList(await getServices());
   try {
     const [snapshot, catalogueState] = await Promise.all([getDocs(query(servicesCollection, where("active", "==", true))), getDoc(doc(db, "settings", "catalogueState"))]);
     const state = catalogueState.data() ?? {};
@@ -57,13 +68,13 @@ export async function getPublicServices(): Promise<ServiceRecord[]> {
       const custom = savedRecords
         .filter(item => !legacyTrippleSServiceSeedIds.includes(item.id) && !seedIds.has(item.id))
         .filter(item => item.active);
-      return [...seeded, ...custom];
+      return publicServiceList([...seeded, ...custom]);
     }
-    if (snapshot.empty) return state.servicesManaged === true ? [] : trippleSServiceSeed;
-    return snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<ServiceRecord, "id">) })).filter((item) => item.active);
+    if (snapshot.empty) return state.servicesManaged === true ? [] : publicServiceList(trippleSServiceSeed);
+    return publicServiceList(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<ServiceRecord, "id">) })));
   } catch (error) {
     console.warn("[Tripple S] public services unavailable; using the seed catalogue", error);
-    return trippleSServiceSeed;
+    return publicServiceList(trippleSServiceSeed);
   }
 }
 export async function saveServiceRecord(item: ServiceRecord) { if (isLocalDemoMode()) { saveLocalDemoBucketRecord("services", { id: item.id, record: item }); return; } await setDoc(doc(db, "services", item.id), item); await setDoc(doc(db, "settings", "catalogueState"), { servicesManaged: true }, { merge: true }); }
