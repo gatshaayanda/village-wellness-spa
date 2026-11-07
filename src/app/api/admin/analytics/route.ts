@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
     const paid = completed.filter(item => item.paymentStatus === "PAID" && amountOf(item.finalPriceSnapshot) !== null);
     const paidRevenue = paid.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
     const walkIns = recent.filter(item => item.requestType === "QUEUE");
+    const confirmedBookings = recent.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT") && item.status === "CONFIRMED");
+    const confirmedBookingValue = confirmedBookings.reduce((sum, item) => sum + (amountOf(item.priceSnapshot) ?? 0), 0);
+    const confirmedBookingsWithoutExactPrice = confirmedBookings.filter(item => amountOf(item.priceSnapshot) === null).length;
     const appointments = recent.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT"));
     const paidWalkIns = paid.filter(item => item.requestType === "QUEUE");
     const paidAppointments = paid.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT"));
@@ -74,6 +77,9 @@ export async function GET(request: NextRequest) {
       completedWalkIns: completed.filter(item => item.requestType === "QUEUE").length,
       completedAppointments: completed.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT")).length,
       confirmed: recent.filter(item => ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status))).length,
+      confirmedBookings: confirmedBookings.length,
+      confirmedBookingValue: Number(confirmedBookingValue.toFixed(2)),
+      confirmedBookingsWithoutExactPrice,
       completed: completed.length,
       cancelled: recent.filter(item => ["CANCELLED", "DECLINED", "NO_SHOW"].includes(String(item.status))).length,
       paidTransactions: paid.length,
