@@ -49,6 +49,8 @@ Research grounding (design guidance, not a claim that any single study guarantee
 - *Wellbeing Supportive Design – Research-Based Guidelines for Supporting Psychological Wellbeing in User Experience* (2022), DOI: https://doi.org/10.1080/10447318.2022.2089812
 
 ## Reception walk-ins and repeat-visit loop
+
+- Public homepage must provide a distinct `ON-SITE TEAM` entry point, following the Big Brothers homepage information architecture, linking directly to the protected `/admin/queue` reception workspace. Label it `Open reception`; do not expose a customer walk-in/queue form. The authenticated admin navigation must call this destination `Reception` so staff can find it without relying on a buried dashboard link.
 - Customers book appointments through the existing booking flow. Do not offer remote “on the way” check-ins or customer-created same-day queue entries. The public `/queue` path redirects to appointment booking; the old customer queue API is removed.
 - Reception alone registers a walk-in after the customer is physically at the spa. Staff captures the minimum needed to identify the visit (name, WhatsApp/mobile number and treatment); the customer completes no reception form. Record the visit as `requestType: "QUEUE"`, `queueMode: "STAFF"`, status `ARRIVED` in the existing `bookingRequests` collection.
 - Staff owns only two visit actions: `ARRIVED → COMPLETED`. A walk-in is recorded as ARRIVED when physically present; a confirmed appointment can be marked ARRIVED on arrival. Staff marks COMPLETED once treatment is finished and payment has actually been received. Do not expose WAITING or IN_TREATMENT steps, queue positions, countdowns or treatment start estimates.

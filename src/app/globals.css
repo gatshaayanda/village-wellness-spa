@@ -609,6 +609,13 @@
 .villageVisitCompact .kicker{font-size:.58rem}
 .villageVisitCompact strong{font:600 1.15rem Georgia,serif;color:var(--chocolate)}
 .villageVisitCompact p{margin:0;color:#78665d;font-size:.76rem;line-height:1.5}
+.villageStaffEntry{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 14px;padding:16px 20px;border:1px solid #e9cbd9;border-left:4px solid var(--hot-pink);border-radius:11px;background:#fff;box-shadow:0 4px 15px rgba(107,60,27,.035)}
+.villageStaffEntry>div{display:grid;gap:5px}
+.villageStaffEntry .kicker{font-size:.58rem;color:#a64a73}
+.villageStaffEntry strong{font:600 1.05rem Georgia,serif;color:var(--chocolate)}
+.villageStaffEntry p{margin:0;color:#78665d;font-size:.73rem;line-height:1.45}
+.villageStaffEntryLink{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:42px;padding:0 16px;border-radius:8px;background:#fff0f6;color:#b51f60;font-size:.78rem;font-weight:900;white-space:nowrap}
+.villageStaffEntryLink:hover{background:#ffe1ed}
 .villageEnquiryLink{border:0;background:none;color:var(--hot-pink);font-weight:900;font-size:.78rem;cursor:pointer;white-space:nowrap}
 .villageCompactFooter{width:min(1120px,calc(100% - 36px));margin:15px auto 0;display:flex;justify-content:space-between;color:#907d84;font-size:.67rem}
 .villageBottomNav{display:none}
@@ -634,6 +641,8 @@
  .villageQuickCard>b{display:none}
  .villageTrustStrip{gap:7px;min-height:37px;margin-bottom:10px;padding:7px 5px;font-size:.58rem;white-space:nowrap}
  .villageVisitCompact{align-items:flex-start;flex-direction:column;gap:11px;padding:14px;border-radius:10px}
+ .villageStaffEntry{align-items:flex-start;flex-direction:column;gap:10px;padding:14px}
+ .villageStaffEntryLink{width:100%;min-height:44px}
  .villageVisitCompact strong{font-size:1.05rem}
  .villageVisitCompact p{font-size:.72rem}
  .villageEnquiryLink{padding:0}
