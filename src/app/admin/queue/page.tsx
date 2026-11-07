@@ -130,19 +130,19 @@ function QueueDashboard() {
       <div className="adminShell">
         <header className="panelHeading">
           <div>
-            <span className="kicker">VILLAGE WELLNESS SPA · TODAY</span>
-            <h1>Walk-ins & visits</h1>
-            <p>Walk-ins are handled by the spa team: record arrival, provide treatment, mark completed. Customers do not need to book or complete a check-in form.</p>
+            <span className="kicker">ON-SITE TEAM · WALK-IN</span>
+            <h1>Walk-in queue</h1>
+            <p>Record the customer when they arrive. The team provides the treatment and marks the visit completed when payment is received.</p>
           </div>
           <div className="actions"><Link href="/admin/analytics" className="button buttonLight">Owner analytics</Link><Link href="/admin" className="button buttonLight">Main admin</Link></div>
         </header>
 
         <section className="adminPanel">
-          <h2>Register arrival</h2>
-          <p>Reception records the visit once. For returning customers, enter the saved WhatsApp number and leave the name blank; the saved profile is reused when the match is unique. For a new customer, enter their name once. No customer-side booking or check-in form is required.</p>
+          <h2>Add a customer to the walk-in queue</h2>
+          <p>Add the customer when they are physically here. Enter their WhatsApp number; an existing account is reused when the number matches one profile. Add their name only when needed. The customer does not fill in a form.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
-              <label>Customer name <span>(new customer / if needed)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Leave blank for a saved customer" /><small>Returning customer? Enter their saved WhatsApp number and leave this blank. Their name and account will be reused when the match is unique.</small></label>
+              <label>Customer name <span>(if needed)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Leave blank for a saved customer" /><small>If the number matches one saved customer profile, their name and account are reused automatically.</small></label>
               <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
               <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose treatment</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
             </div>
