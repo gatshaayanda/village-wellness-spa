@@ -130,14 +130,14 @@ function QueueDashboard() {
           <div>
             <span className="kicker">VILLAGE WELLNESS SPA · TODAY</span>
             <h1>Walk-ins & visits</h1>
-            <p>Two steps: mark arrival, then mark the visit completed. No queue stages to manage.</p>
+            <p>Walk-ins are handled by the spa team: record arrival, provide treatment, mark completed. Customers do not need to book or complete a check-in form.</p>
           </div>
-          <Link href="/admin" className="button buttonLight">Main admin</Link>
+          <div className="actions"><Link href="/admin/analytics" className="button buttonLight">Owner analytics</Link><Link href="/admin" className="button buttonLight">Main admin</Link></div>
         </header>
 
         <section className="adminPanel">
           <h2>Register arrival</h2>
-          <p>Reception records the customer and treatment. Returning customers are linked to their existing account where an exact unique match is available.</p>
+          <p>Reception records the visit once. Returning customers are linked to their existing account when the saved name and number match uniquely. For a new customer, the optional account link lets them keep visit history and book again — no customer-side form is required at arrival.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
               <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
