@@ -39,7 +39,6 @@ export default function BookForm() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [serviceId, setServiceId] = useState(requestedService);
-  const [visitType, setVisitType] = useState<"FIRST" | "RETURNING">("FIRST");
   const minDate = localDateValue();
 
   useEffect(() => {
@@ -190,17 +189,16 @@ export default function BookForm() {
   return <main className="bookPage bookPageEditorial">
     <nav className="nav"><div className="container navInner"><Link href="/" className="brand" aria-label="Village Wellness Spa home"><span className="brandMark"><img src="/icon.svg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link><div className="navLinks"><Link href="/treatments" className="textLink">Browse treatments & prices</Link><Link href="/account" className="textLink">My Village Wellness Spa</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link></div></nav>
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
-    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose a treatment and preferred time. The team will review your request and confirm the appointment.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
+    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose your treatment and a time that suits you. Your available slot is reserved when you book.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
-      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Thank you. We’ll be in touch.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my request →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my request & secure profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
+      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Your appointment is booked.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your selected time is reserved in the spa calendar. The team will contact you if any treatment-specific information needs attention. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my appointment →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my appointment history →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
         <form className="formCard bookingForm" onSubmit={handleSubmit}>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>What brings you in?</h2><p>{hasConnectedAccount ? "Your request will be linked to your My Village Wellness Spa account, so you can return here to follow its progress." : "You can request a visit as a guest. If you choose, you can secure your profile after sending the request."}</p></div></div>
-            <div className="visitTypePicker" role="group" aria-label="Is this your first visit?"><button type="button" className={visitType === "FIRST" ? "visitTypeOption selected" : "visitTypeOption"} aria-pressed={visitType === "FIRST"} onClick={() => setVisitType("FIRST")}><strong>First visit</strong><span>Help me get started</span></button><button type="button" className={visitType === "RETURNING" ? "visitTypeOption selected" : "visitTypeOption"} aria-pressed={visitType === "RETURNING"} onClick={() => setVisitType("RETURNING")}><strong>Returning client</strong><span>I’ve visited before</span></button></div><p className="visitTypeHint">{visitType === "RETURNING" ? "Your saved details are used automatically when you’re signed in. Booking as a guest? Use the same WhatsApp number as your previous visit so the spa can match your history." : "You can book as a guest. Your visit details can be kept in your customer account when you choose to secure it."}</p>
-           <div className="field"><label htmlFor="serviceId">Choose a treatment</label><select id="serviceId" name="serviceId" value={serviceId} onChange={(event) => setServiceId(event.target.value)}><option value="">{loadingServices ? "Loading the menu…" : "I’m not sure — help me choose"}</option>{services.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.price} · {item.duration}</option>)}</select><small>Not sure what to choose? Leave this blank and the team can guide you.</small></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>Choose your treatment</h2><p>Choose a treatment, or leave it blank and the team can guide you.</p></div></div>
+            <div className="field"><label htmlFor="serviceId">Choose a treatment</label><select id="serviceId" name="serviceId" value={serviceId} onChange={(event) => setServiceId(event.target.value)}><option value="">{loadingServices ? "Loading the menu…" : "I’m not sure — help me choose"}</option>{services.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.price} · {item.duration}</option>)}</select><small>Not sure what to choose? Leave this blank and the team can guide you.</small></div>
             {selected && <div className="selectedTreatment"><div><span className="kicker">Your selection</span><strong>{selected.name}</strong><p>{selected.description}</p></div><div className="selectedTreatmentPrice"><strong>{selected.price}</strong><span>{selected.duration}</span></div>{selected.consultationRequired && <p className="selectedTreatmentNote">Clinical assessment may be required. Suitability is determined by the Village Wellness Spa clinical team.</p>}</div>}
           </section>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>02</span><div><h2>When works for you?</h2><p>Select an available slot. Your appointment is only confirmed after the team contacts you.</p></div></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>02</span><div><h2>When works for you?</h2><p>Choose an available time. Your booking is confirmed as soon as the slot is reserved.</p></div></div>
             <div className="formGrid">
               <div className="field">
                 <label htmlFor="date">Appointment date</label>
@@ -250,11 +248,6 @@ export default function BookForm() {
                 <label htmlFor="discountCode">Offer code <span>(optional)</span></label>
                 <input id="discountCode" name="discountCode" autoComplete="off" placeholder="Enter a published offer code" />
               </div>
-              <div className="field fieldFull">
-                <label htmlFor="message">What would help you feel welcome on your first visit? <span>(optional)</span></label>
-                <textarea id="message" name="message" maxLength={1500} placeholder="For example, how you heard about Village Wellness Spa or anything that would help you feel comfortable. Share only what you’re happy for the team to know." />
-                <small>This note is shared with the clinic team for this request. Please don’t include private family details or sensitive medical information unless the clinic specifically asks through an appropriate channel.</small>
-              </div>
             </div>
           </section>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "We only ask for the details the team needs to respond. You can optionally secure your profile after your request."}</p></div></div>
@@ -273,11 +266,11 @@ export default function BookForm() {
             {!hasConnectedAccount && <p className="slotHint">After you send your request, you can optionally connect Google to secure your My Village Wellness Spa profile. You can still request a visit without doing that now.</p>}
           </section>
           {error && <p className="bookingError" role="alert">{error}</p>}
-          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Sending your request…" : "Send appointment request"} <span aria-hidden="true">→</span></button>
+          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Sending your request…" : "Book appointment"} <span aria-hidden="true">→</span></button>
           <p className="bookingPrivacy">Your details are used to respond to this request. Please do not enter sensitive medical information in this form.</p>          
 
         </form>
-        <div className="bookingTrustNote"><strong>Your request is not a confirmed appointment.</strong><span>The team reviews the treatment and preferred time, then contacts you to confirm. No payment is taken here.</span></div>
+        <div className="bookingTrustNote"><strong>Your appointment is confirmed when the booking is saved.</strong><span>Your selected date and time are reserved. Payment is handled at the spa.</span></div>
       </div>}
     </div>
   </main>;
