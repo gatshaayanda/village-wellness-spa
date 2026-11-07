@@ -163,7 +163,7 @@ function QueueDashboard() {
             <div><h2>At the spa <span>{active.length}</span></h2><p>When the treatment is finished, mark the visit completed. No intermediate queue statuses.</p></div>
             <button className="button buttonLight" type="button" onClick={() => void load().catch(error => setNotice(error.message))}>Refresh</button>
           </div>
-          {loading ? <p className="slotHint">Loading today's visits…</p> : active.length === 0 ? <p className="emptyState">No active visits at the spa.</p> : active.map(item => (
+          {loading ? <p className="slotHint">Loading today&apos;s visits…</p> : active.length === 0 ? <p className="emptyState">No active visits at the spa.</p> : active.map(item => (
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
