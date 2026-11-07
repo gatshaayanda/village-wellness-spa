@@ -18,18 +18,18 @@ export async function GET(request: NextRequest) {
   try {
     const snapshot = await getAdminDb().collection("bookingRequests").get();
     const now = Date.now(), cutoff = now - 30 * 24 * 60 * 60 * 1000;
-    const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Array<Record<string, unknown>>;
+    const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BookingRecord[];
     const recent = records.filter(item => {
       const created = Date.parse(String(item.createdAt ?? ""));
       return Number.isFinite(created) && created >= cutoff && item.requestType !== "WAITLIST";
     });
-    const completed = recent.filter(item => item.status === "COMPLETED");
+    const completed = records.filter(item => item.status === "COMPLETED" && item.requestType !== "WAITLIST" && Date.parse(dateKey(item.completedAt ?? item.statusUpdatedAt ?? item.createdAt) + "T12:00:00+02:00") >= cutoff);
     const paid = completed.filter(item => item.paymentStatus === "PAID" && amountOf(item.finalPriceSnapshot) !== null);
     const paidRevenue = paid.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
     const walkIns = recent.filter(item => item.requestType === "QUEUE");
-    const appointments = recent.filter(item => item.requestType !== "QUEUE");
+    const appointments = recent.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT"));
     const paidWalkIns = paid.filter(item => item.requestType === "QUEUE");
-    const paidAppointments = paid.filter(item => item.requestType !== "QUEUE");
+    const paidAppointments = paid.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT"));
     const sumPaid = (items: BookingRecord[]) => items.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
     const treatmentTotals = new Map<string, { transactions: number; revenue: number }>();
     paid.forEach(item => {
@@ -45,10 +45,11 @@ export async function GET(request: NextRequest) {
       demand.set(name, (demand.get(name) ?? 0) + 1);
     });
     const customerVisits = new Map<string, number>();
-    completed.forEach(item => {
+    records.filter(item => item.status === "COMPLETED").forEach(item => {
       const identity = String(item.customerUid ?? item.phone ?? "").trim();
       if (identity) customerVisits.set(identity, (customerVisits.get(identity) ?? 0) + 1);
     });
+    const recentCustomerIds = new Set(completed.map(item => String(item.customerUid ?? item.phone ?? "").trim()).filter(Boolean));
     const daily = new Map<string, number>();
     paid.forEach(item => {
       const key = dateKey(item.completedAt ?? item.statusUpdatedAt ?? item.createdAt);
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
       walkIns: walkIns.length,
       appointments: appointments.length,
       completedWalkIns: completed.filter(item => item.requestType === "QUEUE").length,
-      completedAppointments: completed.filter(item => item.requestType !== "QUEUE").length,
+      completedAppointments: completed.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT")).length,
       confirmed: recent.filter(item => ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status))).length,
       completed: completed.length,
       cancelled: recent.filter(item => ["CANCELLED", "DECLINED", "NO_SHOW"].includes(String(item.status))).length,
@@ -76,9 +77,9 @@ export async function GET(request: NextRequest) {
       topRevenueTreatments: Array.from(treatmentTotals.entries()).map(([name, values]) => ({ name, transactions: values.transactions, revenue: Number(values.revenue.toFixed(2)) })).sort((a, b) => b.revenue - a.revenue).slice(0, 8),
       averagePaidVisit: paid.length ? Number((paidRevenue / paid.length).toFixed(2)) : 0,
       completedWithoutRecordedPayment: completed.filter(item => item.paymentStatus !== "PAID" || amountOf(item.finalPriceSnapshot) === null).length,
-      distinctCompletedCustomers: customerVisits.size,
-      returningCustomers: Array.from(customerVisits.values()).filter(count => count > 1).length,
-      firstTimeCustomers: Array.from(customerVisits.values()).filter(count => count === 1).length,
+      distinctCompletedCustomers: recentCustomerIds.size,
+      returningCustomers: Array.from(recentCustomerIds).filter(identity => (customerVisits.get(identity) ?? 0) > 1).length,
+      firstTimeCustomers: Array.from(recentCustomerIds).filter(identity => (customerVisits.get(identity) ?? 0) === 1).length,
       topTreatments: Array.from(demand.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 6),
       dailyRevenue,
       source: "bookingRequests",
