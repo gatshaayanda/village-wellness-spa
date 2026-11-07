@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import EnquiryModal from "@/components/enquiry-modal";
 import { getClinicSettings, getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 import { defaultClinicSettings, isAnnouncementVisible, type ClinicSettings } from "@/lib/tripple-s/clinic-settings";
 import SpaWeatherReport from "@/components/SpaWeatherReport";
@@ -10,7 +9,6 @@ import SpaWeatherReport from "@/components/SpaWeatherReport";
 export default function Home() {
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [clinicSettings, setClinicSettings] = useState<ClinicSettings>(defaultClinicSettings);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -62,34 +60,12 @@ export default function Home() {
             <span className="villageHeroEyebrow">MEDICAL AESTHETICS · SKIN HEALTH · WELLNESS</span>
             <h1 id="village-home-title">Feel good in your skin.<br /><em>Feel cared for.</em></h1>
             <p>Thoughtful care, guided by your goals.</p>
-            <div className="villageHeroActions"><Link href="/treatments" className="villageBookCta">Explore treatments <span aria-hidden="true">↗</span></Link><Link href="/book" className="textLink">Book a future visit</Link></div><p className="villageWalkInNote">Walk-ins welcome. No online check-in or first-time / returning-customer form — just visit the spa and our team will assist.</p>
+            <div className="villageHeroActions"><Link href="/book" className="villageBookCta">Book a visit <span aria-hidden="true">↗</span></Link></div>
           </div>
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
 
         <SpaWeatherReport />
-        <section className="villageQuickLinks" aria-label="Explore Village Wellness Spa">
-          <Link href="/treatments" className="villageQuickCard">
-            <span className="villageQuickIcon" aria-hidden="true">✧</span>
-            <span><strong>Treatments</strong><small>Explore services & pricing</small></span>
-            <b aria-hidden="true">↗</b>
-          </Link>
-          <Link href="/account" className="villageQuickCard">
-            <span className="villageQuickIcon" aria-hidden="true">♡</span>
-            <span><strong>My appointments</strong><small>Requests, visits & account</small></span>
-            <b aria-hidden="true">↗</b>
-          </Link>
-          <Link href="/treatments" className="villageQuickCard">
-            <span className="villageQuickIcon" aria-hidden="true">◌</span>
-            <span><strong>Wellness & IV</strong><small>Explore wellness options</small></span>
-            <b aria-hidden="true">↗</b>
-          </Link>
-          <a href="#visit" className="villageQuickCard">
-            <span className="villageQuickIcon" aria-hidden="true">⌖</span>
-            <span><strong>Visit the spa</strong><small>Location & opening details</small></span>
-            <b aria-hidden="true">↗</b>
-          </a>
-        </section>
 
         <div className="villageTrustStrip">
           <span>✦ Personalised care</span><i>·</i><span>Clinical guidance</span><i>·</i><span>A welcoming space</span>
@@ -101,23 +77,15 @@ export default function Home() {
             <strong>Village Wellness Spa</strong>
             <p>Maratadiba Road, Plot 492<br />The Village, Gaborone, Botswana</p>
           </div>
-          <button type="button" className="villageEnquiryLink" onClick={() => setEnquiryOpen(true)}>Questions? Enquire <span aria-hidden="true">↗</span></button>
         </section>
       </div>
 
-      <nav className="villageBottomNav" aria-label="Main navigation">
-        <Link href="/" aria-current="page"><span aria-hidden="true">⌂</span><small>Home</small></Link>
-        <Link href="/treatments"><span aria-hidden="true">✧</span><small>Treatments</small></Link>
-        <Link href="/#visit" className="villageBottomBook"><span aria-hidden="true">⌖</span><small>Visit</small></Link>
-        <Link href="/account"><span aria-hidden="true">♡</span><small>Account</small></Link>
-      </nav>
 
       <footer className="villageCompactFooter">
         <span>© 2026 Village Wellness Spa</span>
-        <Link href="/admin">Admin</Link>
+        <Link href="/admin/queue" className="villageStaffLink"><span>ON-SITE TEAM</span> Open walk-in queue ↗</Link>
       </footer>
 
-      <EnquiryModal open={enquiryOpen} onClose={() => setEnquiryOpen(false)} kind="GENERAL" />
     </main>
   );
 }
