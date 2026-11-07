@@ -39,12 +39,12 @@ export async function POST(request: NextRequest) {
       const serviceName = String(body.serviceName ?? "").trim().slice(0, 160);
       if (!name || !phone || !serviceName) return NextResponse.json({ error: "Choose the treatment and enter the customer's name and mobile number." }, { status: 400 });
       const now = new Date().toISOString(), ref = db.collection("bookingRequests").doc();
-      const digits = phone.replace(/\\D/g, "");
+      const digits = phone.replace(/\D/g, "");
       const normalizedPhone = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits.length === 8 ? "267" + digits : digits;
       const matches = await db.collection("customerProfiles").get();
       const exact = matches.docs.filter(doc => {
         const profile = doc.data();
-        const profileDigits = String(profile.phone ?? "").replace(/\\D/g, "");
+        const profileDigits = String(profile.phone ?? "").replace(/\D/g, "");
         const profilePhone = profileDigits.startsWith("267") ? profileDigits : profileDigits.startsWith("0") ? "267" + profileDigits.slice(1) : profileDigits.length === 8 ? "267" + profileDigits : profileDigits;
         return profilePhone === normalizedPhone && String(profile.name ?? "").trim().toLocaleLowerCase() === name.toLocaleLowerCase();
       });
