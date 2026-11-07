@@ -38,7 +38,7 @@ export default function TreatmentDetailPage() {
       <nav className="nav">
         <div className="container navInner">
           <Link href="/" className="brand"><span className="brandMark">S</span><span>Village<span>WELLNESS SPA</span></span></Link>
-          <Link href="/book" className="button buttonPrimary">Book an appointment</Link>
+          <Link href="/book" className="button buttonPrimary">Book a visit</Link>
         </div>
       </nav>
 
@@ -55,7 +55,7 @@ export default function TreatmentDetailPage() {
               {service.consultationRequired && <div className="assessmentNotice"><strong>Clinical assessment may be required.</strong><span>Suitability is determined by the Village Wellness Spa clinical team.</span></div>}
               {service.assessmentNote && <p className="assessmentCopy">{service.assessmentNote}</p>}
               <div className="actions">
-                <Link href={`/book?service=${encodeURIComponent(service.id)}`} className="button buttonPrimary">Request this appointment</Link>
+                <Link href={`/book?service=${encodeURIComponent(service.id)}`} className="button buttonPrimary">Book this treatment</Link>
                 <button type="button" className="button buttonLight" onClick={() => setEnquiryOpen(true)}>Ask about this treatment</button>
               </div>
             </div>
