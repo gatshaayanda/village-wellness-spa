@@ -41,11 +41,9 @@ function GardenContent() {
     if (!planted || growth < 5) return;
     const nextScore = score + 10;
     setScore(nextScore);
-    setHighScore(current => {
-      const nextBest = Math.max(current, nextScore);
-      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ highScore: nextBest })); } catch { /* Local scoring is optional when storage is unavailable. */ }
-      return nextBest;
-    });
+    const nextBest = Math.max(highScore, nextScore);
+    setHighScore(nextBest);
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ highScore: nextBest })); } catch { /* Local scoring is optional when storage is unavailable. */ }
     setPlanted(false);
     setGrowth(0);
     setNotice("Flower collected. Your garden is looking lovely.");
