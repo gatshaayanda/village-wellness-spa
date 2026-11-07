@@ -173,7 +173,7 @@ function QueueDashboard() {
                   <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Arrived</button>
                 ) : (
                   <div className="field">
-                    <label>Amount received (optional, BWP)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Record actual amount for analytics" /></label>
+                    <label>Amount received (optional · BWP)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Record actual amount for analytics" /></label>
                     <button className="button buttonPrimary" disabled={!!busy} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit"}</button>
                   </div>
                 )}
@@ -188,7 +188,7 @@ function QueueDashboard() {
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
-                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " recorded · " + (item.paymentStatus || "PAID") : "Completed · no amount recorded"}</span>
+                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " recorded · " + (item.paymentStatus || "PAID") : "Completed · amount not recorded"}</span>
               </div>
             </article>
           )) : <p className="emptyState">No completed visits yet.</p>}
