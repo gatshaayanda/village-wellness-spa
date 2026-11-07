@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
         uid: customer.uid,
         name: String(data.name ?? ""),
         phone: String(data.phone ?? ""),
+        phoneNormalized: String(data.phoneNormalized ?? data.phone ?? "").replace(/\D/g, "").replace(/^0/, "267"),
         ...(customer.email ? { email: customer.email } : {}),
         updatedAt: new Date().toISOString(),
       }, { merge: true });
