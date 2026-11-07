@@ -32,12 +32,18 @@ export async function GET(request: NextRequest) {
     const paidAppointments = paid.filter(item => item.requestType !== "QUEUE" && (!item.requestType || item.requestType === "APPOINTMENT"));
     const sumPaid = (items: BookingRecord[]) => items.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
     const treatmentTotals = new Map<string, { transactions: number; revenue: number }>();
+    const paymentTotals = new Map<string, { transactions: number; revenue: number }>();
     paid.forEach(item => {
       const name = String(item.serviceNameSnapshot ?? "Unspecified treatment");
       const current = treatmentTotals.get(name) ?? { transactions: 0, revenue: 0 };
       current.transactions += 1;
       current.revenue += amountOf(item.finalPriceSnapshot) ?? 0;
       treatmentTotals.set(name, current);
+      const method = String(item.paymentMethod ?? "NOT_RECORDED").replace(/_/g, " ");
+      const payment = paymentTotals.get(method) ?? { transactions: 0, revenue: 0 };
+      payment.transactions += 1;
+      payment.revenue += amountOf(item.finalPriceSnapshot) ?? 0;
+      paymentTotals.set(method, payment);
     });
     const demand = new Map<string, number>();
     recent.filter(item => !["CANCELLED", "DECLINED", "NO_SHOW"].includes(String(item.status))).forEach(item => {
@@ -75,6 +81,7 @@ export async function GET(request: NextRequest) {
       walkInRevenue: Number(sumPaid(paidWalkIns).toFixed(2)),
       appointmentRevenue: Number(sumPaid(paidAppointments).toFixed(2)),
       topRevenueTreatments: Array.from(treatmentTotals.entries()).map(([name, values]) => ({ name, transactions: values.transactions, revenue: Number(values.revenue.toFixed(2)) })).sort((a, b) => b.revenue - a.revenue).slice(0, 8),
+      revenueByPaymentMethod: Array.from(paymentTotals.entries()).map(([method, values]) => ({ method, transactions: values.transactions, revenue: Number(values.revenue.toFixed(2)) })).sort((a, b) => b.revenue - a.revenue),
       averagePaidVisit: paid.length ? Number((paidRevenue / paid.length).toFixed(2)) : 0,
       completedWithoutRecordedPayment: completed.filter(item => item.paymentStatus !== "PAID" || amountOf(item.finalPriceSnapshot) === null).length,
       distinctCompletedCustomers: recentCustomerIds.size,
