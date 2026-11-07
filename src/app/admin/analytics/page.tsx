@@ -14,7 +14,6 @@ type Analytics = {
   completedAppointments: number;
   walkInRevenue: number;
   appointmentRevenue: number;
-  revenueByPaymentMethod: Array<{ method: string; transactions: number; revenue: number }>;
   topRevenueTreatments: Array<{ name: string; transactions: number; revenue: number }>; 
   distinctCompletedCustomers: number;
   confirmed: number;
@@ -25,6 +24,7 @@ type Analytics = {
   averagePaidVisit: number;
   completedWithoutRecordedPayment: number;
   returningCustomers: number;
+  firstTimeCustomers: number;
   topTreatments: Array<{ name: string; count: number }>;
   dailyRevenue: Array<{ date: string; amount: number }>;
 };
@@ -151,12 +151,12 @@ function AnalyticsDashboard() {
             ) : <p className="emptyState">No completed treatment amounts have been recorded in this period.</p>}
           </div>
           <div className="adminPanel">
-            <div className="panelHeading"><div><span className="kicker">COLLECTION CHANNEL · LAST 30 DAYS</span><h2>Payment methods recorded</h2></div></div>
-            {loading ? <p>Loading payment records…</p> : data?.revenueByPaymentMethod.length ? (
-              <div className="queue">
-                {data.revenueByPaymentMethod.map(item => <article className="requestRow" key={item.method}><div><strong>{item.method === "NOT_SPECIFIED" ? "Method not recorded" : item.method.replaceAll("_", " ")}</strong><span>{item.transactions} transaction{item.transactions === 1 ? "" : "s"}</span></div><strong>{money(item.revenue)}</strong></article>)}
-              </div>
-            ) : <p className="emptyState">No payment channel records in this period yet.</p>}
+            <div className="panelHeading"><div><span className="kicker">CUSTOMER MIX · LAST 30 DAYS</span><h2>First visit & return</h2></div></div>
+            <div className="adminStats">
+              <article><span>First completed visit</span><strong>{count(data?.firstTimeCustomers)}</strong></article>
+              <article><span>Returning customers</span><strong>{count(data?.returningCustomers)}</strong></article>
+            </div>
+            <p className="orderTruth">Counts use completed visits in this period, grouped by linked account or saved phone number. They are not unique website visitors.</p>
           </div>
         </section>
 
