@@ -16,6 +16,7 @@ type Item = {
   createdAt: string;
   finalPriceSnapshot?: string;
   paymentStatus?: string;
+  paymentMethod?: string;
   recommendedReturnDate?: string;
   returnNote?: string;
   requestType?: string;
@@ -32,6 +33,7 @@ function QueueDashboard() {
   const [shareLink, setShareLink] = useState("");
   const [sharePhone, setSharePhone] = useState("");
   const [finalPrices, setFinalPrices] = useState<Record<string, string>>({});
+  const [paymentMethods, setPaymentMethods] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   const token = async () => {
@@ -66,7 +68,7 @@ function QueueDashboard() {
       const response = await fetch("/api/admin/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
-        body: JSON.stringify({ id, status, finalPrice: finalPrices[id] || "" }),
+        body: JSON.stringify({ id, status, finalPrice: finalPrices[id] || "", paymentMethod: paymentMethods[id] || "" }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Visit update failed.");
@@ -173,8 +175,9 @@ function QueueDashboard() {
                   <button className="button buttonLight" disabled={!!busy} onClick={() => void update(item.id, "ARRIVED")}>Arrived</button>
                 ) : (
                   <div className="field">
-                    <label>Amount received (optional · BWP)<input inputMode="decimal" value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Record actual amount for analytics" /></label>
-                    <button className="button buttonPrimary" disabled={!!busy} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit"}</button>
+                    <label>Amount received (BWP)<input inputMode="decimal" required value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Actual amount paid" /></label>
+                    <label>Payment method<select required value={paymentMethods[item.id] || ""} onChange={event => setPaymentMethods(values => ({ ...values, [item.id]: event.target.value }))}><option value="">Select method</option><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile money</option><option value="CARD">Card</option><option value="OTHER">Other</option></select></label>
+                    <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim() || !paymentMethods[item.id]} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit · paid"}</button>
                   </div>
                 )}
               </div>
@@ -188,7 +191,7 @@ function QueueDashboard() {
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
-                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " recorded · " + (item.paymentStatus || "PAID") : "Completed · amount not recorded"}</span>
+                <span>{item.finalPriceSnapshot ? item.finalPriceSnapshot + " received · " + (item.paymentMethod || item.paymentStatus || "PAID") : "Completed · amount not recorded"}</span>
               </div>
             </article>
           )) : <p className="emptyState">No completed visits yet.</p>}
