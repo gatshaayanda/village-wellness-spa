@@ -105,8 +105,7 @@ function AnalyticsDashboard() {
               <article><span>Walk-in collections</span><strong>{value(data?.walkInRevenue)}</strong></article>
               <article><span>Appointment collections</span><strong>{value(data?.appointmentRevenue)}</strong></article>
             </div>
-            {data?.revenueByPaymentMethod.length ? <div className="queue"><h3>Collections by payment method</h3>{data.revenueByPaymentMethod.map(item => <article className="requestRow" key={item.method}><div><strong>{item.method.replaceAll("_", " ")}</strong><span>{item.transactions} paid transaction{item.transactions === 1 ? "" : "s"}</span></div><strong>{value(item.revenue)}</strong></article>)}</div> : !loading ? <p className="emptyState">No recorded payment-method totals yet.</p> : null}
-            <p className="orderTruth">Revenue includes only completed visits with an explicit PAID status, an actual final amount and a recorded payment method. Catalogue prices and unverified amounts are not counted as money received.</p>
+            <p className="orderTruth">Revenue includes only completed visits with an explicit PAID status and an actual final amount. Catalogue prices and unverified amounts are not counted as money received.</p>
           </div>
 
           <div className="adminPanel">
@@ -175,10 +174,6 @@ function AnalyticsDashboard() {
           ) : <p className="emptyState">No treatment demand recorded in this period yet.</p>}
         </section>
 
-        <section className="adminPanel">
-          <div className="panelHeading"><div><span className="kicker">RECORDED COLLECTIONS · LAST 30 DAYS</span><h2>Treatments bringing in revenue</h2></div></div>
-          {loading ? <p>Loading treatment collections…</p> : data?.topRevenueTreatments.length ? <div className="queue">{data.topRevenueTreatments.map((item,index)=><article className="requestRow" key={item.name}><div><strong>{index+1}. {item.name}</strong><span>{item.transactions} paid visit{item.transactions===1?"":"s"}</span></div><strong>{value(item.revenue)}</strong></article>)}</div> : <p className="emptyState">No paid treatment revenue recorded in this period yet.</p>}
-        </section>
 
         <p className="orderTruth">Figures use Africa/Gaborone business dates. Returning customers are grouped by linked customer account, or saved phone number where no account is linked. This is a management view, not an accounting ledger; reconcile recorded totals against actual cash, mobile-money and card records.</p>
       </div>
