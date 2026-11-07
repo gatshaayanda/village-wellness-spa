@@ -80,7 +80,7 @@ Research grounding:
 
 
 ## Walk-in-first customer and staff workflow — 2026-11-07
-- The customer homepage has one primary action: Book a visit. Do not add an Explore treatments, customer queue, remote check-in or appointment-request CTA to the homepage. Keep staff visit management inside the authenticated admin area; do not expose staff queue navigation on the public homepage.
+- The customer homepage has one primary customer action: Book a visit. Keep staff/admin access separate from customer booking: show a distinct ON-SITE TEAM → Open reception link to the protected `/admin/queue` workspace and a one-word Admin link to `/admin` in the public header. These are staff access links, not customer CTAs. Do not add a public customer queue, remote check-in or appointment-request CTA.
 - Online bookings are confirmed only after the live slot-lock transaction succeeds. Save status CONFIRMED plus confirmedAt/statusUpdatedAt. Payment remains pending until the spa receives it.
 - Do not show First visit / Returning client choices or ask customers to identify their visit history. Reuse saved profile details; infer returning status from existing account/phone history on the server.
 - Adapt the actual Iteration 13 ServiceGuide interaction for Village Wellness Spa. Keep it deterministic, accessible, non-intrusive and honest; it is automated guidance, not a live clinician or AI service.
