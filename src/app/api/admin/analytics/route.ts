@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
-type BookingRecord = Record<string, unknown> & { id: string };
+type BookingRecord = Record<string, unknown>;
 const amountOf = (value: unknown) => {
   const match = String(value ?? "").replace(/,/g, "").match(/^P?\s*(\d+(?:\.\d{1,2})?)$/i);
   return match ? Number(match[1]) : null;
