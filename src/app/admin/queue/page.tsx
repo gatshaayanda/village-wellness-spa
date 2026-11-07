@@ -138,10 +138,10 @@ function QueueDashboard() {
 
         <section className="adminPanel">
           <h2>Register arrival</h2>
-          <p>Reception records the visit once. Returning customers are linked to their existing account when the saved name and number match uniquely. For a new customer, the optional account link lets them keep visit history and book again — no customer-side form is required at arrival.</p>
+          <p>Reception records the visit once. For returning customers, enter the saved WhatsApp number and leave the name blank; the saved profile is reused when the match is unique. For a new customer, enter their name once. No customer-side booking or check-in form is required.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
-              <label>Customer name<input value={name} onChange={event => setName(event.target.value)} required maxLength={120} /></label>
+              <label>Customer name <span>(new customer / if needed)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Leave blank for a saved customer" /><small>Returning customer? Enter their saved WhatsApp number and leave this blank. Their name and account will be reused when the match is unique.</small></label>
               <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
               <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose treatment</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
             </div>
