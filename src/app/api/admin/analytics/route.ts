@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
+type BookingRecord = Record<string, unknown> & { id: string };
 const amountOf = (value: unknown) => {
   const match = String(value ?? "").replace(/,/g, "").match(/^P?\s*(\d+(?:\.\d{1,2})?)$/i);
   return match ? Number(match[1]) : null;
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
     const appointments = recent.filter(item => item.requestType !== "QUEUE");
     const paidWalkIns = paid.filter(item => item.requestType === "QUEUE");
     const paidAppointments = paid.filter(item => item.requestType !== "QUEUE");
-    const sumPaid = (items: Array<Record<string, any>>) => items.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
+    const sumPaid = (items: BookingRecord[]) => items.reduce((sum, item) => sum + (amountOf(item.finalPriceSnapshot) ?? 0), 0);
     const treatmentTotals = new Map<string, { transactions: number; revenue: number }>();
     paid.forEach(item => {
       const name = String(item.serviceNameSnapshot ?? "Unspecified treatment");
