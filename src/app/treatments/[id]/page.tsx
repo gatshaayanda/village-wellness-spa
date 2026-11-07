@@ -62,11 +62,11 @@ export default function TreatmentDetailPage() {
             <aside className="detailAside">
               <strong>What happens next</strong>
               <ol>
-                <li>Send your appointment request.</li>
-                <li>The Village Wellness Spa team reviews your request.</li>
-                <li>The team contacts you to confirm suitability, timing and appointment details.</li>
+                <li>Choose your treatment and an available time.</li>
+                <li>Your appointment is confirmed when the slot is reserved.</li>
+                <li>The team will contact you if treatment-specific guidance or clinical assessment is needed.</li>
               </ol>
-              <p>Submitting a request does not automatically confirm an appointment.</p>
+              <p>Your selected available time is reserved when you book. Treatment suitability may still require clinical assessment.</p>
             </aside>
           </div>
 
