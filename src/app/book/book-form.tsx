@@ -47,7 +47,6 @@ export default function BookForm() {
       const googleProfile = user?.providerData.find((provider) => provider.providerId === "google.com");
       setHasConnectedAccount(Boolean(user && !user.isAnonymous));
       setHasSavedProfile(false);
-      setHasSavedProfile(false);
       setCustomerName(user?.displayName || googleProfile?.displayName || "");
       setCustomerPhone(user?.phoneNumber ?? "");
       setCustomerEmail(user?.email || googleProfile?.email || "");
@@ -66,7 +65,6 @@ export default function BookForm() {
         setCustomerName(profile.name || user.displayName || googleProfile?.displayName || "");
         setCustomerPhone(profile.phone || user.phoneNumber || "");
         setCustomerEmail(profile.email || user.email || googleProfile?.email || "");
-        setHasSavedProfile(Boolean(profile.name && profile.phone));
         setHasSavedProfile(Boolean(profile.name && profile.phone));
       } catch (profileError) {
         console.warn("[Village Wellness Spa] saved customer details unavailable; using account details", profileError);
