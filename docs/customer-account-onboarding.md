@@ -29,3 +29,14 @@ Notification preferences and device tokens are accessed through authenticated se
 - [ ] Only currently active clinic-published offers are shown, in Botswana pula.
 - [ ] Notification preferences save through authenticated server routes; actual device receipt is verified separately.
 - [ ] Private account/API pages and responses are not cached by the service worker.
+
+
+## Reception walk-in onboarding — 2026-11-07
+
+- A customer who physically arrives at the spa does not complete a public check-in or booking form. Reception records the minimum visit details in Admin → Walk-ins & visits: customer name, WhatsApp/mobile number and treatment.
+- The visit is created in the existing `bookingRequests` collection with `requestType: "QUEUE"`, `queueMode: "STAFF"` and `status: "ARRIVED"`. Staff has only two operational actions: Arrived and Completed. New walk-ins do not move through WAITING or IN_TREATMENT.
+- Reception matches an existing customer profile only when the saved name and mobile number uniquely match. Otherwise, the server creates a high-entropy, expiring, single-use claim link. The customer can open it and claim the visit in their existing guest/Google account; no customer form is required at reception.
+- A customer can complete their visit without creating an account. Account linking is optional and exists to preserve their visit history and make future bookings easier.
+- The booking form does not ask customers to declare themselves first-time or returning. The server derives that distinction from saved completed-visit history. Saved account contact details are prefilled for future bookings where the customer has a connected/recognized session.
+- On completion, the workflow records that payment was received, per the spa's operating rule. The actual amount is optional in the reception action; owner revenue analytics include only completed visits with a valid saved amount. Completed visits without an amount remain visible as missing financial detail, not fabricated revenue.
+- Promotions and any Garden game are optional account engagement features, separate from arrival, treatment and completion. Do not make account sign-in, marketing consent or gameplay a condition of service.
