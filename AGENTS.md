@@ -94,3 +94,7 @@ Research grounding:
 - Owner analytics must distinguish recorded collections from catalogue prices, requested values or unverified amounts. Keep operational counts, completed visits, walk-in vs appointment split, average paid visit, returning customers, top treatments, daily revenue, payment-method mix and completed visits missing a recorded amount visible. At completion, staff records actual amount received and payment method; only then mark PAID. Never fabricate a paid amount or claim payment reconciliation that has not been recorded.
 - The customer account provides visit history, saved details for rebooking, published offers and notification preferences. Village Garden at `/garden` is a separate optional no-login mini-game; personal best is device-local. Do not put gameplay in reception or booking steps, and do not claim visit-linked seed rewards unless the authenticated visit-reward connection is implemented and verified.
 - Protect PWA installation, service-worker/offline behavior, Firebase authorization, UploadThing and customer data ownership. Do not alter the install mechanism as part of walk-in work.
+
+
+## Latest checkpoint — 2026-11-07
+- Reception entry-point implementation is committed on `main`: homepage `ON-SITE TEAM → Open reception` links to the AdminGate-protected `/admin/queue`; authenticated admin navigation labels it `Reception`. Keep this distinct from customer booking and do not add a public walk-in queue.
