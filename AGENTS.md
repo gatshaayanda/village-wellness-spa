@@ -75,3 +75,14 @@ Research grounding:
 - Use the server-only WEATHERAPI_KEY environment variable for WeatherAPI.com. Never expose keys in client code or NEXT_PUBLIC_* variables. The current integration uses the free commercial tier's three-day forecast, attributes WeatherAPI.com, caches responses for 30 minutes and displays a plain-language forecast/safety disclaimer.
 - If weather configuration or the provider is unavailable, show a clear non-blocking message; appointment booking must continue to work.
 - Preserve the existing booking availability checks and slot-lock transaction.
+
+
+## Walk-in-first customer and staff workflow — 2026-11-07
+- Walk-in customers must not be sent through the online appointment form, asked whether they are first-time/returning, or required to complete a customer-side check-in form. They arrive; reception/staff records the visit; the team provides the treatment; staff marks it completed.
+- The staff workflow uses only ARRIVED → COMPLETED for new walk-ins. Legacy WAITING and IN_TREATMENT records may be displayed as ARRIVED and must remain safely completable; do not reintroduce intermediate queue stages.
+- Staff may record the customer's name, WhatsApp number and selected treatment on their behalf. Match a returning customer to an existing account only when the saved identity match is exact and unique. A new customer may be offered an optional secure account-claim link; never imply an account was created or linked until verified.
+- Customer account value is retention, not a barrier to treatment: preserve visit history, future booking, opt-in promotions/notifications, and the existing garden game. Customers should be able to return without re-entering already-saved details where their account is connected.
+- Keep online appointment requests available as a separate optional route for customers planning ahead. Do not make online booking a prerequisite for a walk-in.
+- Preserve the advanced treatment/category/product CRUD, bulk price editing, catalogue seed reconciliation, saved pricing and public catalogue synchronization. Walk-in changes must not simplify or replace these capabilities.
+- Owner analytics must distinguish recorded collections from catalogue prices, requested values or unverified amounts. Keep operational counts, completed visits, walk-in vs appointment split, average paid visit, returning customers, top treatments, daily revenue and completed visits missing a payment record visible. Never fabricate a paid amount or claim payment reconciliation that has not been recorded.
+- Protect PWA installation, service-worker/offline behavior, Firebase authorization, UploadThing and customer data ownership. Do not alter the install mechanism as part of walk-in work.
