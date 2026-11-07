@@ -1,81 +1,95 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase/client";
 
-type Plant = { id: string; growth: number; plantedAt: string; lastWateredDate: string };
-type Garden = { plants: Plant[]; paidVisitCount: number; seedsAvailable: number; today: string };
+type GardenSave = { highScore: number };
+const STORAGE_KEY = "village-wellness-garden-best-v1";
+
 function GardenContent() {
-  const [garden, setGarden] = useState<Garden | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState("");
+  const [planted, setPlanted] = useState(false);
+  const [growth, setGrowth] = useState(0);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [ready, setReady] = useState(false);
   const [notice, setNotice] = useState("");
-  const load = useCallback(async (user = auth.currentUser) => {
-    if (!user) throw new Error("Your customer session is not ready. Open your account and try again.");
-    const response = await fetch("/api/customer/garden", { headers: { Authorization: "Bearer " + await user.getIdToken() }, cache: "no-store" });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Your garden could not be loaded.");
-    setGarden(data as Garden);
-  }, []);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (!user) { setLoading(false); setNotice("Open your customer account to start your private garden."); return; }
-      void load(user).catch(error => setNotice(error instanceof Error ? error.message : "Your garden could not be loaded.")).finally(() => setLoading(false));
-    });
-    return () => unsubscribe();
-  }, [load]);
-  async function act(action: "plant" | "water", plantId?: string) {
-    const user = auth.currentUser;
-    if (!user) { setNotice("Open your customer account to continue."); return; }
-    setBusy(action + (plantId || ""));
-    setNotice("");
     try {
-      const response = await fetch("/api/customer/garden", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer " + await user.getIdToken() },
-        body: JSON.stringify({ action, plantId }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Garden action could not be saved.");
-      setGarden(data as Garden);
-      setNotice(action === "plant" ? "A new seed is planted in your garden." : "Water saved. Your plant has grown a little.");
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Garden action could not be saved.");
-    } finally {
-      setBusy("");
+      const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}") as GardenSave;
+      setHighScore(Math.max(0, Number(saved.highScore) || 0));
+    } catch {
+      setHighScore(0);
     }
+    setReady(true);
+  }, []);
+
+  function plantSeed() {
+    setPlanted(true);
+    setGrowth(0);
+    setNotice("A new seed is in the soil. Give it a little water.");
   }
-  return <main className="customerPage"><div className="customerShell">
-    <nav className="nav"><div className="container navInner"><Link href="/" className="brand"><span className="brandMark"><img src="/icon.svg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link><div className="navLinks"><Link href="/account" className="textLink">My account</Link><Link href="/book" className="textLink">Book a visit</Link></div></div></nav>
-    <section className="customerPanel">
-      <span className="kicker">A LITTLE SPACE TO GROW</span>
-      <h1>My Village Garden</h1>
-      <p>Your first seed is on us. Every completed paid visit adds another seed. Plant one, then water it once a day and watch your garden grow — no scores, fees or pressure.</p>
-      {loading ? <p role="status">Opening your garden…</p> : garden ? <>
-        <div className="adminStats">
-          <article><span>Seeds ready</span><strong>{garden.seedsAvailable}</strong></article>
-          <article><span>Visits completed</span><strong>{garden.paidVisitCount}</strong></article>
-          <article><span>Plants growing</span><strong>{garden.plants.length}</strong></article>
-        </div>
-        <div className="actions" style={{ margin: "18px 0" }}><button className="button buttonPrimary" type="button" disabled={!!busy || garden.seedsAvailable < 1} onClick={() => void act("plant")}>{busy === "plant" ? "Planting…" : "Plant a seed"}</button></div>
-        {garden.plants.length ? <div className="customerOfferList">{garden.plants.map((plant,index) => {
-          const bloomed = plant.growth >= 5;
-          const watered = plant.lastWateredDate === garden.today;
-          const symbol = bloomed ? "🌸" : plant.growth >= 2 ? "🌿" : "🌱";
-          return <article className="customerOffer" key={plant.id}>
-            <div style={{display:"flex",alignItems:"center",gap:16}}>
-              <span style={{fontSize:"2.8rem"}} aria-hidden="true">{symbol}</span>
-              <div style={{flex:1}}><strong>Plant {index+1} · {bloomed ? "In bloom" : "Growing"}</strong><p>{bloomed ? "Your flower is blooming in the Village Garden." : "Growth " + plant.growth + " of 5 · " + (watered ? "Watered today" : "Ready for a little water")}</p></div>
-              <button className="button buttonLight" type="button" disabled={!!busy || bloomed || watered} onClick={() => void act("water",plant.id)}>{bloomed ? "Blooming" : watered ? "Watered" : "Water"}</button>
-            </div>
-          </article>;
-        })}</div> : <div className="customerEmpty"><strong>Your garden is ready.</strong><p>Plant your first seed to begin.</p></div>}
-      </> : <p role="status">Your garden is not available right now.</p>}
-      {notice && <p className="notice customerAccountMessage" role="status">{notice}</p>}
-      <div className="actions" style={{marginTop:20}}><Link href="/account" className="button buttonLight">Back to my account</Link><Link href="/book" className="button buttonPrimary">Book your next visit</Link></div>
-    </section>
-  </div></main>;
+
+  function water() {
+    if (!planted || growth >= 5) return;
+    const next = growth + 1;
+    setGrowth(next);
+    setNotice(next === 5 ? "Your flower is ready. Pick it to add to your garden score." : "A little growth. Keep watering.");
+  }
+
+  function harvest() {
+    if (!planted || growth < 5) return;
+    const nextScore = score + 10;
+    setScore(nextScore);
+    setHighScore(current => {
+      const nextBest = Math.max(current, nextScore);
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ highScore: nextBest })); } catch { /* Local scoring is optional when storage is unavailable. */ }
+      return nextBest;
+    });
+    setPlanted(false);
+    setGrowth(0);
+    setNotice("Flower collected. Your garden is looking lovely.");
+  }
+
+  const stage = growth === 0 ? "Seed" : growth < 2 ? "Sprout" : growth < 4 ? "Growing" : growth < 5 ? "Almost there" : "In bloom";
+  const plant = !planted ? "🪴" : growth === 0 ? "🌰" : growth < 2 ? "🌱" : growth < 4 ? "🌿" : growth < 5 ? "🌷" : "🌸";
+
+  return (
+    <main className="customerPage">
+      <div className="customerShell">
+        <nav className="nav">
+          <div className="container navInner">
+            <Link href="/" className="brand" aria-label="Village Wellness Spa home">
+              <span className="brandMark"><img src="/icon.svg" alt="" /></span>
+              <span>Village<span>WELLNESS SPA</span></span>
+            </Link>
+            <div className="navLinks"><Link href="/account" className="textLink">My account</Link><Link href="/treatments" className="textLink">Treatments</Link></div>
+          </div>
+        </nav>
+        <section className="customerPanel" aria-labelledby="garden-title">
+          <span className="kicker">A LITTLE SPACE TO GROW</span>
+          <h1 id="garden-title">Village Garden</h1>
+          <p>A quiet little break. Plant a seed, water it until it blooms, and collect flowers for your garden score. No sign-in, forms or purchases needed.</p>
+          <div className="adminStats">
+            <article><span>Your flowers</span><strong>{score}</strong></article>
+            <article><span>Personal best</span><strong>{ready ? highScore : "—"}</strong></article>
+            <article><span>Plant stage</span><strong>{planted ? stage : "Ready to plant"}</strong></article>
+          </div>
+          <div style={{display:"grid",justifyItems:"center",gap:14,padding:"28px 12px",margin:"18px 0",borderRadius:18,background:"linear-gradient(180deg,#eaf7ed 0%,#f9f5e8 100%)"}}>
+            <span aria-hidden="true" style={{fontSize:"5rem",lineHeight:1}}>{plant}</span>
+            <strong style={{color:"#315b3b"}}>{planted ? stage : "Your garden plot is waiting"}</strong>
+            {planted && <div style={{display:"flex",gap:7,width:"min(100%,280px)"}} aria-label={growth + " of 5 growth steps"}>{Array.from({length:5},(_,i)=><span key={i} style={{height:8,flex:1,borderRadius:99,background:i<growth?"#20b273":"#d8e4d7"}}/>)}</div>}
+            {!planted ? <button className="button buttonPrimary" type="button" onClick={plantSeed}>Plant a seed</button> : growth < 5 ? <button className="button buttonPrimary" type="button" onClick={water}>Water your plant</button> : <button className="button buttonPrimary" type="button" onClick={harvest}>Pick flower · +10</button>}
+          </div>
+          {notice && <p className="notice customerAccountMessage" role="status">{notice}</p>}
+          <p className="orderTruth">Your personal best is saved on this device. It is not connected to your spa visits or customer account.</p>
+          <div className="actions" style={{marginTop:20}}><Link href="/account" className="button buttonLight">Back to my account</Link><Link href="/treatments" className="button buttonPrimary">Explore treatments</Link></div>
+        </section>
+      </div>
+    </main>
+  );
 }
-export default function GardenPage() { return <GardenContent />; }
+
+export default function GardenPage() {
+  return <GardenContent />;
+}
