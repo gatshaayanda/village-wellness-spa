@@ -83,7 +83,6 @@ export default function Home() {
 
       <footer className="villageCompactFooter">
         <span>© 2026 Village Wellness Spa</span>
-        <Link href="/admin/queue" className="villageStaffLink"><span>ON-SITE TEAM</span> Open walk-in queue ↗</Link>
       </footer>
 
     </main>
