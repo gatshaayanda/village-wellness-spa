@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const day = days[new Date(date + "T12:00:00+02:00").getUTCDay()];
     
     const hours = settings.openingHours[day];
-    if (!hours?.open) return NextResponse.json({ error: "The clinic is not accepting requests on that day. Choose another date." }, { status: 409 });
+    if (!hours?.open) return NextResponse.json({ error: "The clinic is not accepting bookings on that day. Choose another date." }, { status: 409 });
     const today = new Date(Date.now() + 2 * 3600000).toISOString().slice(0, 10);
     const distance = Math.round((new Date(date + "T00:00:00+02:00").getTime() - new Date(today + "T00:00:00+02:00").getTime()) / 86400000);
     if (distance < 0 || distance > settings.bookingRules.advanceBookingDays) return NextResponse.json({ error: "Choose a date within the booking window." }, { status: 409 });
@@ -110,6 +110,6 @@ export async function POST(request: NextRequest) {
     const message=error instanceof Error?error.message:"";
     if (message==="SLOT_TAKEN") return NextResponse.json({error:"Someone has just taken that slot. Please choose another available time."},{status:409});
     console.error("[Village Wellness Spa] booking save failed",message||"unknown");
-    return NextResponse.json({error:"We could not record the request. Please try again shortly."},{status:503});
+    return NextResponse.json({error:"We could not complete the booking. Please try again shortly."},{status:503});
   }
 }
