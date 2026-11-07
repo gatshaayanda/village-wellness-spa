@@ -14,7 +14,8 @@ type Analytics = {
   completedAppointments: number;
   walkInRevenue: number;
   appointmentRevenue: number;
-  topRevenueTreatments: Array<{ name: string; transactions: number; revenue: number }>; 
+  topRevenueTreatments: Array<{ name: string; transactions: number; revenue: number }>;
+  revenueByPaymentMethod: Array<{ method: string; transactions: number; revenue: number }>; 
   distinctCompletedCustomers: number;
   confirmed: number;
   completed: number;
@@ -119,6 +120,11 @@ function AnalyticsDashboard() {
               <article><span>Cancelled / declined / missed</span><strong>{count(data?.cancelled)}</strong></article>
             </div>
           </div>
+        </section>
+
+        <section className="adminPanel">
+          <div className="panelHeading"><div><span className="kicker">PAYMENT MIX · LAST 30 DAYS</span><h2>Collections by payment method</h2></div></div>
+          {loading ? <p>Loading payment records…</p> : data?.revenueByPaymentMethod.length ? <div className="queue">{data.revenueByPaymentMethod.map(item => <article className="requestRow" key={item.method}><div><strong>{item.method}</strong><span>{item.transactions} paid transaction{item.transactions === 1 ? "" : "s"}</span></div><strong>{money(item.revenue)}</strong></article>)}</div> : <p className="emptyState">No payment methods have been recorded yet.</p>}
         </section>
 
         <section className="adminPanel">
