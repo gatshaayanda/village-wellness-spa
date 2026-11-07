@@ -99,7 +99,7 @@ function AnalyticsDashboard() {
             </div>
             <div className="adminStats">
               <article><span>Paid transactions</span><strong>{count(data?.paidTransactions)}</strong></article>
-              <article><span>Completed without payment record</span><strong>{count(data?.completedWithoutRecordedPayment)}</strong></article>
+              <article><span>Completed without amount recorded</span><strong>{count(data?.completedWithoutRecordedPayment)}</strong></article>
               <article><span>Walk-in collections</span><strong>{value(data?.walkInRevenue)}</strong></article>
               <article><span>Appointment collections</span><strong>{value(data?.appointmentRevenue)}</strong></article>
             </div>
