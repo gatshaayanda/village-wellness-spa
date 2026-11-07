@@ -14,7 +14,7 @@ export default function VillageWellnessGuide() {
     void getPublicServices().then(items => { if (active) setServices(items.filter(item => item.active)); }).catch(() => { if (active) setServices([]); });
     return () => { active = false; };
   }, []);
-  const visible = pathname === "/" || pathname === "/treatments" || pathname.startsWith("/treatments/");
+  const visible = !pathname.startsWith("/admin") && !pathname.startsWith("/api") && !pathname.startsWith("/auth");
   const guideServices = useMemo(() => services.map(item => ({ id:item.id, name:item.name, price:item.price, description:item.description, media:item.imageUrl || "", mediaType:"image" as const, active:item.active })), [services]);
   if (!visible) return null;
   return <ServiceGuide
