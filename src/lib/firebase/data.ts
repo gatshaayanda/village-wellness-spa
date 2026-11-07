@@ -201,7 +201,6 @@ export async function reconcileVillageServiceSeeds() {
   }
 
   const [serviceSnapshot, categorySnapshot] = await Promise.all([getDocs(servicesCollection), getDocs(serviceCategoriesCollection)]);
-  const serviceIds = new Set(serviceSnapshot.docs.map(item => item.id));
   const categoryIds = new Set(categorySnapshot.docs.map(item => item.id));
   let added = 0, categoriesAdded = 0, updated = 0;
 
