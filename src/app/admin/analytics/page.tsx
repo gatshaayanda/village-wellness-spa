@@ -18,6 +18,9 @@ type Analytics = {
   revenueByPaymentMethod: Array<{ method: string; transactions: number; revenue: number }>; 
   distinctCompletedCustomers: number;
   confirmed: number;
+  confirmedBookings: number;
+  confirmedBookingValue: number;
+  confirmedBookingsWithoutExactPrice: number;
   completed: number;
   cancelled: number;
   paidTransactions: number;
@@ -105,6 +108,9 @@ function AnalyticsDashboard() {
               <article><span>Completed without amount recorded</span><strong>{count(data?.completedWithoutRecordedPayment)}</strong></article>
               <article><span>Walk-in collections</span><strong>{value(data?.walkInRevenue)}</strong></article>
               <article><span>Appointment collections</span><strong>{value(data?.appointmentRevenue)}</strong></article>
+              <article><span>Confirmed appointments · 30 days</span><strong>{count(data?.confirmedBookings)}</strong></article>
+              <article><span>Confirmed booking value · exact prices only</span><strong>{value(data?.confirmedBookingValue)}</strong></article>
+              <article><span>Confirmed bookings without exact catalogue price</span><strong>{count(data?.confirmedBookingsWithoutExactPrice)}</strong></article>
             </div>
             <p className="orderTruth">Revenue includes only completed visits with an explicit PAID status and an actual final amount. Catalogue prices and unverified amounts are not counted as money received.</p>
           </div>
@@ -114,7 +120,7 @@ function AnalyticsDashboard() {
               <div><span className="kicker">OPERATIONS · LAST 30 DAYS</span><h2>Where things stand</h2></div>
             </div>
             <div className="adminStats">
-              <article><span>Total requests & visits</span><strong>{count(data?.requests)}</strong></article>
+              <article><span>Bookings & visits</span><strong>{count(data?.requests)}</strong></article>
               <article><span>Walk-ins</span><strong>{count(data?.walkIns)}</strong><small>{loading ? " " : (data?.completedWalkIns ?? 0) + " completed"}</small></article>
               <article><span>Appointments</span><strong>{count(data?.appointments)}</strong><small>{loading ? " " : (data?.completedAppointments ?? 0) + " completed"}</small></article>
               <article><span>Cancelled / declined / missed</span><strong>{count(data?.cancelled)}</strong></article>
@@ -167,13 +173,13 @@ function AnalyticsDashboard() {
 
         <section className="adminPanel">
           <div className="panelHeading">
-            <div><span className="kicker">CUSTOMER DEMAND · LAST 30 DAYS</span><h2>Most requested treatments</h2></div>
+            <div><span className="kicker">CUSTOMER DEMAND · LAST 30 DAYS</span><h2>Most booked treatments</h2></div>
           </div>
           {loading ? <p>Loading treatment demand…</p> : data?.topTreatments.length ? (
             <div className="queue">
               {data.topTreatments.map((item, index) => (
                 <article className="requestRow" key={item.name}>
-                  <div><strong>{index + 1}. {item.name}</strong><span>{item.count} visit request{item.count === 1 ? "" : "s"}</span></div>
+                  <div><strong>{index + 1}. {item.name}</strong><span>{item.count} booking{item.count === 1 ? "" : "s"}</span></div>
                 </article>
               ))}
             </div>
