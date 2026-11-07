@@ -577,7 +577,7 @@
 /* Village home — compact, app-first composition adapted from Iteration 13. */
 .villageHome{min-height:100vh;background:#fff8fb;padding-bottom:24px}
 .villageAppHeader{width:min(1120px,calc(100% - 36px));margin:0 auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.villageAccountShortcut{display:inline-flex;align-items:center;gap:8px;color:var(--chocolate);font-size:.8rem;font-weight:800}
+.villageAccountShortcut{display:inline-flex;align-items:center;gap:8px;color:var(--chocolate);font-size:.8rem;font-weight:800}.villageHeaderActions{display:flex;align-items:center;gap:18px}.villageAdminShortcut{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 15px;border:1px solid #e9cbd9;border-radius:8px;background:#fff;color:#a51e59;font-size:.78rem;font-weight:900}.villageAdminShortcut:hover{background:#fff0f6}
 .villageAccountShortcut>span:first-child{width:35px;height:35px;border:1px solid #efd0df;border-radius:50%;display:grid;place-items:center;color:var(--hot-pink);font-size:1.25rem;background:#fff}
 .villageHomeContent{width:min(1120px,calc(100% - 36px));margin:0 auto}
 .villageHero{position:relative;min-height:420px;overflow:hidden;border-radius:18px;background:#603447;isolation:isolate;box-shadow:0 16px 40px rgba(83,35,57,.12)}
@@ -624,6 +624,8 @@
  .villageAppHeader{width:calc(100% - 28px);min-height:64px}
  .villageAppHeader .brandMark{width:39px;height:39px;flex-basis:39px}
  .villageAppHeader .brand{font-size:.82rem}
+ .villageHeaderActions{gap:10px}
+ .villageAdminShortcut{min-height:37px;padding:0 13px}
  .villageAccountShortcut{font-size:0}
  .villageAccountShortcut>span:first-child{width:37px;height:37px;font-size:1.2rem}
  .villageHomeContent{width:calc(100% - 28px)}
