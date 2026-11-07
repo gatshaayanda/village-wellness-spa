@@ -81,7 +81,7 @@ function GardenContent() {
           </div>
           {notice && <p className="notice customerAccountMessage" role="status">{notice}</p>}
           <p className="orderTruth">Your personal best is saved on this device. It is not connected to your spa visits or customer account.</p>
-          <div className="actions" style={{marginTop:20}}><Link href="/account" className="button buttonLight">Back to my account</Link><Link href="/treatments" className="button buttonPrimary">Explore treatments</Link></div>
+          <div className="actions" style={{marginTop:20}}><Link href="/account" className="button buttonLight">Back to my account</Link><Link href="/book" className="button buttonPrimary">Book a visit</Link></div>
         </section>
       </div>
     </main>
