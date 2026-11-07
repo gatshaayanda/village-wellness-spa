@@ -62,7 +62,7 @@ export default function Home() {
             <span className="villageHeroEyebrow">MEDICAL AESTHETICS · SKIN HEALTH · WELLNESS</span>
             <h1 id="village-home-title">Feel good in your skin.<br /><em>Feel cared for.</em></h1>
             <p>Thoughtful care, guided by your goals.</p>
-            <div className="villageHeroActions"><Link href="/book" className="villageBookCta">Book an appointment <span aria-hidden="true">↗</span></Link></div>
+            <div className="villageHeroActions"><Link href="/treatments" className="villageBookCta">Explore treatments <span aria-hidden="true">↗</span></Link><Link href="/book" className="textLink">Book a future visit</Link></div><p className="villageWalkInNote">Walk-ins welcome. No online check-in or first-time / returning-customer form — just visit the spa and our team will assist.</p>
           </div>
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
@@ -108,7 +108,7 @@ export default function Home() {
       <nav className="villageBottomNav" aria-label="Main navigation">
         <Link href="/" aria-current="page"><span aria-hidden="true">⌂</span><small>Home</small></Link>
         <Link href="/treatments"><span aria-hidden="true">✧</span><small>Treatments</small></Link>
-        <Link href="/book" className="villageBottomBook"><span aria-hidden="true">＋</span><small>Book</small></Link>
+        <Link href="/#visit" className="villageBottomBook"><span aria-hidden="true">⌖</span><small>Visit</small></Link>
         <Link href="/account"><span aria-hidden="true">♡</span><small>Account</small></Link>
       </nav>
 
