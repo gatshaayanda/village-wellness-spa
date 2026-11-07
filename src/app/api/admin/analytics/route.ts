@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     const snapshot = await getAdminDb().collection("bookingRequests").get();
     const now = Date.now(), cutoff = now - 30 * 24 * 60 * 60 * 1000;
-    const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Array<Record<string, any>>;
+    const records = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Array<Record<string, unknown>>;
     const recent = records.filter(item => {
       const created = Date.parse(String(item.createdAt ?? ""));
       return Number.isFinite(created) && created >= cutoff && item.requestType !== "WAITLIST";
