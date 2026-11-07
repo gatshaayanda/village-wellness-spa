@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     ]);
     const walkInItems = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) => String(item.visitDate ?? item.preferredDate ?? "") === date && item.status !== "ON_THE_WAY").map((item: any) => ({ ...item, status: ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : item.status }));
     const appointmentItems = appointments.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((item: any) =>
-      item.requestType !== "QUEUE" && item.requestType !== "WAITLIST" && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
+      item.requestType !== "QUEUE" && item.requestType !== "WAITLIST" && (!item.requestType || item.requestType === "APPOINTMENT") && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
     );
     const items = [...walkInItems, ...appointmentItems].sort((a: any, b: any) => String(a.createdAt ?? "").localeCompare(String(b.createdAt ?? "")));
     return NextResponse.json({ items });
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       const requestType = String(data.requestType ?? "APPOINTMENT");
       if (requestType === "WAITLIST") throw new Error("RETIRED_WAITLIST");
       const current = String(data.status ?? "");
-      const canArrive = status === "ARRIVED" && requestType !== "QUEUE" && current === "CONFIRMED";
+      const canArrive = status === "ARRIVED" && requestType === "APPOINTMENT" && current === "CONFIRMED";
       const canComplete = status === "COMPLETED" && (current === "ARRIVED" || current === "WAITING" || current === "IN_TREATMENT"); // Legacy intermediate states remain completable; new visits use ARRIVED → COMPLETED only.
       if (!(canArrive || canComplete)) throw new Error("INVALID_TRANSITION");
       const now = new Date().toISOString(), patch: Record<string, unknown> = { status, statusUpdatedAt: now };
