@@ -190,7 +190,7 @@ export default function BookForm() {
   return <main className="bookPage bookPageEditorial">
     <nav className="nav"><div className="container navInner"><Link href="/" className="brand" aria-label="Village Wellness Spa home"><span className="brandMark"><img src="/icon.svg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link><div className="navLinks"><Link href="/treatments" className="textLink">Browse treatments & prices</Link><Link href="/account" className="textLink">My Village Wellness Spa</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link></div></nav>
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
-    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose a treatment and available time. The team will review your request and confirm the appointment.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b>Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
+    <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose a treatment and preferred time. The team will review your request and confirm the appointment.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
       {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Thank you. We’ll be in touch.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your request has been recorded. The team will contact you to review it and confirm the appointment and next steps. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my request →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my request & secure profile (optional) →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
@@ -251,13 +251,13 @@ export default function BookForm() {
                 <input id="discountCode" name="discountCode" autoComplete="off" placeholder="Enter a published offer code" />
               </div>
               <div className="field fieldFull">
-                <label htmlFor="message">Anything you’d like us to keep in mind for this visit? <span>(optional)</span></label>
-                <textarea id="message" name="message" maxLength={1500} placeholder="For example, what you’d like to focus on today or a practical preference. Please avoid sensitive medical details." />
+                <label htmlFor="message">What would help you feel welcome on your first visit? <span>(optional)</span></label>
+                <textarea id="message" name="message" maxLength={1500} placeholder="For example, how you heard about Village Wellness Spa or anything that would help you feel comfortable. Share only what you’re happy for the team to know." />
                 <small>This note is shared with the clinic team for this request. Please don’t include private family details or sensitive medical information unless the clinic specifically asks through an appropriate channel.</small>
               </div>
             </div>
           </section>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "For a first visit, we only need your name and WhatsApp number."}</p></div></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "We only ask for the details the team needs to respond. You can optionally secure your profile after your request."}</p></div></div>
             {hasSavedProfile ? <div className="customerPanel">
               <strong>Using your saved customer details</strong>
               <p>{customerName} · {customerPhone}{customerEmail ? " · " + customerEmail : ""}</p>
@@ -266,9 +266,9 @@ export default function BookForm() {
               <input type="hidden" name="phone" value={customerPhone}/>
               <input type="hidden" name="email" value={customerEmail}/>
             </div> : <div className="formGrid">
-              <div className="field fieldFull"><label htmlFor="name">Your full name</label><input id="name" name="name" required autoComplete="name" value={customerName} onChange={event=>setCustomerName(event.target.value)} placeholder="Your full name"/></div>
+              <div className="field fieldFull"><label htmlFor="name">Your full name</label><input id="name" name="name" required autoComplete="name" value={customerName} onChange={event=>setCustomerName(event.target.value)} placeholder="e.g. Kopano Gatsha"/></div>
               <div className="field"><label htmlFor="phone">WhatsApp / mobile number</label><input id="phone" name="phone" type="tel" required autoComplete="tel" value={customerPhone} onChange={event=>setCustomerPhone(event.target.value)} placeholder="Best contact number"/></div>
-              <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="Best email if you want updates"/></div>
+              <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="you@example.com"/></div>
             </div>}
             {!hasConnectedAccount && <p className="slotHint">After you send your request, you can optionally connect Google to secure your My Village Wellness Spa profile. You can still request a visit without doing that now.</p>}
           </section>
