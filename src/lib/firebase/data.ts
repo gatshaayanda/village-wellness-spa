@@ -13,7 +13,7 @@ export type ProductRecord = {
   id: string; name: string; description: string; size?: string; price: string; active: boolean; purchaseMethod?: string; imageUrl?: string;
 };
 
-export type BookingStatus = "NEW" | "REVIEWING" | "APPROVED" | "PAYMENT_PENDING" | "CONFIRMED" | "ARRIVED" | "COMPLETED" | "NEEDS_CONTACT" | "DECLINED" | "RESCHEDULED" | "CANCELLED" | "NO_SHOW" | "FOLLOW_UP";
+export type BookingStatus = "NEW" | "REVIEWING" | "APPROVED" | "PAYMENT_PENDING" | "CONFIRMED" | "NEEDS_CONTACT" | "DECLINED" | "RESCHEDULED" | "CANCELLED" | "NO_SHOW" | "FOLLOW_UP";
 export type PaymentStatus = "PAYMENT_PENDING" | "PAYMENT_INSTRUCTIONS" | "PAYMENT_PROOF_SUBMITTED" | "PAYMENT_VERIFIED" | "PAID" | "REFUNDED";
 
 export type BookingRequestRecord = {
