@@ -38,7 +38,7 @@ Notification preferences and device tokens are accessed through authenticated se
 - Reception matches an existing customer profile only when the saved name and mobile number uniquely match. Otherwise, the server creates a high-entropy, expiring, single-use claim link. The customer can open it and claim the visit in their existing guest/Google account; no customer form is required at reception.
 - A customer can complete their visit without creating an account. Account linking is optional and exists to preserve their visit history and make future bookings easier.
 - The booking form does not ask customers to declare themselves first-time or returning. The server derives that distinction from saved completed-visit history. Saved account contact details are prefilled for future bookings where the customer has a connected/recognized session.
-- On completion, the workflow records that payment was received, per the spa's operating rule. The actual amount is optional in the reception action; owner revenue analytics include only completed visits with a valid saved amount. Completed visits without an amount remain visible as missing financial detail, not fabricated revenue.
+- On completion, staff records the actual amount received in one required BWP amount field. The workflow then records the visit as paid. Owner revenue analytics include only completed visits with a valid saved amount; no payment method or additional customer form is required.
 - Promotions and any Garden game are optional account engagement features, separate from arrival, treatment and completion. Do not make account sign-in, marketing consent or gameplay a condition of service.
 
 
