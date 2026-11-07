@@ -172,15 +172,15 @@ export default function BookForm() {
       const result = await response.json();
       if (!response.ok) {
         if (response.status === 409 && String(result.error ?? "").toLowerCase().includes("just taken that slot")) trackUsage("booking_conflict");
-        throw new Error(result.error || "The appointment request could not be saved.");
+        throw new Error(result.error || "The appointment could not be booked.");
       }
       trackUsage("booking_submit_success");
       setReference(String(result.reference || result.id).slice(0, 8).toUpperCase());
       setSubmitted(true);
       formElement.reset();
     } catch (err) {
-      console.error("[Village Wellness Spa] appointment request failed", err);
-      setError(err instanceof Error ? err.message : "We could not record your request. Please try again.");
+      console.error("[Village Wellness Spa] appointment booking failed", err);
+      setError(err instanceof Error ? err.message : "We could not complete your booking. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -191,7 +191,7 @@ export default function BookForm() {
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
     <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose your treatment and a time that suits you. Your available slot is reserved when you book.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
-      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">Request received</span><h2>Your appointment is booked.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your selected time is reserved in the spa calendar. The team will contact you if any treatment-specific information needs attention. {hasConnectedAccount ? "This request is linked to your signed-in My Village Wellness Spa account. You can see it in your visit history below." : "You can optionally connect Google to secure your My Village Wellness Spa profile and keep future visit history together. This step is not required."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my appointment →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my appointment history →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
+      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">BOOKING CONFIRMED</span><h2>Your appointment is booked.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your selected time is reserved in the spa calendar. The team will contact you if any treatment-specific information needs attention. {hasConnectedAccount ? "This appointment is linked to your signed-in account. You can see it in your visit history below." : "You can optionally connect Google to secure your account and keep future visit history together."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my appointment →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my appointment history →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
         <form className="formCard bookingForm" onSubmit={handleSubmit}>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>Choose your treatment</h2><p>Choose a treatment, or leave it blank and the team can guide you.</p></div></div>
@@ -203,7 +203,7 @@ export default function BookForm() {
               <div className="field">
                 <label htmlFor="date">Appointment date</label>
                 <input id="date" name="date" type="date" min={minDate} value={preferredDate} onChange={event => setPreferredDate(event.target.value)} required />
-                <small>{selectedHours?.open ? (selectedDay ? dayLabels[selectedDay] : "") + " · Operating hours " + selectedHours.start + "–" + selectedHours.end + ". Times below are checked against the live calendar." : selectedDay ? "The clinic is not accepting requests on " + dayLabels[selectedDay] + ". " : "Times below are checked against the live calendar."}</small>
+                <small>{selectedHours?.open ? (selectedDay ? dayLabels[selectedDay] : "") + " · Operating hours " + selectedHours.start + "–" + selectedHours.end + ". Times below are checked against the live calendar." : selectedDay ? "The clinic is not accepting bookings on " + dayLabels[selectedDay] + ". " : "Times below are checked against the live calendar."}</small>
                 {preferredDate && <SpaWeatherReport selectedDate={preferredDate} />}
               </div>
               <div className="field fieldFull">
@@ -250,7 +250,7 @@ export default function BookForm() {
               </div>
             </div>
           </section>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "We only ask for the details the team needs to respond. You can optionally secure your profile after your request."}</p></div></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "Enter the contact details for this booking. Saved account details are reused on future visits."}</p></div></div>
             {hasSavedProfile ? <div className="customerPanel">
               <strong>Using your saved customer details</strong>
               <p>{customerName} · {customerPhone}{customerEmail ? " · " + customerEmail : ""}</p>
@@ -263,11 +263,11 @@ export default function BookForm() {
               <div className="field"><label htmlFor="phone">WhatsApp / mobile number</label><input id="phone" name="phone" type="tel" required autoComplete="tel" value={customerPhone} onChange={event=>setCustomerPhone(event.target.value)} placeholder="Best contact number"/></div>
               <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="you@example.com"/></div>
             </div>}
-            {!hasConnectedAccount && <p className="slotHint">After you send your request, you can optionally connect Google to secure your My Village Wellness Spa profile. You can still request a visit without doing that now.</p>}
+            {!hasConnectedAccount && <p className="slotHint">After booking, you can optionally connect Google to secure your account and keep your visit history together.</p>}
           </section>
           {error && <p className="bookingError" role="alert">{error}</p>}
-          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Sending your request…" : "Book appointment"} <span aria-hidden="true">→</span></button>
-          <p className="bookingPrivacy">Your details are used to respond to this request. Please do not enter sensitive medical information in this form.</p>          
+          <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Booking…" : "Book appointment"} <span aria-hidden="true">→</span></button>
+          <p className="bookingPrivacy">Your details are used to manage this booking. Please do not enter sensitive medical information in this form.</p>          
 
         </form>
         <div className="bookingTrustNote"><strong>Your appointment is confirmed when the booking is saved.</strong><span>Your selected date and time are reserved. Payment is handled at the spa.</span></div>
