@@ -41,9 +41,12 @@ export default function Home() {
           <span className="brandMark"><img src="/icon.svg" alt="" /></span>
           <span>Village<span>WELLNESS SPA</span></span>
         </Link>
-        <Link href="/account" className="villageAccountShortcut" aria-label="My account">
-          <span aria-hidden="true">◎</span><span>My account</span>
-        </Link>
+        <nav className="villageHeaderActions" aria-label="Quick access">
+          <Link href="/account" className="villageAccountShortcut" aria-label="My account">
+            <span aria-hidden="true">◎</span><span>My account</span>
+          </Link>
+          <Link href="/admin" className="villageAdminShortcut">Admin</Link>
+        </nav>
       </header>
 
       <div className="villageHomeContent">
@@ -65,12 +68,6 @@ export default function Home() {
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
 
-        <SpaWeatherReport />
-
-        <div className="villageTrustStrip">
-          <span>✦ Personalised care</span><i>·</i><span>Clinical guidance</span><i>·</i><span>A welcoming space</span>
-        </div>
-
         <section className="villageStaffEntry" aria-label="On-site team access">
           <div>
             <span className="kicker">ON-SITE TEAM</span>
@@ -79,6 +76,12 @@ export default function Home() {
           </div>
           <Link href="/admin/queue" className="villageStaffEntryLink">Open reception <span aria-hidden="true">↗</span></Link>
         </section>
+
+        <SpaWeatherReport />
+
+        <div className="villageTrustStrip">
+          <span>✦ Personalised care</span><i>·</i><span>Clinical guidance</span><i>·</i><span>A welcoming space</span>
+        </div>
 
         <section className="villageVisitCompact" id="visit">
           <div>
