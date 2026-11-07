@@ -342,6 +342,15 @@ function AccountContent() {
           </>
         ) : null}
 
+        <section className="customerPanel customerGardenShortcut">
+          <div className="customerPanelHeading">
+            <div><span className="kicker">A LITTLE BREAK</span><h2>Village Garden</h2></div>
+            <span aria-hidden="true">🌱</span>
+          </div>
+          <p>Plant a seed, grow a flower and beat your personal best. No sign-in or purchase needed to play.</p>
+          <Link href="/garden" className="button buttonLight">Play the garden game ↗</Link>
+        </section>
+
         {message && <p className="notice customerAccountMessage" role="status">{message}</p>}
         <footer className="customerAccountFooter">
           <Link href="/" className="textLink">← Back to Village Wellness Spa</Link>
