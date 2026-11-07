@@ -4,6 +4,7 @@ import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
 type VisitRecord = Record<string, unknown> & { id: string };
+type VisitRecord = Record<string, unknown> & { id: string };
 const allowed = new Set(["ARRIVED", "COMPLETED"]);
 function today() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
