@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase/client";
-import AdminGate from "@/app/admin/admin-gate";
 
 type Plant = { id: string; growth: number; plantedAt: string; lastWateredDate: string };
 type Garden = { plants: Plant[]; paidVisitCount: number; seedsAvailable: number; today: string };
@@ -79,4 +78,4 @@ function GardenContent() {
     </section>
   </div></main>;
 }
-export default function GardenPage() { return <AdminGate><GardenContent /></AdminGate>; }
+export default function GardenPage() { return <GardenContent />; }
