@@ -3,7 +3,6 @@ import { createHash, randomBytes } from "node:crypto";
 import { getAdminDb, requireAdmin } from "@/lib/firebase/admin";
 
 export const dynamic = "force-dynamic";
-const paymentMethods = new Set(["CASH", "MOBILE_MONEY", "CARD", "OTHER"]);
 const allowed = new Set(["ARRIVED", "COMPLETED"]);
 function today() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Gaborone", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
@@ -82,13 +81,10 @@ export async function POST(request: NextRequest) {
       const now = new Date().toISOString(), patch: Record<string, unknown> = { status, statusUpdatedAt: now };
       if (status === "COMPLETED") {
         const price = String(body.finalPrice ?? "").trim().replace(/^P\s*/i, "");
-        const method = String(body.paymentMethod ?? "").trim().toUpperCase();
         if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) throw new Error("INVALID_FINAL_PRICE");
-        if (!paymentMethods.has(method)) throw new Error("INVALID_PAYMENT_METHOD");
         patch.completedAt = now;
         patch.finalPriceSnapshot = "P" + Number(price).toFixed(2);
         patch.paymentStatus = "PAID";
-        patch.paymentMethod = method;
         patch.paymentRecordedAt = now;
         const date = String(body.recommendedReturnDate ?? "").trim();
         const note = String(body.returnNote ?? "").trim().slice(0, 500);
@@ -109,7 +105,6 @@ export async function POST(request: NextRequest) {
       RETIRED_WAITLIST: "Waitlist records are no longer part of the visit workflow.",
       INVALID_TRANSITION: "This visit cannot make that change. Refresh the list and check its current status.",
       INVALID_FINAL_PRICE: "Enter the actual amount received in pula.",
-      INVALID_PAYMENT_METHOD: "Choose how the customer paid.",
       INVALID_RETURN_DATE: "Choose a valid recommended return date.",
     };
     return NextResponse.json({ error: errors[message] || "The visit update could not be saved." }, { status: message === "NOT_FOUND" ? 404 : 400 });
