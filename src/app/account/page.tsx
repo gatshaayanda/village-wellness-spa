@@ -63,7 +63,7 @@ const statusCopy: Record<string, string> = {
 const statusGuidance: Record<string, string> = {
   NEW: "The spa team has received your request and will review it. Your preferred time is not confirmed yet.",
   REVIEWING: "The team is reviewing your treatment and preferred time. They will update this request when the review is complete.",
-  APPROVED: "Your request has been reviewed. Check any message from the spa for next steps; the appointment is not confirmed until its status says Appointment confirmed.",
+  APPROVED: "Your booking has been reviewed. Check any message from the spa for next steps. Your appointment is confirmed when its status says Appointment confirmed.",
   PAYMENT_PENDING: "The team has updated your request. Check any message from the spa for the next step; this status does not mean a payment has been received.",
   CONFIRMED: "Your appointment is confirmed. Keep the date and time above handy, and contact the spa if you need to make a change.",
   ARRIVED: "Reception has recorded your arrival. The team will guide you through the next step.",
@@ -191,7 +191,7 @@ function AccountContent() {
       } else if (code === "auth/provider-already-linked") {
         setMessage("Google is already connected to this profile.");
       } else if (["auth/operation-not-allowed", "auth/configuration-not-found", "auth/unauthorized-domain"].includes(code)) {
-        setMessage("Google sign-in is not enabled for this site yet. Your appointment request remains saved.");
+        setMessage("Google sign-in is not enabled for this site yet. Your appointment remains saved.");
       } else if (code === "auth/popup-closed-by-user") {
         setMessage("Google connection was cancelled. Your current profile is unchanged.");
       } else if (code === "auth/popup-blocked") {
@@ -240,7 +240,7 @@ function AccountContent() {
         <header className="customerAccountHeader">
           <span className="kicker">YOUR SPA, IN ONE PLACE</span>
           <h1>My account</h1>
-          <p>Follow your visits and appointment requests, keep your details together and plan your next visit.</p>
+          <p>Keep your visit history and saved details together, see published offers and book your next visit.</p>
         </header>
 
         {showPostSubmit && (
@@ -273,7 +273,7 @@ function AccountContent() {
               </div>
               {bookings.length === 0 ? (
                 <div className="customerEmpty">
-                  <strong>No appointment requests yet.</strong>
+                  <strong>No visits booked yet.</strong>
                   <p>Your requests will appear here, with the latest status and next step.</p>
                   <Link href="/book?newBooking=1" className="button buttonPrimary">Choose a treatment ↗</Link>
                 </div>
