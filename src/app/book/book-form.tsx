@@ -20,6 +20,7 @@ export default function BookForm() {
   const requestedService = searchParams.get("service") ?? "";
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
+  const [hasSavedProfile, setHasSavedProfile] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -46,6 +47,7 @@ export default function BookForm() {
       const googleProfile = user?.providerData.find((provider) => provider.providerId === "google.com");
       setHasConnectedAccount(Boolean(user && !user.isAnonymous));
       setHasSavedProfile(false);
+      setHasSavedProfile(false);
       setCustomerName(user?.displayName || googleProfile?.displayName || "");
       setCustomerPhone(user?.phoneNumber ?? "");
       setCustomerEmail(user?.email || googleProfile?.email || "");
@@ -64,6 +66,7 @@ export default function BookForm() {
         setCustomerName(profile.name || user.displayName || googleProfile?.displayName || "");
         setCustomerPhone(profile.phone || user.phoneNumber || "");
         setCustomerEmail(profile.email || user.email || googleProfile?.email || "");
+        setHasSavedProfile(Boolean(profile.name && profile.phone));
         setHasSavedProfile(Boolean(profile.name && profile.phone));
       } catch (profileError) {
         console.warn("[Village Wellness Spa] saved customer details unavailable; using account details", profileError);
@@ -254,12 +257,19 @@ export default function BookForm() {
               </div>
             </div>
           </section>
-          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasConnectedAccount ? "We’ve filled in details available from your account. Check them and make any needed changes." : "We only ask for the details the team needs to respond. You can optionally secure your profile after your request."}</p></div></div>
-            <div className="formGrid">
-              <div className="field fieldFull"><label htmlFor="name">Your full name</label><input id="name" name="name" required autoComplete="name" value={customerName} onChange={event=>setCustomerName(event.target.value)} placeholder="e.g. Kopano Gatsha"/></div>
+          <section className="bookingFormSection"><div className="bookingSectionHeading"><span>03</span><div><h2>How can we reach you?</h2><p>{hasSavedProfile ? "We’ll use the contact details already saved to your customer account." : "For a first visit, we only need your name and WhatsApp number."}</p></div></div>
+            {hasSavedProfile ? <div className="customerPanel">
+              <strong>Using your saved customer details</strong>
+              <p>{customerName} · {customerPhone}{customerEmail ? " · " + customerEmail : ""}</p>
+              <Link href="/account" className="textLink">View your customer account ↗</Link>
+              <input type="hidden" name="name" value={customerName}/>
+              <input type="hidden" name="phone" value={customerPhone}/>
+              <input type="hidden" name="email" value={customerEmail}/>
+            </div> : <div className="formGrid">
+              <div className="field fieldFull"><label htmlFor="name">Your full name</label><input id="name" name="name" required autoComplete="name" value={customerName} onChange={event=>setCustomerName(event.target.value)} placeholder="Your full name"/></div>
               <div className="field"><label htmlFor="phone">WhatsApp / mobile number</label><input id="phone" name="phone" type="tel" required autoComplete="tel" value={customerPhone} onChange={event=>setCustomerPhone(event.target.value)} placeholder="Best contact number"/></div>
-              <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="you@example.com"/></div>
-            </div>
+              <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="Best email if you want updates"/></div>
+            </div>}
             {!hasConnectedAccount && <p className="slotHint">After you send your request, you can optionally connect Google to secure your My Village Wellness Spa profile. You can still request a visit without doing that now.</p>}
           </section>
           {error && <p className="bookingError" role="alert">{error}</p>}
