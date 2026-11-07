@@ -34,20 +34,24 @@ export async function POST(request: NextRequest) {
   const db = getAdminDb(), action = String(body.action ?? "update");
   try {
     if (action === "create") {
-      const name = String(body.name ?? "").trim().slice(0, 120);
+      let name = String(body.name ?? "").trim().slice(0, 120);
       const phone = String(body.phone ?? "").trim().slice(0, 40);
       const serviceName = String(body.serviceName ?? "").trim().slice(0, 160);
-      if (!name || !phone || !serviceName) return NextResponse.json({ error: "Choose the treatment and enter the customer's name and mobile number." }, { status: 400 });
+      if (!phone || !serviceName) return NextResponse.json({ error: "Enter the customer's WhatsApp number and choose the treatment." }, { status: 400 });
       const now = new Date().toISOString(), ref = db.collection("bookingRequests").doc();
-      const digits = phone.replace(/\D/g, "");
-      const normalizedPhone = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits.length === 8 ? "267" + digits : digits;
+      const normalizePhone = (value: unknown) => {
+        const digits = String(value ?? "").replace(/\D/g, "");
+        return digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits.length === 8 ? "267" + digits : digits;
+      };
+      const normalizedPhone = normalizePhone(phone);
       const matches = await db.collection("customerProfiles").get();
-      const exact = matches.docs.filter(doc => {
-        const profile = doc.data();
-        const profileDigits = String(profile.phone ?? "").replace(/\D/g, "");
-        const profilePhone = profileDigits.startsWith("267") ? profileDigits : profileDigits.startsWith("0") ? "267" + profileDigits.slice(1) : profileDigits.length === 8 ? "267" + profileDigits : profileDigits;
-        return profilePhone === normalizedPhone && String(profile.name ?? "").trim().toLocaleLowerCase() === name.toLocaleLowerCase();
-      });
+      const samePhone = matches.docs.filter(doc => normalizePhone(doc.data().phone) === normalizedPhone);
+      const exact = name
+        ? samePhone.filter(doc => String(doc.data().name ?? "").trim().toLocaleLowerCase() === name.toLocaleLowerCase())
+        : samePhone;
+      if (!name && exact.length === 1) name = String(exact[0].data().name ?? "").trim();
+      if (!name && exact.length === 0) return NextResponse.json({ error: "New customer: enter their name once. It will be saved with this visit." }, { status: 400 });
+      if (!name && exact.length > 1) return NextResponse.json({ error: "More than one account uses this number. Enter the customer's name to identify the correct profile." }, { status: 409 });
       const customerUid = exact.length === 1 ? exact[0].id : "";
       const claimToken = customerUid ? "" : randomBytes(32).toString("hex");
       const claimTokenHash = claimToken ? createHash("sha256").update(claimToken).digest("hex") : "";
