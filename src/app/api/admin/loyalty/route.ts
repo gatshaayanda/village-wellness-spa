@@ -25,7 +25,7 @@ export async function POST(request:NextRequest){
   if(active&&(!previous.exists||previous.data()?.active!==true)){
    try{
     const recipients=await db.collection("notificationPreferences").where("offersAndNews","==",true).get();
-    const link=new URL("/account",process.env.NEXT_PUBLIC_BASE_URL||"https://tripple-s-wellness-spa.vercel.app").toString();
+    const link=new URL("/account",request.nextUrl.origin).toString();
     await Promise.all(recipients.docs.filter(item=>item.data().enabled===true).map(async recipient=>{
      const tokens=await db.collection("notificationTokens").doc(recipient.id).collection("devices").get();
      await Promise.all(tokens.docs.map(async device=>{const token=String(device.data().token??"");if(!token)return;try{await getAdminMessaging().send({token,notification:{title:"A new Village Wellness Spa offer is available",body:title},webpush:{fcmOptions:{link}}});}catch(error){console.error("[Village Wellness Spa] offer push failed",error instanceof Error?error.message:"unknown");}}));
