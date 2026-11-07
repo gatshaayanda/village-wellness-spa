@@ -26,7 +26,7 @@ type Analytics = {
   completedWithoutRecordedPayment: number;
   returningCustomers: number;
   topTreatments: Array<{ name: string; count: number }>;
-  dailyRevenue: Array<{ date: string; amount: number }>;\n  revenueByPaymentMethod: Array<{ method: string; transactions: number; revenue: number }>;\n  topRevenueTreatments: Array<{ name: string; transactions: number; revenue: number }>;
+  dailyRevenue: Array<{ date: string; amount: number }>;
 };
 
 const money = (value: number) =>
