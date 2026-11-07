@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownLeft, ArrowRight, Check, ChevronDown, MessageCircle, Send, Sparkles, X } from "lucide-react";
 
-type GuideTreatment = { id: string; name: string; price: string; description: string; media: string; mediaType: "image" | "video"; active: boolean };
+type GuideService = { id: string; name: string; price: string; description: string; media: string; mediaType: "image" | "video"; active: boolean };
 type View = "shop" | "account" | "admin";
 type Message = { id: string; from: "guide" | "you"; text: string };
 
 type Props = {
   view: View;
-  treatments: GuideService[];
+  services: GuideService[];
   requestCount: number;
   onChooseService: (service: GuideService) => void;
   onOpenAccount: () => void;
@@ -100,7 +100,7 @@ export default function ServiceGuide({ view, services, requestCount, onChooseSer
       case "storefront": say("Taking you back to the Village Wellness Spa website."); onOpenStorefront(); break;
       case "book": say("Opening appointment booking. Choose an available time to reserve your visit."); onOpenBook(); break;
       case "garden": say("Opening Village Garden. It is an optional little game, separate from appointments and treatment records."); onOpenGarden(); break;
-      case "admin-services": say("Opening the service menu tools. You can add, edit, hide or remove spa app services here."); onOpenAdmin("services"); break;
+      case "admin-services": say("Opening treatment management. You can add, edit, hide or remove published treatments here."); onOpenAdmin("services"); break;
       case "admin-announcement": say("Opening the announcement editor. Publish or clear a storefront note; it stays on this device."); onOpenAdmin("announcement"); break;
       case "admin-requests": say(requestCount ? `Opening ${requestCount} local request(s). Status changes are visible to the customer view on this same device.` : "There are no requests yet. Switch to the storefront and submit a sample request first."); onOpenAdmin("requests"); break;
       default: {
@@ -164,10 +164,10 @@ export default function ServiceGuide({ view, services, requestCount, onChooseSer
     </aside>}
     {open && <div className="sd-guide-backdrop" onClick={() => setOpen(false)} aria-hidden="true"/>}
     {open && <section ref={panelRef} className="sd-guide-panel" role="dialog" aria-modal="true" aria-labelledby="sd-guide-title">
-      <header className="sd-guide-head"><div className="sd-guide-avatar"><Sparkles size={18}/></div><div><span className="sd-guide-eyebrow">VILLAGE WELLNESS SPA · GUIDE</span><h2 id="sd-guide-title">{view === "admin" ? "Spa admin guide" : "Village Spa guide"}</h2><p><span/> Guided demo · {view === "admin" ? "Admin tools" : "Customer journey"}</p></div><button type="button" aria-label="Close guide" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}><ChevronDown size={19}/></button></header>
+      <header className="sd-guide-head"><div className="sd-guide-avatar"><Sparkles size={18}/></div><div><span className="sd-guide-eyebrow">VILLAGE WELLNESS SPA · GUIDE</span><h2 id="sd-guide-title">{view === "admin" ? "Spa admin guide" : "Village Spa guide"}</h2><p><span/> Automated guide · {view === "admin" ? "Admin tools" : "Customer support"}</p></div><button type="button" aria-label="Close guide" onClick={() => { setOpen(false); launcherRef.current?.focus(); }}><ChevronDown size={19}/></button></header>
       <div className="sd-guide-intro"><strong>{view === "admin" ? "What would you like to manage?" : "How can I help with your visit?"}</strong><p>{view === "admin" ? "I’ll take you to the right spa admin tool." : "Browse treatments, get help choosing or go straight to booking."}</p></div>
       <div className="sd-guide-actions">{(view === "admin" ? adminActions : customerActions).map(item => <button key={item.key} type="button" onClick={() => item.key === "services" ? say("Choose a treatment below to see its published price and description. I’ll take you to booking when you’re ready.") : runAction(item.key)}><span>{item.icon}</span>{item.label}<ArrowRight size={15}/></button>)}</div>
-      {view !== "admin" && <div className="sd-guide-services"><span className="sd-guide-section-label">TREATMENTS</span>{activeServices.map(service => <button key={service.id} type="button" onClick={() => chooseService(service)} aria-pressed={lastChoice === service.id}><span className="sd-guide-service-thumb" aria-hidden="true"><img src={service.media} alt="" loading="lazy" onError={event => { event.currentTarget.style.visibility = "hidden"; }}/></span><span className="sd-guide-service-copy"><strong>{service.name}</strong><small>{service.description}</small></span><b>P{service.price}</b></button>)}</div>}
+      {view !== "admin" && <div className="sd-guide-services"><span className="sd-guide-section-label">TREATMENTS</span>{activeServices.map(service => <button key={service.id} type="button" onClick={() => chooseService(service)} aria-pressed={lastChoice === service.id}><span className="sd-guide-service-thumb" aria-hidden="true"><img src={service.media} alt="" loading="lazy" onError={event => { event.currentTarget.style.visibility = "hidden"; }}/></span><span className="sd-guide-service-copy"><strong>{service.name}</strong><small>{service.description}</small></span><b>{service.price}</b></button>)}</div>}
       {lastChoice && view !== "admin" && <button type="button" className="sd-guide-continue" onClick={continueWithService}>Book this treatment <ArrowRight size={16}/></button>}
       <div className="sd-guide-thread" aria-live="polite" aria-relevant="additions text">{messages.slice(-4).map(message => <p key={message.id} className={`sd-guide-message is-${message.from}`}>{message.text}</p>)}</div>
       <form className="sd-guide-composer" onSubmit={sendText}><input ref={inputRef} value={input} onChange={event => setInput(event.target.value)} aria-label="Ask the service guide" aria-describedby="sd-guide-type-hint" placeholder="Ask about treatments or booking…" maxLength={300}/><button type="submit" disabled={!input.trim()} aria-label="Send message"><Send size={17}/></button></form>
