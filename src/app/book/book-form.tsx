@@ -166,8 +166,8 @@ export default function BookForm() {
 
     try {
       const headers: Record<string,string>={"Content-Type":"application/json"};
-      // Anonymous identity is invisible and optional; auth failure must not block guest booking.
-      if(hasFirebaseWebConfig){try{const customer=auth.currentUser??(await signInAnonymously(auth)).user;headers.Authorization="Bearer "+await getIdToken(customer);}catch(authError){console.warn("[Village Wellness Spa] optional customer session unavailable; continuing as guest",authError);}}
+      // Keep identity setup invisible; booking must never require a customer account.
+      if(hasFirebaseWebConfig){try{const customer=auth.currentUser??(await signInAnonymously(auth)).user;headers.Authorization="Bearer "+await getIdToken(customer);}catch(authError){console.warn("[Village Wellness Spa] optional customer session unavailable; continuing with booking",authError);}}
       const response = await fetch("/api/bookings", { method: "POST", headers, body: JSON.stringify({ ...request, time: selectedTime, discountCode }) });
       const result = await response.json();
       if (!response.ok) {
@@ -191,7 +191,7 @@ export default function BookForm() {
     {showAnnouncement && <div className="container publicAnnouncement" role="status"><strong>{clinicSettings.announcement.title || "Clinic notice"}</strong><span>{clinicSettings.announcement.message}</span></div>}
     <div className="bookingIntro"><div className="bookingIntroInner"><span className="kicker">VILLAGE WELLNESS SPA · GABORONE</span><h1>Book your <em>spa visit.</em></h1><p>Choose your treatment and a time that suits you. Your available slot is reserved when you book.</p><div className="bookingSteps"><span><b>1</b> Treatment</span><span><b>2</b> Date &amp; time</span><span><b>3</b> Your details</span></div></div></div>
     <div className="formWrap formWrapWide">
-      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">BOOKING CONFIRMED</span><h2>Your appointment is booked.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your selected time is reserved in the spa calendar. The team will contact you if any treatment-specific information needs attention. {hasConnectedAccount ? "This appointment is linked to your signed-in account. You can see it in your visit history below." : "You can optionally connect Google to secure your account and keep future visit history together."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my appointment →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my appointment history →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
+      {submitted ? <div className="formCard confirm confirmEditorial"><span className="confirmIcon">✦</span><span className="kicker">BOOKING CONFIRMED</span><h2>Your appointment is booked.</h2><p>Your reference is <strong>#{reference}</strong>. Keep it for your records.</p><p>Your selected time is reserved in the spa calendar. The team will contact you if any treatment-specific information needs attention. {hasConnectedAccount ? "This appointment is linked to your signed-in account. You can see it in your visit history below." : "Your booking is saved. You can find it in My account."}</p><div className="actions" style={{ justifyContent: "center" }}>{hasConnectedAccount ? <Link href="/account#my-visits" className="button buttonPrimary">View my appointment →</Link> : <Link href="/account?submitted=1#my-visits" className="button buttonPrimary">View my appointment history →</Link>}<Link href="/" className="button buttonLight">Back to Village Wellness Spa</Link></div></div> :
       <div className="bookingLayout">
         <form className="formCard bookingForm" onSubmit={handleSubmit}>
           <section className="bookingFormSection"><div className="bookingSectionHeading"><span>01</span><div><h2>Choose your treatment</h2><p>Choose a treatment, or leave it blank and the team can guide you.</p></div></div>
@@ -263,7 +263,6 @@ export default function BookForm() {
               <div className="field"><label htmlFor="phone">WhatsApp / mobile number</label><input id="phone" name="phone" type="tel" required autoComplete="tel" value={customerPhone} onChange={event=>setCustomerPhone(event.target.value)} placeholder="Best contact number"/></div>
               <div className="field"><label htmlFor="email">Email <span>(optional)</span></label><input id="email" name="email" type="email" autoComplete="email" value={customerEmail} onChange={event=>setCustomerEmail(event.target.value)} placeholder="you@example.com"/></div>
             </div>}
-            {!hasConnectedAccount && <p className="slotHint">After booking, you can optionally connect Google to secure your account and keep your visit history together.</p>}
           </section>
           {error && <p className="bookingError" role="alert">{error}</p>}
           <button className="button buttonPrimary bookingSubmit" type="submit" disabled={busy}>{busy ? "Booking…" : "Book appointment"} <span aria-hidden="true">→</span></button>
