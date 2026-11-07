@@ -98,3 +98,8 @@ Research grounding:
 
 ## Latest checkpoint — 2026-11-07
 - Reception entry-point implementation is committed on `main`: homepage `ON-SITE TEAM → Open reception` links to the AdminGate-protected `/admin/queue`; authenticated admin navigation labels it `Reception`. Keep this distinct from customer booking and do not add a public walk-in queue.
+
+
+## Latest checkpoint — 2026-11-07
+- Homepage access links are committed on `main`: customer `Book a visit`, distinct `ON-SITE TEAM → Open reception` to the AdminGate-protected `/admin/queue`, and the one-word `Admin` header link to `/admin`. Preserve the existing single admin-password login and keep customer booking as the only customer-facing primary action.
+- Latest source commit: `11d938e450a9bb23f1c985edb7ffe2466b243c41`. Vercel reported a build-rate-limit failure; GitHub push is not proof of deployment. Retry deployment and verify the live homepage before calling this QA-ready.
