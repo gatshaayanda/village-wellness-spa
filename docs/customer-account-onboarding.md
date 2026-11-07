@@ -40,3 +40,11 @@ Notification preferences and device tokens are accessed through authenticated se
 - The booking form does not ask customers to declare themselves first-time or returning. The server derives that distinction from saved completed-visit history. Saved account contact details are prefilled for future bookings where the customer has a connected/recognized session.
 - On completion, the workflow records that payment was received, per the spa's operating rule. The actual amount is optional in the reception action; owner revenue analytics include only completed visits with a valid saved amount. Completed visits without an amount remain visible as missing financial detail, not fabricated revenue.
 - Promotions and any Garden game are optional account engagement features, separate from arrival, treatment and completion. Do not make account sign-in, marketing consent or gameplay a condition of service.
+
+
+## Village Garden — optional customer engagement
+
+- The optional game lives at `/garden` and is reachable from My Account.
+- It is a small, phone-friendly plant/water/flower game. It requires no login, customer form, purchase, completed visit or notification permission.
+- The current score is a play session score; the personal best is stored locally on the current device. It is not synced to Firebase and is not a business metric.
+- Keep the game separate from spa reception, treatment delivery, booking, customer clinical information and financial reporting. It must never be a condition of receiving service.
