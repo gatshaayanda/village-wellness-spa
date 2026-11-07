@@ -297,7 +297,7 @@ function AccountContent() {
                   ))}
                 </div>
               )}
-              <p className="customerAccountTruth">Your visit history and recorded payments stay together here. When you are ready, book your next treatment without choosing a first-time or returning-client option.</p>
+              <p className="customerAccountTruth">Your visit history and recorded payments stay together here. Your saved contact details are ready when you want to book your next treatment.</p>
             </section>
 
             <section className="customerPanel" id="profile">
