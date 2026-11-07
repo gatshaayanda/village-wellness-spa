@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import EnquiryModal from "@/components/enquiry-modal";
 import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 
 export default function TreatmentDetailPage() {
@@ -11,7 +10,6 @@ export default function TreatmentDetailPage() {
   const id = decodeURIComponent(params.id ?? "");
   const [service, setService] = useState<ServiceRecord | null>(null);
   const [loading, setLoading] = useState(true);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
 
   useEffect(() => {
     void getPublicServices()
@@ -56,7 +54,6 @@ export default function TreatmentDetailPage() {
               {service.assessmentNote && <p className="assessmentCopy">{service.assessmentNote}</p>}
               <div className="actions">
                 <Link href={`/book?service=${encodeURIComponent(service.id)}`} className="button buttonPrimary">Book this treatment</Link>
-                <button type="button" className="button buttonLight" onClick={() => setEnquiryOpen(true)}>Ask about this treatment</button>
               </div>
             </div>
             <aside className="detailAside">
@@ -78,7 +75,6 @@ export default function TreatmentDetailPage() {
       </section>
 
       <section className="confidence"><div className="container confidenceGrid"><div><span className="kicker">Need help choosing?</span><h2>Start with a consultation.</h2><p>Tell the team what you would like to improve. You do not need to diagnose yourself.</p></div><Link href="/book?service=skin-consultation" className="button buttonLight">Book a consultation</Link></div></section>
-      <EnquiryModal open={enquiryOpen} onClose={() => setEnquiryOpen(false)} kind="TREATMENT" itemId={service.id} itemName={service.name} itemPrice={service.price} />
     </main>
   );
 }
