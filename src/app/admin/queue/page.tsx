@@ -99,7 +99,7 @@ function QueueDashboard() {
       if (data.claimToken) {
         const link = window.location.origin + "/account?claim=" + encodeURIComponent(data.claimToken);
         const digits = phone.replace(/\D/g, "");
-        const normalized = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits;
+        const normalized = digits.startsWith("267") ? digits : digits.startsWith("0") ? "267" + digits.slice(1) : digits.length === 8 ? "267" + digits : digits;
         setShareLink("https://wa.me/" + normalized + "?text=" + encodeURIComponent(
           "Welcome to Village Wellness Spa. Your visit is saved. Open your private customer account to keep your visit history, receive spa updates and book again: " + link
         ));
