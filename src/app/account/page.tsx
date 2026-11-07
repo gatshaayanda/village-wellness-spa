@@ -231,7 +231,7 @@ function AccountContent() {
             <span className="brandMark"><img src="/icon.svg" alt="" /></span>
             <span>Village<span>WELLNESS SPA</span></span>
           </Link>
-          <div className="navLinks"><Link href="/treatments">Treatments</Link><Link href="/book">Appointments</Link><Link href="/book?newBooking=1">Book a visit</Link></div>
+          <div className="navLinks"><Link href="/treatments">Treatments</Link><Link href="/book">Appointments</Link><Link href="/book?newBooking=1">Book a visit</Link><Link href="/garden">My garden</Link></div>
           <Link href="/book?newBooking=1" className="button buttonPrimary">New request ↗</Link>
         </div>
       </nav>
