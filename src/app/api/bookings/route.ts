@@ -28,8 +28,21 @@ export async function POST(request: NextRequest) {
   if (!name || !phone || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return NextResponse.json({ error: "Enter your name and mobile number, then choose a valid date and available time." }, { status: 400 });
   try {
     const db = getAdminDb();
-    const priorVisits = await db.collection("bookingRequests").where("phone", "==", phone).get();
-    const clientType = priorVisits.docs.some(item => item.data().status === "COMPLETED") ? "RETURNING" : "NEW";
+    const phoneDigits = phone.replace(/\D/g, "");
+    const phoneLocal = phoneDigits.startsWith("267") ? phoneDigits.slice(3) : phoneDigits.startsWith("0") ? phoneDigits.slice(1) : phoneDigits;
+    const phoneNormalized = phoneLocal.length === 8 ? "267" + phoneLocal : phoneDigits;
+    const phoneCandidates = Array.from(new Set([
+      phone, phoneDigits, phoneNormalized, "+" + phoneNormalized,
+      phoneLocal, "0" + phoneLocal,
+    ].filter(Boolean))).slice(0, 10);
+    const priorQueries = [
+      db.collection("bookingRequests").where("phoneNormalized", "==", phoneNormalized).get(),
+      db.collection("bookingRequests").where("phone", "in", phoneCandidates).get(),
+      ...(customer ? [db.collection("bookingRequests").where("customerUid", "==", customer.uid).get()] : []),
+    ];
+    const priorSnapshots = await Promise.all(priorQueries);
+    const priorVisits = new Map(priorSnapshots.flatMap(snapshot => snapshot.docs).map(item => [item.id, item]));
+    const clientType = Array.from(priorVisits.values()).some(item => item.data().status === "COMPLETED") ? "RETURNING" : "NEW";
     const settingsSnap = await db.collection("settings").doc("clinic").get();
     const saved = settingsSnap.data() ?? {};
     const settings = { openingHours: { ...defaultClinicSettings.openingHours, ...(saved.openingHours ?? {}) }, bookingRules: { ...defaultClinicSettings.bookingRules, ...(saved.bookingRules ?? {}), minimumNoticeHours: 0 } };
@@ -76,7 +89,7 @@ export async function POST(request: NextRequest) {
       const owners=new Map(ownerSnapshots.map(snapshot=>[snapshot.ref.path,snapshot]));
       const hasLiveConflict=snapshots.some(snapshot=>{if(!snapshot.exists)return false;const data=snapshot.data()??{};if(data.bookingRequestId){const owner=owners.get(db.collection("bookingRequests").doc(String(data.bookingRequestId)).path);return Boolean(owner?.exists&&!["CANCELLED","DECLINED","RESCHEDULED"].includes(String(owner.data()?.status??"")));}if(data.appointmentId){const owner=owners.get(db.collection("appointments").doc(String(data.appointmentId)).path);return Boolean(owner?.exists&&owner.data()?.status!=="CANCELLED");}return false;});
       if(hasLiveConflict)throw new Error("SLOT_TAKEN");
-      const payload = { createdAt:new Date().toISOString(), ...(customer?{customerUid:customer.uid}:{}), name, phone, ...(email?{email}:{}), ...(serviceId?{serviceId}:{}), serviceNameSnapshot:String(service?.name??"Consultation / help choosing"), ...(service?{priceSnapshot:String(service.price??""),durationSnapshot:String(service.duration??duration+" min")}:{durationSnapshot:duration+" min"}), preferredDate:date, preferredTime:time, clientType, status:"NEW", paymentStatus:"PAYMENT_PENDING", ...(message?{message}:{}), ...(discount?{discountCodeSnapshot:String(discount.code),discountAmountSnapshot:discountAmount,...(finalPrice?{finalPriceSnapshot:finalPrice}:{})}:{}) };
+      const payload = { createdAt:new Date().toISOString(), ...(customer?{customerUid:customer.uid}:{}), name, phone, phoneNormalized, ...(email?{email}:{}), ...(serviceId?{serviceId}:{}), serviceNameSnapshot:String(service?.name??"Consultation / help choosing"), ...(service?{priceSnapshot:String(service.price??""),durationSnapshot:String(service.duration??duration+" min")}:{durationSnapshot:duration+" min"}), preferredDate:date, preferredTime:time, clientType, status:"NEW", paymentStatus:"PAYMENT_PENDING", ...(message?{message}:{}), ...(discount?{discountCodeSnapshot:String(discount.code),discountAmountSnapshot:discountAmount,...(finalPrice?{finalPriceSnapshot:finalPrice}:{})}:{}) };
       tx.create(idRef,payload);
       if (customer) {
         const profileRef = db.collection("customerProfiles").doc(customer.uid);
@@ -84,6 +97,7 @@ export async function POST(request: NextRequest) {
           uid: customer.uid,
           name,
           phone,
+          phoneNormalized,
           ...(email ? { email } : {}),
           updatedAt: new Date().toISOString(),
         }, { merge: true });
