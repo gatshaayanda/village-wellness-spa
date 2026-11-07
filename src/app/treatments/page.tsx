@@ -29,7 +29,7 @@ export default function TreatmentsPage() {
       <nav className="nav">
         <div className="container navInner">
           <Link href="/" className="brand"><span className="brandMark"><img src="/icon.svg" alt="" /></span><span>Village<span>WELLNESS SPA</span></span></Link>
-          <div className="navLinks"><Link href="/account" className="textLink">My Village Wellness Spa</Link><Link href="/book" className="button buttonPrimary">Book an appointment</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link><Link href="/book" className="button buttonPrimary mobileBookLink">Book</Link>
+          <div className="navLinks"><Link href="/account" className="textLink">My Village Wellness Spa</Link><Link href="/book" className="button buttonPrimary">Book a visit</Link></div><Link href="/account" className="button buttonLight mobileAccountLink">My account</Link><Link href="/book" className="button buttonPrimary mobileBookLink">Book</Link>
         </div>
       </nav>
 
@@ -83,7 +83,7 @@ export default function TreatmentsPage() {
                       <div className="serviceMeta"><strong>{item.price}</strong><small>{item.consultationRequired ? "Assessment may be required" : "Appointment request"}</small></div>
                       <div className="actions serviceCardActions">
                         <Link href={`/treatments/${encodeURIComponent(item.id)}`} className="button buttonLight">View details</Link>
-                        <Link href={`/book?service=${encodeURIComponent(item.id)}`} className="button buttonDark">Request appointment</Link>
+                        <Link href={`/book?service=${encodeURIComponent(item.id)}`} className="button buttonDark">Book</Link>
                       </div>
                     </article>
                   ))}
