@@ -33,7 +33,6 @@ function QueueDashboard() {
   const [shareLink, setShareLink] = useState("");
   const [sharePhone, setSharePhone] = useState("");
   const [finalPrices, setFinalPrices] = useState<Record<string, string>>({});
-  const [paymentMethods, setPaymentMethods] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
   const token = async () => {
@@ -68,7 +67,7 @@ function QueueDashboard() {
       const response = await fetch("/api/admin/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + await token() },
-        body: JSON.stringify({ id, status, finalPrice: finalPrices[id] || "", paymentMethod: paymentMethods[id] || "" }),
+        body: JSON.stringify({ id, status, finalPrice: finalPrices[id] || "" }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Visit update failed.");
@@ -176,8 +175,7 @@ function QueueDashboard() {
                 ) : (
                   <div className="field">
                     <label>Amount received (BWP)<input inputMode="decimal" required value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Actual amount paid" /></label>
-                    <label>Payment method<select required value={paymentMethods[item.id] || ""} onChange={event => setPaymentMethods(values => ({ ...values, [item.id]: event.target.value }))}><option value="">Select method</option><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile money</option><option value="CARD">Card</option><option value="OTHER">Other</option></select></label>
-                    <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim() || !paymentMethods[item.id]} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit · paid"}</button>
+                                        <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim()} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit · paid"}</button>
                   </div>
                 )}
               </div>
