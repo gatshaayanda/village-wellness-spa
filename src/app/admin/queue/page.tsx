@@ -130,16 +130,16 @@ function QueueDashboard() {
       <div className="adminShell">
         <header className="panelHeading">
           <div>
-            <span className="kicker">ON-SITE TEAM · WALK-IN</span>
-            <h1>Walk-in queue</h1>
+            <span className="kicker">ON-SITE TEAM · VISITS</span>
+            <h1>Today’s visits</h1>
             <p>Record the customer when they arrive. The team provides the treatment and marks the visit completed when payment is received.</p>
           </div>
           <div className="actions"><Link href="/admin/analytics" className="button buttonLight">Owner analytics</Link><Link href="/admin" className="button buttonLight">Main admin</Link></div>
         </header>
 
         <section className="adminPanel">
-          <h2>Add a customer to the walk-in queue</h2>
-          <p>Add the customer when they are physically here. Enter their WhatsApp number; an existing account is reused when the number matches one profile. Add their name only when needed. The customer does not fill in a form.</p>
+          <h2>Register an arrival</h2>
+          <p>Register the customer when they are physically here. Their saved account is reused when the mobile number matches one profile. The customer does not fill in a form.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
               <label>Customer name <span>(if needed)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Leave blank for a saved customer" /><small>If the number matches one saved customer profile, their name and account are reused automatically.</small></label>
@@ -164,7 +164,7 @@ function QueueDashboard() {
             <div><h2>At the spa <span>{active.length}</span></h2><p>When the treatment is finished, mark the visit completed. No intermediate queue statuses.</p></div>
             <button className="button buttonLight" type="button" onClick={() => void load().catch(error => setNotice(error.message))}>Refresh</button>
           </div>
-          {loading ? <p className="slotHint">Loading today&apos;s visits…</p> : active.length === 0 ? <p className="emptyState">No active visits at the spa.</p> : active.map(item => (
+          {loading ? <p className="slotHint">Loading today&apos;s visits…</p> : active.length === 0 ? <p className="emptyState">No visits currently at the spa.</p> : active.map(item => (
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
