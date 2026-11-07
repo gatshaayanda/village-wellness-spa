@@ -951,3 +951,6 @@
 .villageWalkInNote{max-width:520px;margin:12px 0 0;color:rgba(255,255,255,.88);font-size:.78rem;line-height:1.55}
 .villageHeroActions .textLink{color:#fff;text-decoration:underline;text-underline-offset:4px;font-size:.78rem;font-weight:750}
 @media(max-width:700px){.villageWalkInNote{font-size:.72rem;max-width:340px}.villageHeroActions .textLink{display:inline-flex;align-items:center;justify-content:center;min-height:44px}}
+
+/* First-visit / returning-client choice in the booking journey. */
+.visitTypePicker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 8px}.visitTypeOption{display:grid;gap:5px;text-align:left;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer}.visitTypeOption strong{font-size:.9rem}.visitTypeOption span{font-size:.76rem;color:var(--muted)}.visitTypeOption.selected{border-color:var(--gold);background:#fbf7ef;box-shadow:inset 0 0 0 1px var(--gold)}.visitTypeOption:focus-visible{outline:3px solid rgba(181,150,90,.25);outline-offset:2px}.visitTypeHint{margin:0 0 15px;color:var(--muted);font-size:.78rem;line-height:1.5}@media(max-width:420px){.visitTypePicker{gap:7px}.visitTypeOption{padding:11px 10px}.visitTypeOption strong{font-size:.82rem}.visitTypeOption span{font-size:.7rem}}
