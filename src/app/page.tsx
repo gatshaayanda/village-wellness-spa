@@ -68,11 +68,11 @@ export default function Home() {
           <span className="villageHeroLocation">GABORONE, BOTSWANA</span>
         </section>
 
-        <section className="villageStaffEntry" aria-label="On-site team access">
+        <section className="villageStaffEntry" aria-label="Spa reception">
           <div>
-            <span className="kicker">ON-SITE TEAM</span>
-            <strong>Reception · Today’s visits</strong>
-            <p>Staff access to register arrivals and manage visits at the spa.</p>
+            <span className="kicker">RECEPTION</span>
+            <strong>Walk-ins &amp; today’s visits</strong>
+            <p>Register customers when they arrive. Complete the visit when treatment and payment are finished.</p>
           </div>
           <Link href="/admin/queue" className="villageStaffEntryLink">Open reception <span aria-hidden="true">↗</span></Link>
         </section>
