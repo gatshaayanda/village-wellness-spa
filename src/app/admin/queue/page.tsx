@@ -131,8 +131,8 @@ function QueueDashboard() {
         <header className="panelHeading">
           <div>
             <span className="kicker">ON-SITE TEAM · VISITS</span>
-            <h1>Today’s visits</h1>
-            <p>Record the customer when they arrive. The team provides the treatment and marks the visit completed when payment is received.</p>
+            <h1>Walk-ins &amp; visits</h1>
+            <p>Customer arrives → reception records the visit → treatment happens → staff marks it complete once payment is received. No waiting or in-treatment steps.</p>
           </div>
           <div className="actions"><Link href="/admin/analytics" className="button buttonLight">Owner analytics</Link><Link href="/admin" className="button buttonLight">Main admin</Link></div>
         </header>
