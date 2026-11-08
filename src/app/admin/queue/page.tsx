@@ -124,29 +124,37 @@ function QueueDashboard() {
 
   const active = items.filter(item => !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(item.status));
   const completed = items.filter(item => item.status === "COMPLETED");
+  const walkIns = items.filter(item => item.requestType === "QUEUE");
+  const appointments = items.filter(item => item.requestType !== "QUEUE");
 
   return (
     <main className="adminPage">
       <div className="adminShell">
         <header className="panelHeading">
           <div>
-            <span className="kicker">ON-SITE TEAM · VISITS</span>
+            <span className="kicker">ON-SITE TEAM · RECEPTION</span>
             <h1>Walk-ins &amp; visits</h1>
-            <p>Customer arrives → reception records the visit → treatment happens → staff marks it complete once payment is received. No waiting or in-treatment steps.</p>
+            <p>Two steps only: <strong>ARRIVED → COMPLETED</strong>. Register the customer when they arrive; complete the visit when treatment is finished and payment is received.</p>
           </div>
           <div className="actions"><Link href="/admin/analytics" className="button buttonLight">Owner analytics</Link><Link href="/admin" className="button buttonLight">Main admin</Link></div>
         </header>
 
+        <section className="adminStats" aria-label="Today's reception summary">
+          <article><span>At the spa now</span><strong>{loading ? "—" : active.length}</strong></article>
+          <article><span>Completed today</span><strong>{loading ? "—" : completed.length}</strong></article>
+          <article><span>Walk-ins today</span><strong>{loading ? "—" : walkIns.length}</strong><small>{appointments.length} appointment{appointments.length === 1 ? "" : "s"} in today’s list</small></article>
+        </section>
+
         <section className="adminPanel">
-          <h2>Register an arrival</h2>
-          <p>Register the customer when they are physically here. Their saved account is reused when the mobile number matches one profile. The customer does not fill in a form.</p>
+          <h2>Register a walk-in</h2>
+          <p>Staff handles reception; the customer fills in nothing. A saved mobile number reconnects a returning customer to their account. For a first visit, staff records the customer’s name once.</p>
           <form className="adminForm" onSubmit={add}>
             <div className="formGrid">
-              <label>Customer name <span>(if needed)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Leave blank for a saved customer" /><small>If the number matches one saved customer profile, their name and account are reused automatically.</small></label>
+              <label>Customer name <span>(first visit only)</span><input value={name} onChange={event => setName(event.target.value)} maxLength={120} placeholder="Name for a new customer" /><small>Returning customer? Leave blank if their mobile number matches one saved account. A new customer’s name is saved with this visit.</small></label>
               <label>WhatsApp number<input value={phone} onChange={event => setPhone(event.target.value)} required maxLength={40} placeholder="+267 …" /></label>
               <label className="fieldFull">Treatment<select value={service} onChange={event => setService(event.target.value)} required><option value="">Choose treatment</option>{services.map(item => <option key={item.id} value={item.name}>{item.name} · {item.price}</option>)}</select></label>
             </div>
-            <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Saving arrival…" : "Arrived ↗"}</button>
+            <button className="button buttonPrimary" type="submit" disabled={busy === "new"}>{busy === "new" ? "Saving arrival…" : "Register arrival ↗"}</button>
           </form>
           {shareLink && (
             <div className="customerPanel" role="status">
@@ -176,7 +184,7 @@ function QueueDashboard() {
                 ) : (
                   <div className="field">
                     <label>Amount received (BWP)<input inputMode="decimal" required value={finalPrices[item.id] || ""} onChange={event => setFinalPrices(values => ({ ...values, [item.id]: event.target.value }))} placeholder="Actual amount paid" /></label><label>Payment method<select required value={paymentMethods[item.id] || ""} onChange={event => setPaymentMethods(values => ({ ...values, [item.id]: event.target.value }))}><option value="">Choose payment method</option><option value="CASH">Cash</option><option value="ORANGE_MONEY">Orange Money</option><option value="CARD">Card</option><option value="OTHER">Other</option></select></label>
-                                        <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim() || !paymentMethods[item.id]} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete visit · paid"}</button>
+                                        <button className="button buttonPrimary" disabled={!!busy || !finalPrices[item.id]?.trim() || !paymentMethods[item.id]} onClick={() => void update(item.id, "COMPLETED")}>{busy === item.id ? "Saving…" : "Complete · payment received"}</button>
                   </div>
                 )}
               </div>
