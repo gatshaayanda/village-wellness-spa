@@ -95,6 +95,7 @@ function AccountContent() {
   const [message, setMessage] = useState("");
   const [showExistingAccount, setShowExistingAccount] = useState(false);
   const [showPostSubmit, setShowPostSubmit] = useState(false);
+  const [showShareWelcome, setShowShareWelcome] = useState(false);
 
   const loadBookings = useCallback(async (activeUser: User) => {
     const response = await fetch("/api/customer/bookings", {
@@ -109,6 +110,7 @@ function AccountContent() {
   useEffect(() => {
     let alive = true;
     setShowPostSubmit(new URLSearchParams(window.location.search).has("submitted"));
+    setShowShareWelcome(new URLSearchParams(window.location.search).get("welcome") === "1");
 
     const unsubscribe = onAuthStateChanged(auth, async (activeUser) => {
       if (!alive) return;
@@ -243,7 +245,7 @@ function AccountContent() {
           <p>Keep your visit history and saved details together, see published offers and book your next visit.</p>
         </header>
 
-        {new URLSearchParams(typeof window === "undefined" ? "" : window.location.search).get("welcome") === "1" && (
+        {showShareWelcome && (
           <section className="customerShareWelcome" role="status">
             <div>
               <h2>Welcome to your Village Wellness Spa account.</h2>
