@@ -243,6 +243,16 @@ function AccountContent() {
           <p>Keep your visit history and saved details together, see published offers and book your next visit.</p>
         </header>
 
+        {new URLSearchParams(typeof window === "undefined" ? "" : window.location.search).get("welcome") === "1" && (
+          <section className="customerShareWelcome" role="status">
+            <div>
+              <h2>Welcome to your Village Wellness Spa account.</h2>
+              <p>Review your visits, explore treatments, make your next booking and keep up with spa offers. For the best experience, open this page in Google Chrome.</p>
+            </div>
+            <Link href="/book?newBooking=1" className="button buttonPrimary">Choose a treatment ↗</Link>
+          </section>
+        )}
+
         {showPostSubmit && (
           <section className="customerPanel customerSetupIntro">
             <div>
