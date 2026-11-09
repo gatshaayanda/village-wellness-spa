@@ -1019,3 +1019,23 @@
 .sd-guide-footnote{display:flex;align-items:center;gap:5px;padding-bottom:12px}
 @media(max-width:600px){.sd-guide-root{right:14px;bottom:14px}.sd-guide-panel{position:fixed;right:0;bottom:0;width:100vw;max-height:82dvh;border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom)}.sd-guide-teaser{right:0;bottom:64px}}
 @media(prefers-reduced-motion:reduce){.sd-guide-panel,.sd-guide-teaser{animation:none!important;transition:none!important}}
+
+
+/* Admin-assisted customer account sharing. */
+.shareCustomerPanel{display:grid;gap:12px;border:1px solid #eadfe2;background:linear-gradient(135deg,#fff 0%,#fcf6f8 100%)}
+.shareCustomerPanel .panelHeading{margin:0}
+.shareCustomerIcon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:14px;background:#f8e8ef;color:#6b3c1b;font-size:1.2rem;font-weight:800}
+.shareCustomerLabel{font-size:.78rem;font-weight:750;color:var(--ink)}
+.shareCustomerPanel textarea{width:100%;min-height:82px;padding:12px 13px;border:1px solid #e5d9dd;border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:.88rem;resize:vertical}
+.shareCustomerHint,.shareCustomerFootnote{margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
+.shareCustomerActions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.shareCustomerActions>span{color:var(--muted);font-size:.72rem;font-weight:700}
+.shareCustomerList{display:grid;gap:7px}
+.shareCustomerContact{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #eee3e6;border-radius:12px;background:#fff}
+.shareCustomerContact>span{min-width:0;overflow-wrap:anywhere;font-size:.82rem;font-weight:700}
+.shareCustomerContact .button{flex:none}
+.shareCustomerError{margin:0;color:#a52f42;font-size:.75rem}
+.customerShareWelcome{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 18px;padding:16px 18px;border:1px solid #ead7df;border-radius:16px;background:#fbf2f6}
+.customerShareWelcome h2{margin:0 0 5px;font-size:1rem}
+.customerShareWelcome p{margin:0;color:#75646c;font-size:.8rem;line-height:1.5}
+@media(max-width:640px){.shareCustomerPanel{padding:16px}.shareCustomerContact{align-items:stretch;flex-direction:column}.shareCustomerContact .button{width:100%;justify-content:center}.customerShareWelcome{align-items:stretch;flex-direction:column}}
