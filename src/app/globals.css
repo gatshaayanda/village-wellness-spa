@@ -1039,3 +1039,103 @@
 .customerShareWelcome h2{margin:0 0 5px;font-size:1rem}
 .customerShareWelcome p{margin:0;color:#75646c;font-size:.8rem;line-height:1.5}
 @media(max-width:640px){.shareCustomerPanel{padding:16px}.shareCustomerContact{align-items:stretch;flex-direction:column}.shareCustomerContact .button{width:100%;justify-content:center}.customerShareWelcome{align-items:stretch;flex-direction:column}}
+
+
+/* Compact, app-like Village landing page aligned with Iteration 13 and Dira. */
+.villageHomeRefresh{background:#fff;color:#35262b}
+.villageRefreshHeader{min-height:66px;padding:8px max(18px,calc((100% - 1120px)/2));background:#fff;border-bottom:1px solid #eee4e8}
+.villageRefreshHeader .brand{font-size:.9rem;letter-spacing:.06em}
+.villageRefreshHeader .brandMark{width:36px;height:36px}
+.villageRefreshHeader .villageHeaderActions{gap:16px}
+.villageRefreshHeader .villageHeaderSecondary{font-size:.76rem;font-weight:750;color:#6b3c1b}
+.villageRefreshContent{width:min(1120px,calc(100% - 32px));margin:18px auto 34px}
+.villageRefreshHero{position:relative;isolation:isolate;display:flex;align-items:center;min-height:390px;overflow:hidden;border-radius:22px;background:linear-gradient(120deg,#38202d 0%,#6b3c1b 62%,#a34d70 100%);color:#fff;box-shadow:0 16px 44px #4625351c}
+.villageRefreshHeroImage{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 80% 30%,#e8a2c080,transparent 42%),linear-gradient(125deg,#38202d,#6b3c1b 65%,#9b4c70);background-size:cover;background-position:center}
+.villageRefreshHeroCopy{width:min(650px,76%);padding:42px 48px}
+.villageRefreshEyebrow{display:inline-flex;color:#f8cfe1;font-size:.66rem;font-weight:850;letter-spacing:.16em}
+.villageRefreshHero h1{margin:17px 0 12px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.5rem,5.5vw,4.65rem);line-height:.99;letter-spacing:-.055em}
+.villageRefreshHero h1 em{color:#f4b5d0;font-style:normal}
+.villageRefreshHeroCopy>p{max-width:470px;margin:0;color:#fff;font-size:1rem;line-height:1.55}
+.villageRefreshActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:24px}
+.villageRefreshPrimary,.villageRefreshSecondary{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;padding:0 19px;border-radius:999px;font-size:.83rem;font-weight:850}
+.villageRefreshPrimary{background:#e52b7c;color:#fff;box-shadow:0 8px 20px #1b0b162b}
+.villageRefreshSecondary{border:1px solid #ffffff8c;background:#ffffff12;color:#fff}
+.villageRefreshNote{display:block;margin-top:13px;color:#f8e8ef;font-size:.72rem;line-height:1.5}
+.villageRefreshHeroTag{position:absolute;right:24px;bottom:22px;color:#fff9;font-size:.61rem;font-weight:800;letter-spacing:.13em}
+.villageRefreshDestinations{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 28px}
+.villageRefreshDestinations>a{display:grid;grid-template-columns:36px 1fr;column-gap:10px;align-items:center;min-height:76px;padding:13px 15px;border:1px solid #eee3e8;border-radius:14px;background:#fff;transition:border-color .15s,transform .15s}
+.villageRefreshDestinations>a:hover{border-color:#e5a2bf;transform:translateY(-1px)}
+.villageRefreshDestinations>a>span{grid-row:span 2;display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#fff0f6;color:#b62968;font-size:1.1rem}
+.villageRefreshDestinations strong{font-size:.83rem;color:#4b2c39}
+.villageRefreshDestinations small{margin-top:3px;color:#796b71;font-size:.69rem;line-height:1.4}
+.villageRefreshServices{padding:4px 0 24px}
+.villageRefreshSectionHeading{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:12px}
+.villageRefreshSectionHeading h2{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-size:1.65rem;letter-spacing:-.025em;color:#4b2c39}
+.villageRefreshSectionHeading>a{flex:none;color:#a52d65;font-size:.75rem;font-weight:800}
+.villageRefreshServiceGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.villageRefreshService{display:flex;align-items:center;gap:11px;min-width:0;padding:10px;border:1px solid #eee5e8;border-radius:13px;background:#fff}
+.villageRefreshService>img,.villageRefreshServiceMark{display:grid;place-items:center;flex:none;width:54px;height:54px;object-fit:cover;border-radius:10px;background:#f8eaf0;color:#6b3c1b;font-family:Georgia,serif;font-size:1.4rem}
+.villageRefreshService>span:nth-child(2){display:grid;gap:4px;min-width:0;flex:1}
+.villageRefreshService strong{font-size:.79rem;line-height:1.3;color:#4b2c39}
+.villageRefreshService small{color:#82747a;font-size:.67rem;line-height:1.35}
+.villageRefreshService>b{color:#b62968}
+.villageRefreshServiceEmpty{display:grid;gap:6px;padding:18px;border:1px solid #eee5e8;border-radius:14px;background:#fffafc}
+.villageRefreshServiceEmpty strong{font-size:.88rem}
+.villageRefreshServiceEmpty span{color:#796b71;font-size:.76rem}
+.villageRefreshServiceEmpty a{margin-top:5px;color:#a52d65;font-size:.76rem;font-weight:800}
+.villageRefreshVisit{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;border:1px solid #eee3e8;border-radius:15px;background:#fff9fb}
+.villageRefreshVisit>div{display:grid;gap:4px}
+.villageRefreshVisit>div>strong{font-family:Georgia,serif;font-size:1.15rem;color:#4b2c39}
+.villageRefreshVisit p{margin:0;color:#796b71;font-size:.74rem;line-height:1.5}
+.villageRefreshVisit>a{flex:none;color:#a52d65;font-size:.76rem;font-weight:850}
+.villageHomeRefresh .villageCompactFooter{display:flex;justify-content:space-between;gap:12px;padding:18px max(18px,calc((100% - 1120px)/2));border-top:1px solid #eee5e8;color:#82747a;font-size:.69rem}
+@media(max-width:700px){
+ .villageRefreshHeader{padding:8px 14px}
+ .villageRefreshHeader .villageHeaderActions{gap:10px}
+ .villageRefreshHeader .villageHeaderSecondary{display:none}
+ .villageRefreshContent{width:calc(100% - 24px);margin-top:12px}
+ .villageRefreshHero{min-height:410px;border-radius:18px;align-items:end}
+ .villageRefreshHeroImage{background-position:center}
+ .villageRefreshHeroCopy{width:100%;padding:28px 22px 40px}
+ .villageRefreshHero h1{font-size:clamp(2.5rem,11vw,3.5rem)}
+ .villageRefreshHeroCopy>p{font-size:.88rem}
+ .villageRefreshActions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:19px}
+ .villageRefreshPrimary,.villageRefreshSecondary{width:100%;min-height:48px}
+ .villageRefreshHeroTag{right:16px;bottom:13px;font-size:.52rem}
+ .villageRefreshDestinations{grid-template-columns:1fr;gap:8px;margin:10px 0 24px}
+ .villageRefreshDestinations>a{min-height:66px}
+ .villageRefreshServiceGrid{grid-template-columns:1fr;gap:8px}
+ .villageRefreshSectionHeading h2{font-size:1.4rem}
+ .villageRefreshVisit{align-items:flex-start;flex-direction:column}
+ .villageRefreshVisit>a{padding-top:4px}
+ .villageHomeRefresh .villageCompactFooter{padding:16px 14px}
+}
+@media(prefers-reduced-motion:reduce){.villageRefreshDestinations>a{transition:none}}
+/* Public Big Brothers-style customer walk-in queue and WhatsApp account handoff. */
+.villageQueuePage{min-height:100vh;background:linear-gradient(145deg,#fff7fa 0%,#fff 48%,#f8f3f5 100%);color:#35262b}
+.villageQueueHeader{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:68px;padding:8px max(18px,calc((100% - 760px)/2));background:#fff;border-bottom:1px solid #eee3e8}
+.villageQueueHeader>a:last-child{color:#a52d65;font-size:.76rem;font-weight:800}
+.villageQueueWrap{width:min(620px,calc(100% - 28px));margin:22px auto 48px}
+.villageQueueBack{display:inline-flex;margin:0 0 12px;color:#796b71;font-size:.73rem;font-weight:700}
+.villageQueueCard{padding:clamp(20px,5vw,34px);border:1px solid #eee1e7;border-radius:20px;background:#fff;box-shadow:0 16px 42px #48243612}
+.villageQueueCard h1{margin:10px 0 8px;color:#4b2c39;font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.1rem,7vw,3.1rem);letter-spacing:-.045em}
+.villageQueueIntro{margin:0 0 22px;color:#796b71;font-size:.88rem;line-height:1.55}
+.villageQueueCard form{display:grid;gap:15px}
+.villageQueueCard form label{display:grid;gap:7px;color:#4b2c39;font-size:.78rem;font-weight:800}
+.villageQueueCard input,.villageQueueCard select{width:100%;min-height:48px;padding:0 13px;border:1px solid #e4d6dd;border-radius:11px;background:#fff;color:#35262b;font:inherit;font-size:.88rem}
+.villageQueueCard input:focus,.villageQueueCard select:focus{outline:3px solid #e52b7c2b;border-color:#c33b78}
+.villageQueuePrivacy{margin:0;color:#82747a;font-size:.7rem;line-height:1.55}
+.villageQueueError{margin:0;color:#a52f42;font-size:.76rem;line-height:1.5}
+.villageQueueSubmit{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;padding:12px 16px;border:0;border-radius:999px;background:#e52b7c;color:#fff;font-size:.85rem;font-weight:850;text-align:center;cursor:pointer}
+.villageQueueSubmit:disabled{opacity:.6;cursor:wait}
+.villageQueueAlternative{margin:16px 0 0;color:#82747a;font-size:.74rem;text-align:center}
+.villageQueueAlternative a,.villageQueueSecondaryAction{color:#a52d65;font-weight:800}
+.villageQueueSuccess{text-align:left}
+.villageQueueSuccessMark{display:grid;place-items:center;width:42px;height:42px;margin-bottom:15px;border-radius:50%;background:#e9f8ef;color:#177a46;font-size:1.2rem;font-weight:900}
+.villageQueueReference{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 17px;padding:13px 15px;border:1px solid #eee3e8;border-radius:12px;background:#fff9fb}
+.villageQueueReference span{color:#796b71;font-size:.74rem}
+.villageQueueReference strong{color:#4b2c39;font-size:.9rem;letter-spacing:.08em}
+.villageQueueSuccess .villageQueueSubmit{margin:0 0 12px;text-decoration:none}
+.villageQueueSuccess .villageQueuePrivacy{margin-bottom:16px}
+.villageQueueSecondaryAction{display:inline-flex;margin:6px 14px 0 0;font-size:.76rem}
+@media(max-width:600px){.villageQueueHeader{padding:8px 14px}.villageQueueWrap{margin-top:14px}.villageQueueCard{border-radius:16px}.villageQueueCard h1{font-size:2.55rem}}
