@@ -70,7 +70,7 @@ Research grounding:
 - There is no customer-facing appointment waitlist. Do not add a waitlist button, page, booking mode, API, admin filter or customer waitlist request. Existing legacy WAITLIST records are historical only and must not enter the active workflow.
 - Customers use the normal /book flow when they want a future appointment: choose a treatment (or leave it blank for team guidance), choose an available date/time, and provide contact details only when they are not already saved. Never ask whether someone is a first-time or returning customer; the server recognises repeat visits from account/phone history. Saved account details are prefilled. The selected slot is transactionally reserved and the appointment becomes CONFIRMED immediately. A walk-in does not use this booking flow.
 - A walk-in customer uses the public `/queue` form on their own phone; staff does not need to log in on the customer’s behalf. The public API validates and saves the entry before showing the success/WhatsApp handoff. Future appointments remain on `/book`.
-- Staff controls only ARRIVED and COMPLETED for real visits. No WAITING or IN_TREATMENT statuses, queue positions, countdowns or treatment start estimates.
+- Customer queue entries use WAITING in the customer account. Reception may display those physically present customers as ARRIVED in its staff list and can complete the visit after treatment and payment. Do not show queue positions, countdowns or treatment start estimates. Legacy IN_TREATMENT records remain safely completable.
 - At reception registration, match a returning customer when the normalized mobile number uniquely identifies one existing profile; staff can leave the name blank for this one-field lookup. If the number is ambiguous, staff enters the name to identify the exact profile. Otherwise create a high-entropy, expiring, single-use account-claim link so a first-time customer can connect their visit without filling in another form. Never auto-merge identities by phone alone.
 - Staff confirms completion after treatment and payment. Record the actual amount received in BWP and the payment method; only then set payment status to PAID. Save optional practitioner-approved return date/care note for the customer account.
 - Weather is a planning aid only. Never infer treatment suitability, medical outcomes, staff availability or appointment availability from weather.
@@ -86,7 +86,7 @@ Research grounding:
 - Adapt the actual Iteration 13 ServiceGuide interaction for Village Wellness Spa. Keep it deterministic, accessible, non-intrusive and honest; it is automated guidance, not a live clinician or AI service.
 
 - Walk-in customers must not be sent through the future appointment form or asked whether they are first-time/returning. They enter their own details once in the public queue form; the visit is saved to the shared queue and a WhatsApp account-claim link lets them keep the visit and book again.
-- The staff workflow uses only ARRIVED → COMPLETED for new walk-ins. Legacy WAITING and IN_TREATMENT records may be displayed as ARRIVED and must remain safely completable; do not reintroduce intermediate queue stages.
+- New customer walk-in entries are WAITING in their account and visible to reception as present/arrived. Staff completes them after treatment and payment. Legacy IN_TREATMENT records remain safely completable; do not invent additional intermediate stages.
 - Staff may record the customer's name, WhatsApp number and selected treatment on their behalf. Match a returning customer to an existing account only when the saved identity match is exact and unique. A new customer may be offered an optional secure account-claim link; never imply an account was created or linked until verified.
 - Customer account value is retention, not a barrier to treatment: preserve visit history, future booking, opt-in promotions/notifications, and preserve the optional no-login Village Garden game as a separate feature with a local-device personal best. Customers should be able to return without re-entering already-saved details where their account is connected.
 - Keep online appointment bookings available as a separate route for customers planning ahead; a successfully reserved slot is immediately confirmed. Do not make online booking a prerequisite for a walk-in.
@@ -96,13 +96,12 @@ Research grounding:
 - Protect PWA installation, service-worker/offline behavior, Firebase authorization, UploadThing and customer data ownership. Do not alter the install mechanism as part of walk-in work.
 
 
-## Latest checkpoint — 2026-11-07
-- Reception entry-point implementation is committed on `main`: homepage `ON-SITE TEAM → Open reception` links to the AdminGate-protected `/admin/queue`; authenticated admin navigation labels it `Reception`. Keep this distinct from customer booking and do not add a public walk-in queue.
+## Superseded checkpoint — 2026-11-07
+- The earlier staff-only homepage reception shortcut was superseded on 2026-11-12 by the public Big Brothers-style customer queue journey at `/queue`. Keep `/admin/queue` protected for staff operations only.
 
 
-## Latest checkpoint — 2026-11-07
-- Homepage access links are committed on `main`: customer `Book a visit`, distinct `ON-SITE TEAM → Open reception` to the AdminGate-protected `/admin/queue`, and the one-word `Admin` header link to `/admin`. Preserve the existing single admin-password login and keep customer booking as the only customer-facing primary action.
-- Public customer queue and the Iteration 13 / Dira operational-transparency direction supersede the earlier staff-only homepage entry point. The current homepage primary action is the public `/queue` journey; `/admin/queue` remains protected for staff operations.
+## Latest checkpoint — 2026-11-12
+- The public homepage primary action is `Join the walk-in queue` → `/queue`; future appointments remain at `/book`; `My account` and one-word `Admin` remain separate destinations. `/admin/queue` is staff-only.
 
 
 ## Customer queue and operational telemetry — 2026-11-12
