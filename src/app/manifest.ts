@@ -4,8 +4,9 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Village Wellness Spa",
     short_name: "Village Spa",
-    description: "Medical aesthetics, skin health and wellness in Mississauga.",
+    description: "Medical aesthetics, skin health and wellness in The Village, Gaborone, Botswana.",
     start_url: "/",
+    scope: "/",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#E52B7C",
