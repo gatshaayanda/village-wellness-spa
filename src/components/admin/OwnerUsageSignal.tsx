@@ -12,6 +12,8 @@ const bytes = (value: number) => value < 1024 ? value + " B" : value < 1024 ** 2
 export default function OwnerUsageSignal() {
   const [signal, setSignal] = useState<Signal>(emptySignal);
   const [localViews, setLocalViews] = useState(0);
+  const [localQueueJoins, setLocalQueueJoins] = useState(0);
+  const [localPayloadBytes, setLocalPayloadBytes] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -45,7 +47,10 @@ export default function OwnerUsageSignal() {
   }, []);
 
   useEffect(() => {
-    setLocalViews(getLocalUsageEvents(7).filter(item => item.event === "page_view").length);
+    const local = getLocalUsageEvents(7);
+    setLocalViews(local.filter(item => item.event === "page_view").length);
+    setLocalQueueJoins(local.filter(item => item.event === "walkin_queue_join_success").length);
+    setLocalPayloadBytes(local.reduce((sum, item) => sum + item.payloadBytes, 0));
     void load();
   }, [load]);
 
@@ -64,12 +69,12 @@ export default function OwnerUsageSignal() {
         <article><span>Analytics events saved</span><strong>{loading ? "—" : signal.eventCount}</strong></article>
       </div>
       <div className="villageOwnerSignalMeter">
-        <div><strong>Tracked Firebase event payload</strong><b>{loading ? "—" : bytes(signal.payloadBytes)} <span>/ 25 GB reference ceiling</span></b></div>
+        <div><strong>Tracked Firebase event payload</strong><b>{loading ? "—" : bytes(signal.payloadBytes)} <span>/ BoardSignal 25 GB reference ceiling</span></b></div>
         <div className="villageUsageTrack" role="img" aria-label={percent.toFixed(7) + " percent of the reference ceiling"}><span style={{ width: percent + "%" }} /></div>
         <small>{loading ? "Checking saved telemetry…" : percent.toFixed(7) + "% of the reference ceiling · " + signal.firebaseWrites + " analytics document writes"}</small>
       </div>
       {error && <p className="slotHint" role="status">{error}</p>}
-      <p className="slotHint">The 25 GB meter measures the JSON payload footprint of this app’s tracked events only. It is not total Firebase storage, reads, bandwidth, billing, media or indexes. Firebase Console is authoritative for project-wide usage. Browser-local activity stays separate: {localViews} page views on this device in the last seven days, not synced or added to Firebase.</p>
+      <p className="slotHint">The 25 GB meter measures the JSON payload footprint of this app’s tracked events only. It is not total Firebase storage, reads, bandwidth, billing, media or indexes. Firebase Console is authoritative for project-wide usage. Browser-local activity stays separate: {localViews} page views, {localQueueJoins} queue joins and {bytes(localPayloadBytes)} of event payload on this device in the last seven days. This copy is not synced or added to Firebase.</p>
     </section>
   );
 }
