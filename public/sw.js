@@ -2,15 +2,7 @@ const CACHE_PREFIX = "village-wellness-spa-";
 const CACHE_NAME = "village-wellness-spa-shell-v2";
 const STATIC_CACHE = "village-wellness-spa-static-v2";
 const NEXT_CACHE = "village-wellness-spa-next-v2";
-const APP_SHELL = [
-  "/",
-  "/treatments",
-  "/book",
-  "/queue",
-  "/offline",
-  "/icon.svg",
-  "/manifest.webmanifest"
-];
+const APP_SHELL = ["/", "/treatments", "/book", "/queue", "/offline", "/icon.svg", "/manifest.webmanifest"];
 const PUBLIC_ROUTES = new Set(["/", "/treatments", "/book", "/queue", "/offline"]);
 
 self.addEventListener("install", (event) => {
@@ -104,7 +96,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Immutable Next.js build assets can be reused offline; cap the cache to avoid unbounded growth.
   if (url.pathname.startsWith("/_next/static/")) {
     event.respondWith((async () => {
       const cache = await caches.open(NEXT_CACHE);
@@ -121,7 +112,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   const isPublicAsset = ["/images/", "/fonts/"].some((prefix) => url.pathname.startsWith(prefix))
-    || /\\.(?:css|woff2?|ttf|otf|png|jpe?g|webp|svg|ico|avif)$/i.test(url.pathname);
+    || /\.(?:css|woff2?|ttf|otf|png|jpe?g|webp|svg|ico|avif)$/i.test(url.pathname);
   if (isPublicAsset) {
     event.respondWith((async () => {
       const cache = await caches.open(STATIC_CACHE);
