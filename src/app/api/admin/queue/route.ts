@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const walkInRecords: VisitRecord[] = walkIns.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     const walkInItems: VisitRecord[] = walkInRecords
       .filter(item => String(item.visitDate ?? item.preferredDate ?? "") === date && item.status !== "ON_THE_WAY")
-      .map(item => ({ ...item, status: ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : String(item.status ?? "") }));
+      .map(item => ({ ...item, status: item.queueMode === "CUSTOMER" && item.status === "WAITING" ? "WAITING" : ["WAITING", "IN_TREATMENT"].includes(String(item.status)) ? "ARRIVED" : String(item.status ?? "") }));
     const appointmentRecords: VisitRecord[] = appointments.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     const appointmentItems: VisitRecord[] = appointmentRecords.filter(item =>
       item.requestType !== "QUEUE" && item.requestType !== "WAITLIST" && (!item.requestType || item.requestType === "APPOINTMENT") && ["CONFIRMED", "ARRIVED", "COMPLETED"].includes(String(item.status ?? ""))
