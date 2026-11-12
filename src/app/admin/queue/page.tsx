@@ -176,7 +176,7 @@ function QueueDashboard() {
             <article className="requestRow" key={item.id}>
               <div>
                 <strong>{item.name || "Customer"} · {item.serviceNameSnapshot || "Visit"}</strong>
-                <span>{item.phone || "No phone saved"} · {item.status === "CONFIRMED" ? "Appointment due" : "Arrived"} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
+                <span>{item.phone || "No phone saved"} · {item.status === "CONFIRMED" ? "Appointment due" : item.status === "WAITING" ? "Waiting in queue" : "Arrived"} · {new Date(item.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Gaborone" })}</span>
               </div>
               <div className="actions">
                 {item.status === "CONFIRMED" ? (
