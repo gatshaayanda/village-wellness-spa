@@ -84,6 +84,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       reference: ref.id.slice(0, 8).toUpperCase(),
+      serviceName,
       claimToken,
     }, { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
