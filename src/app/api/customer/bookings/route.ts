@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const items = snapshot.docs.filter(document => document.data().requestType !== "WAITLIST").map((document) => { const data=document.data(); return {
    id:document.id,reference:document.id.slice(0,8).toUpperCase(),createdAt:String(data.createdAt??""),
    serviceName:String(data.serviceNameSnapshot??"Consultation / help choosing"),requestType:String(data.requestType??"APPOINTMENT"),preferredDate:String(data.preferredDate??""),
-   preferredTime:String(data.preferredTime??""),status:["WAITING","IN_TREATMENT"].includes(String(data.status??""))?"ARRIVED":String(data.status??"NEW"),statusUpdatedAt:String(data.statusUpdatedAt??""),...(data.paymentStatus?{paymentStatus:String(data.paymentStatus)}:{}),
+   preferredTime:String(data.preferredTime??""),status:data.requestType==="QUEUE"&&String(data.status??"")==="WAITING"?"WAITING":["WAITING","IN_TREATMENT"].includes(String(data.status??""))?"ARRIVED":String(data.status??"NEW"),statusUpdatedAt:String(data.statusUpdatedAt??""),...(data.paymentStatus?{paymentStatus:String(data.paymentStatus)}:{}),
    ...(data.finalPriceSnapshot?{finalPrice:String(data.finalPriceSnapshot)}:{}),...(data.paymentMethod?{paymentMethod:String(data.paymentMethod)}:{}),...(data.discountCodeSnapshot?{offerCode:String(data.discountCodeSnapshot)}:{}),...(data.recommendedReturnDate?{recommendedReturnDate:String(data.recommendedReturnDate)}:{}),...(data.returnNote?{returnNote:String(data.returnNote)}:{})
   }; }).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
   return NextResponse.json({items});
