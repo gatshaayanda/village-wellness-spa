@@ -5,7 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { getPublicServices, type ServiceRecord } from "@/lib/firebase/data";
 import { trackUsage } from "@/lib/tripple-s/usage";
 
-type QueueResult = { reference: string; claimToken: string; name: string; phone: string };
+type QueueResult = { reference: string; claimToken: string; name: string; phone: string; serviceName: string };
 
 function whatsappDigits(value: string) {
   let digits = value.replace(/\D/g, "");
@@ -47,9 +47,9 @@ export default function QueuePage() {
         cache: "no-store",
         body: JSON.stringify({ name, phone, serviceId }),
       });
-      const data = await response.json() as { reference?: string; claimToken?: string; error?: string };
+      const data = await response.json() as { reference?: string; claimToken?: string; serviceName?: string; error?: string };
       if (!response.ok || !data.reference || !data.claimToken) throw new Error(data.error || "Your queue entry could not be saved. Please try again.");
-      setResult({ reference: data.reference, claimToken: data.claimToken, name: name.trim(), phone });
+      setResult({ reference: data.reference, claimToken: data.claimToken, serviceName: data.serviceName || "Consultation / help choosing", name: name.trim(), phone });
       trackUsage("walkin_queue_join_success", { category: "queue", outcome: "available" });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Your queue entry could not be saved. Please try again.");
@@ -105,6 +105,7 @@ export default function QueuePage() {
             <h1 id="queue-success-title">You’re in the queue.</h1>
             <p className="villageQueueIntro"><strong>{result.name}</strong>, your walk-in entry has been saved for the spa team.</p>
             <div className="villageQueueReference"><span>Queue reference</span><strong>{result.reference}</strong></div>
+            <div className="villageQueueReference"><span>Treatment</span><strong>{result.serviceName}</strong></div>
             {whatsappUrl ? (
               <>
                 <a className="villageQueueSubmit" href={whatsappUrl} target="_blank" rel="noreferrer">Send your account link to WhatsApp ↗</a>
