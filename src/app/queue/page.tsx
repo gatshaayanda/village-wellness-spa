@@ -111,7 +111,7 @@ export default function QueuePage() {
                 <p className="villageQueuePrivacy">WhatsApp will open with your private account link ready. Check the message and press <strong>Send</strong>. Open the link on your phone to connect this visit to your account, keep your history and book again. The secure link expires in seven days.</p>
               </>
             ) : <p className="villageQueueError">We could not prepare the WhatsApp number. Please contact reception and quote {result.reference}.</p>}
-            <Link className="villageQueueSecondaryAction" href="/account?claim=">Open my account</Link>
+            <Link className="villageQueueSecondaryAction" href={accountUrl}>Open my account ↗</Link>
             <Link className="villageQueueSecondaryAction" href="/book">Book a future appointment ↗</Link>
             <Link className="villageQueueSecondaryAction" href="/">Return to the spa homepage</Link>
           </section>
