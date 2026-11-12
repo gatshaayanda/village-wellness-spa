@@ -4,12 +4,13 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { trackUsage } from "@/lib/tripple-s/usage";
 
-function categoryFor(pathname: string): "home" | "treatments" | "treatment_detail" | "products" | "booking" | "account" | "other" {
+function categoryFor(pathname: string): "home" | "treatments" | "treatment_detail" | "products" | "booking" | "queue" | "account" | "other" {
   if (pathname === "/") return "home";
   if (pathname === "/treatments") return "treatments";
   if (pathname.startsWith("/treatments/")) return "treatment_detail";
   if (pathname === "/products" || pathname.startsWith("/products/")) return "products";
   if (pathname === "/book") return "booking";
+  if (pathname === "/queue") return "queue";
   if (pathname.startsWith("/account")) return "account";
   return "other";
 }
