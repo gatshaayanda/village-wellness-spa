@@ -10,7 +10,13 @@ export default function PwaRegister() {
 
   useEffect(() => {
     setOffline(!navigator.onLine);
-    const online = () => setOffline(false);
+    let registration: ServiceWorkerRegistration | undefined;
+    const online = () => {
+      setOffline(false);
+      if (registration) void registration.update().catch((error) => {
+        console.warn("[Village Wellness Spa] service worker update check failed", error);
+      });
+    };
     const offlineNow = () => setOffline(true);
     const installPrompt = (event: Event) => {
       event.preventDefault();
@@ -28,7 +34,14 @@ export default function PwaRegister() {
     window.addEventListener("offline", offlineNow);
     window.addEventListener("beforeinstallprompt", installPrompt);
     window.addEventListener("appinstalled", installed);
-    if ("serviceWorker" in navigator) void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+
+    if ("serviceWorker" in navigator) {
+      void navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
+        .then((result) => { registration = result; })
+        .catch((error) => {
+          console.warn("[Village Wellness Spa] service worker registration failed", error);
+        });
+    }
 
     return () => {
       window.removeEventListener("online", online);
@@ -48,7 +61,7 @@ export default function PwaRegister() {
 
   return (
     <>
-      {offline && <div className="offlineBanner" role="status">Offline mode · previously loaded Village Wellness Spa pages remain available. New requests are sent to the clinic when you are connected.</div>}
+      {offline && <div className="offlineBanner" role="status">Offline mode · previously loaded public pages may remain available. New bookings and walk-in queue joins need an internet connection; reconnect before submitting a request.</div>}
       {installable && !installCardDismissed && (
         <aside className="village-install-card" aria-label="Install Village Wellness Spa">
           <div className="village-install-brand">
