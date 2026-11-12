@@ -141,10 +141,10 @@ function UsagePanel() {
             </section>
 
             <section className="adminPanel villageUsageMeterPanel">
-              <div className="panelHeading"><div><span className="kicker">FIREBASE · TRACKED EVENT PAYLOAD</span><h2>What the app is recording</h2><p>Estimated payload footprint from privacy-limited journey events recorded by this app.</p></div><strong>{formatBytes(totals.payloadBytes)} <small>/ 25 GB</small></strong></div>
+              <div className="panelHeading"><div><span className="kicker">FIREBASE · TRACKED EVENT PAYLOAD</span><h2>What the app is recording</h2><p>Estimated payload footprint from privacy-limited journey events recorded by this app.</p></div><strong>{formatBytes(totals.payloadBytes)} <small>/ BoardSignal 25 GB</small></strong></div>
               <div className="villageUsageTrack" role="img" aria-label={percent.toFixed(7) + " percent of the 25 gigabyte reference ceiling used by tracked event payloads"}><span style={{ width: percent + "%" }} /></div>
-              <div className="villageUsageMeterMeta"><strong>{percent.toFixed(7)}% of the 25 GB reference ceiling</strong><span>{totals.eventCount} events · approximately {totals.firebaseWrites} Firestore writes from analytics</span></div>
-              <p className="slotHint">This is the server-measured JSON payload size of tracked analytics events, not total Firebase project storage, billing, Firestore reads, bandwidth, indexes or media. The 25 GB figure is a reference ceiling; Firebase Console remains authoritative for project-wide usage.</p>
+              <div className="villageUsageMeterMeta"><strong>{percent.toFixed(7)}% of the BoardSignal 25 GB reference ceiling</strong><span>{totals.eventCount} events · approximately {totals.firebaseWrites} Firestore writes from analytics</span></div>
+              <p className="slotHint">This is the server-measured JSON payload size of tracked analytics events, not total Firebase project storage, billing, Firestore reads, bandwidth, indexes or media. The BoardSignal 25 GB figure is a reference ceiling; Firebase Console remains authoritative for project-wide usage.</p>
             </section>
 
             <section className="adminContent twoColumn">
