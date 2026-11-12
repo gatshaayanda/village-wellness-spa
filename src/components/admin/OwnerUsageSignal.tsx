@@ -63,15 +63,15 @@ export default function OwnerUsageSignal() {
         <button type="button" className="button buttonLight" onClick={() => void load()} disabled={loading}>{loading ? "Checking…" : "Refresh"}</button>
       </div>
       <div className="villageOwnerSignalGrid">
-        <article><span>Public page views · 7 days</span><strong>{loading ? "—" : signal.pageViews}</strong></article>
-        <article><span>Walk-ins joined · 7 days</span><strong>{loading ? "—" : signal.queueJoins}</strong></article>
-        <article><span>Appointments submitted · 7 days</span><strong>{loading ? "—" : signal.bookingSubmissions}</strong></article>
-        <article><span>Analytics events saved</span><strong>{loading ? "—" : signal.eventCount}</strong></article>
+        <article><span>Public page views · 7 days</span><strong>{loading || error ? "—" : signal.pageViews}</strong></article>
+        <article><span>Walk-ins joined · 7 days</span><strong>{loading || error ? "—" : signal.queueJoins}</strong></article>
+        <article><span>Appointments submitted · 7 days</span><strong>{loading || error ? "—" : signal.bookingSubmissions}</strong></article>
+        <article><span>Analytics events saved</span><strong>{loading || error ? "—" : signal.eventCount}</strong></article>
       </div>
       <div className="villageOwnerSignalMeter">
-        <div><strong>Tracked Firebase event payload</strong><b>{loading ? "—" : bytes(signal.payloadBytes)} <span>/ BoardSignal 25 GB reference ceiling</span></b></div>
-        <div className="villageUsageTrack" role="img" aria-label={percent.toFixed(7) + " percent of the reference ceiling"}><span style={{ width: percent + "%" }} /></div>
-        <small>{loading ? "Checking saved telemetry…" : percent.toFixed(7) + "% of the reference ceiling · " + signal.firebaseWrites + " analytics document writes"}</small>
+        <div><strong>Tracked Firebase event payload</strong><b>{loading ? "Checking…" : error ? "Unavailable" : bytes(signal.payloadBytes)} <span>/ BoardSignal 25 GB reference ceiling</span></b></div>
+        <div className="villageUsageTrack" role="img" aria-label={error ? "Firebase telemetry unavailable" : percent.toFixed(7) + " percent of the reference ceiling"}><span style={{ width: (error ? 0 : percent) + "%" }} /></div>
+        <small>{loading ? "Checking saved telemetry…" : error ? "Firebase telemetry is unavailable; local browser activity is shown separately below." : percent.toFixed(7) + "% of the reference ceiling · " + signal.firebaseWrites + " analytics document writes"}</small>
       </div>
       {error && <p className="slotHint" role="status">{error}</p>}
       <p className="slotHint">The 25 GB meter measures the JSON payload footprint of this app’s tracked events only. It is not total Firebase storage, reads, bandwidth, billing, media or indexes. Firebase Console is authoritative for project-wide usage. Browser-local activity stays separate: {localViews} page views, {localQueueJoins} queue joins and {bytes(localPayloadBytes)} of event payload on this device in the last seven days. This copy is not synced or added to Firebase.</p>
